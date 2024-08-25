@@ -22,4 +22,11 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Calendars\" />
+    <Folder Include="Features\ShoppingLists\" />
+    <Folder Include="Features\Recipes\" />
+    <Folder Include="Features\Reminders\" />
+  </ItemGroup>
+
 </Project>
