@@ -1,0 +1,33 @@
+.icon-button {
+    background: transparent;
+    border: none;
+}
+
+.icon {
+    color: black;
+}
+
+.header-separator {
+    height: 4px;
+    background-color: black;
+}
+
+.main-content .main-heading {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-dark {
+    color: black;
+}
+
+.text-highlight {
+    color: #228B22;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 1.25rem;
+    color: #333;
+}
