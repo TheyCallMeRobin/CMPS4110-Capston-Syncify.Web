@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.Users;
 
 
 namespace Syncify.Web.Server.Controllers;
@@ -12,15 +13,15 @@ namespace Syncify.Web.Server.Controllers;
 [Route("server/authentication")]
 public class AuthenticationController : Controller
 {
-    private readonly SignInManager<User> signInManager;
-    private readonly UserManager<User> userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
     public AuthenticationController(
         SignInManager<User> signInManager, 
         UserManager<User> userManager)
     {
-        this.signInManager = signInManager;
-        this.userManager = userManager;
+        _signInManager = signInManager;
+        _userManager = userManager;
     }
 
     [HttpGet("me")]
@@ -28,7 +29,7 @@ public class AuthenticationController : Controller
     public async Task<ActionResult<UserDto>> Me()
     {
         var username = User.GetCurrentUserName();
-        var resultDto = await GetUserDto(userManager.Users)
+        var resultDto = await GetUserDto(_userManager.Users)
             .SingleOrDefaultAsync(x => x.UserName == username);
 
         if (resultDto == null)
@@ -42,28 +43,28 @@ public class AuthenticationController : Controller
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto dto)
     {
-        var user = await userManager.FindByNameAsync(dto.Username);
+        var user = await _userManager.FindByNameAsync(dto.Username);
         if (user == null)
         {
             return BadRequest();
         }
-        var result = await signInManager.CheckPasswordSignInAsync(user, dto.Password, true);
+        var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, true);
         if (!result.Succeeded)
         {
             return BadRequest();
         }
 
-        await signInManager.SignInAsync(user, false);
+        await _signInManager.SignInAsync(user, false);
 
-        var resultDto = await GetUserDto(userManager.Users).SingleAsync(x => x.UserName == user.UserName);
+        var resultDto = await GetUserDto(_userManager.Users).SingleAsync(x => x.UserName == user.UserName);
         return Ok(resultDto);
     }
 
     [HttpPost("logout")]
     [Authorize]
-    public async Task<ActionResult> logout()
+    public async Task<ActionResult> Logout()
     {
-        await signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync();
         return Ok();
     }
 
