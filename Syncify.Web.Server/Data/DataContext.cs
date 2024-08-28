@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.Users;
 
 namespace Syncify.Web.Server.Data;
 
@@ -23,9 +24,6 @@ public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
-
-    
     }
 }
