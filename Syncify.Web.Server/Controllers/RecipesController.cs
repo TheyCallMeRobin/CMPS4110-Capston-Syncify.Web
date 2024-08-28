@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Models;
+using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Controllers
 {
