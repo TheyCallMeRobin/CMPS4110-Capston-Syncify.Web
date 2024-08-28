@@ -30,7 +30,7 @@ namespace Syncify.Web.Server.Controllers
         public async Task<ActionResult<Recipe>> GetRecipe(int id)
         {
             var recipe = await _context.Recipes.Include(r => r.User)
-                                               .FirstOrDefaultAsync(r => r.Id == id);
+                                               .FirstOrDefaultAsync(r => r. RecipeId == id);
 
             if (recipe == null)
             {
@@ -43,7 +43,7 @@ namespace Syncify.Web.Server.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipesByUser(int userId)
         {
-            var recipes = await _context.Recipes.Where(r => r.UserId == userId).ToListAsync();
+            var recipes = await _context.Recipes.Where(r => r.CreatorUserId == userId).ToListAsync();
 
             if (recipes == null || !recipes.Any())
             {
