@@ -45,7 +45,10 @@ export default defineConfig({
         proxy: {
             '^/weatherforecast': {
                 target,
-                secure: false
+                secure: false,
+                changeOrigin: true,
+ 
+               
             }
         },
         port: 5173,
