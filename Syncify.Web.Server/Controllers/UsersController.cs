@@ -28,6 +28,9 @@ public class UsersController : Controller
             var newUser = new User
             {
                 UserName = createUserDto.UserName,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+                
             };
 
             var createResult = await _userManager.CreateAsync(newUser, createUserDto.Password);
