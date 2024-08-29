@@ -7,14 +7,14 @@ import Melon from '../../Images/Melon.jpg';
 import Pear from '../../Images/Pear.jpg';
 import RandomFood from '../../Images/Random Food.jpg';
 
-Modal.setAppElement('#root'); // Important for accessibility
+Modal.setAppElement('#root');
 
 const recipeData = [
     {
         id: 1,
         title: 'Melon Drama Delight',
         image: Melon,
-        bio: 'This is just a melon, however long it takes you to go to grocey store.',
+        bio: 'This is just a melon, however long it takes you to go to grocery store.',
         timeToPrepare: '15 minutes',
         author: 'Chef Melon',
         moreInfoLink: '/recipes',
@@ -37,10 +37,9 @@ const recipeData = [
         author: 'Chef Chaos',
         moreInfoLink: '/recipes',
     },
-    
 ];
 
-export default function Recipes() {
+export const Recipes: React.FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
 
@@ -85,11 +84,11 @@ export default function Recipes() {
                         <h2>{selectedRecipe.title}</h2>
                         <img src={selectedRecipe.image} alt={selectedRecipe.title} />
                         <p>{selectedRecipe.bio}</p>
-                        {/* Time to Prepare */}
+
                         <p><strong>Time to Prepare:</strong> {selectedRecipe.timeToPrepare}</p>
-                        {/* Author of the recipe */}
+
                         <p><strong>Author:</strong> {selectedRecipe.author}</p>
-                        {/* More Info button with hyperlink */}
+
                         <button
                             onClick={() => window.open(selectedRecipe.moreInfoLink, '_blank')}
                             className="more-info-button"
@@ -103,4 +102,4 @@ export default function Recipes() {
             <Outlet />
         </div>
     );
-}
+};
