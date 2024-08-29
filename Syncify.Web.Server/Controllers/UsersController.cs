@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.Users;
 using CreateUserDto = Syncify.Web.Server.Features.Authorization.CreateUserDto;
 
 namespace Syncify.Web.Server.Controllers;

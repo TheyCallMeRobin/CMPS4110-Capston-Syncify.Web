@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
+using Syncify.Web.Server.Extensions;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
@@ -37,14 +37,14 @@ public class RecipeService : IRecipeService
             .Set<Recipe>()
             .FindAsync(id);
         
-        return data.MapTo<RecipeGetDto>();
+        return data?.MapTo<RecipeGetDto>();
     }
 
     public async Task<RecipeGetDto> CreateRecipe(RecipeCreateDto createDto)
     {
         var recipe = createDto.MapTo<Recipe>();
+        
         _dataContext.Set<Recipe>().Add(recipe);
-
         await _dataContext.SaveChangesAsync();
 
         return recipe.MapTo<RecipeGetDto>();
