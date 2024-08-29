@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Syncify.Web.Server.Features.Authorization;
-
+using Syncify.Web.Server.Features.Users;
 
 namespace Syncify.Web.Server.Data;
 
@@ -11,7 +11,7 @@ public class DataSeeder
     private readonly RoleManager<Role> _roleManager;
 
     private const string BASIC_PASSWORD = "SuperPassword1!";
-
+    
     public DataSeeder(DataContext dataContext, UserManager<User> userManager, RoleManager<Role> roleManager)
     {
         _dataContext = dataContext;
@@ -29,7 +29,7 @@ public class DataSeeder
     {
         if (!_dataContext.Roles.Any())
             return;
-
+        
         Role[] roles =
         [
             new Role { Name = Role.Admin },
@@ -42,12 +42,12 @@ public class DataSeeder
         }
         await _dataContext.SaveChangesAsync();
     }
-
+    
     private async Task CreateUsers()
     {
         if (!_dataContext.Users.Any())
             return;
-
+        
         User[] users =
         [
             new User
@@ -65,7 +65,7 @@ public class DataSeeder
                 UserName = "janeadams"
             }
         ];
-
+        
         foreach (var user in users)
         {
             await _userManager.CreateAsync(user, BASIC_PASSWORD);
