@@ -19,9 +19,5 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
             .WithMany(x => x.Roles)
             .HasForeignKey(x => x.UserId);
 
-        builder
-            .HasOne(x => x.ProfileColor)
-            .WithMany(x => x.Users)
-            .HasForeignKey(x => x.ProfileColorId);
     }
 }

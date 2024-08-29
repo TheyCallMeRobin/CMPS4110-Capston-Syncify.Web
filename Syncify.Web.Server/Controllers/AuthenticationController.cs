@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.Users;
+
 
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
-[Route("server/authentication")]
+[Route("api/authentication")]
 public class AuthenticationController : Controller
 {
     private readonly SignInManager<User> _signInManager;
@@ -74,9 +74,7 @@ public class AuthenticationController : Controller
         {
             Id = x.Id,
             UserName = x.UserName!,
-            Roles = x.Roles.Select(y => y.Role!.Name).ToArray()!,
-            ProfileColor = x.Roles.Select(y => y.ProfileColor!.Name).FirstOrDefault() ?? "Unknown"
-            
+            Roles = x.Roles.Select(y => y.Role!.Name).ToArray()!
         });
     }
 }

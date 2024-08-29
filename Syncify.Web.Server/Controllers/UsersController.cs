@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.Users;
 using CreateUserDto = Syncify.Web.Server.Features.Authorization.CreateUserDto;
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
-[Route("server/users")]
+[Route("api/users")]
 public class UsersController : Controller
 {
     private readonly UserManager<User> _userManager;
@@ -20,7 +19,7 @@ public class UsersController : Controller
         _roleManager = roleManger;
     }
 
-    [HttpPost("server/createusers")]
+    [HttpPost("api/createusers")]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto createUserDto)
     {
         using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -29,7 +28,7 @@ public class UsersController : Controller
             {
                 UserName = createUserDto.UserName,
                 FirstName = createUserDto.FirstName,
-                LastName = createUserDto.LastName
+                LastName = createUserDto.LastName,
                 
             };
 
@@ -75,8 +74,8 @@ public class UsersController : Controller
             {
                 Id = newUser.Id,
                 UserName = newUser.UserName,
-                Roles = userRoleNames,
-                ProfileColor = newUser.Roles.Select(y => y.ProfileColor!.Name).FirstOrDefault() ?? "Unknown"
+                Roles = userRoleNames
+               
             });
         }
     }
@@ -98,9 +97,7 @@ public class UsersController : Controller
         {
             Id = user.Id,
             UserName = user.UserName ?? "Unknown",
-            Roles = role,
-            ProfileColor = user.Roles.Select(y => y.ProfileColor!.Name).FirstOrDefault() ?? "Unknown"
-
+            Roles = role
         };
         return Ok(userDto);
     }
