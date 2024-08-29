@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart } from 'react-icons/fa';
 import './MainPage.css';
 
-const MainPage: React.FC = () => {
+export const MainPage: React.FC = () => {
     return (
         <div className="d-flex min-vh-100">
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark flex-column vh-100 sidebar">
@@ -99,5 +99,3 @@ const MainPage: React.FC = () => {
         </div>
     );
 };
-
-export default MainPage;
