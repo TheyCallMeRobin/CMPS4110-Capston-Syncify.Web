@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.Users;
+using CreateUserDto = Syncify.Web.Server.Features.Authorization.CreateUserDto;
 
 namespace Syncify.Web.Server.Controllers;
 
@@ -26,6 +28,9 @@ public class UsersController : Controller
             var newUser = new User
             {
                 UserName = createUserDto.UserName,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+                
             };
 
             var createResult = await _userManager.CreateAsync(newUser, createUserDto.Password);
@@ -62,15 +67,15 @@ public class UsersController : Controller
             transaction.Complete();
 
             var userRoleNames = newUser.Roles
-                .Select(role => role.Role?.Name)
-                .Where(name => name != null)
+                .Select(role => role.Role?.Name ?? "")
+                .Where(name => !string.IsNullOrWhiteSpace(name))
                 .ToArray();
 
             return Ok(new UserDto
             {
                 Id = newUser.Id,
                 UserName = newUser.UserName,
-                Roles = Array.Empty<string>(),
+                Roles = userRoleNames,
                 ProfileColor = newUser.Roles.Select(y => y.ProfileColor!.Name).FirstOrDefault() ?? "Unknown"
             });
         }
