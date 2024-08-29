@@ -11,7 +11,6 @@ const MainPage: React.FC = () => {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark flex-column vh-100 sidebar">
                 <a className="navbar-brand text-center mb-4" href="#">Syncify</a>
 
-                {/* Sidebar */}
                 <ul className="navbar-nav flex-column w-100">
                     <li className="nav-item">
                         <a className="nav-link d-flex align-items-center" href="#">
@@ -37,7 +36,6 @@ const MainPage: React.FC = () => {
 
                 <div className="flex-grow-1"></div>
 
-                {/* Bottom Buttons, NavBar*/}
                 <ul className="navbar-nav flex-column w-100 mb-3 bottom-links">
                     <li className="nav-item mb-2">
                         <a className="nav-link d-flex align-items-center" href="#">
@@ -52,9 +50,8 @@ const MainPage: React.FC = () => {
                 </ul>
             </nav>
 
-            {/* Main window */}
             <div className="flex-grow-1 d-flex flex-column">
-                {/* Top Navbar */}
+
                 <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div className="container">
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar" aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +60,6 @@ const MainPage: React.FC = () => {
                         <div className="collapse navbar-collapse" id="topNavbar">
                             <ul className="navbar-nav me-auto">
 
-                                {/* Dropdown for Family */}
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" id="familyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Family
@@ -90,7 +86,6 @@ const MainPage: React.FC = () => {
                     </div>
                 </nav>
 
-                {/* Content Section */}
                 <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
                     <div className="w-100 text-center">
                         <h1 className="mb-4">
