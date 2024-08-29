@@ -1,56 +1,43 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Collections;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Controllers
 {
+    
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/recipes")]
     public class RecipesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IRecipeService _recipeService;
 
-        public RecipesController(DataContext context)
+        public RecipesController(IRecipeService recipeService)
         {
-            _context = context;
+            _recipeService = recipeService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+        public async Task<ActionResult<Task<IEnumerable<RecipeGetDto>>>> GetRecipes()
         {
-            var recipes = await _context.Recipes.Include(r => r.User).ToListAsync();
-            return Ok(recipes);
+            var data = await _recipeService.GetRecipes();
+            return Ok(data);
         }
-
+        
         [HttpGet("{id}")]
-        public async Task<ActionResult<Recipe>> GetRecipe(int id)
+        public async Task<ActionResult<RecipeGetDto?>> GetRecipeById(int id)
         {
-            var recipe = await _context.Recipes.Include(r => r.User)
-                                               .FirstOrDefaultAsync(r => r. RecipeId == id);
+            var data = await _recipeService.GetRecipeById(id);
+            if (data is null)
+                return NotFound(data);
 
-            if (recipe == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(recipe);
+            return Ok(data);
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipesByUser(int userId)
+        [HttpPost]
+        public async Task<ActionResult<RecipeGetDto>> CreateRecipe([FromBody] RecipeCreateDto dto)
         {
-            var recipes = await _context.Recipes.Where(r => r.CreatorUserId == userId).ToListAsync();
-
-            if (recipes == null || !recipes.Any())
-            {
-                return NotFound();
-            }
-
-            return Ok(recipes);
+            var data = await _recipeService.CreateRecipe(dto);
+            return Created(nameof(GetRecipeById), new { data.Id });
         }
     }
 }

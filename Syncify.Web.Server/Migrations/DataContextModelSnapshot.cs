@@ -177,6 +177,34 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recipes", (string)null);
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -316,6 +344,17 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
+                {
+                    b.HasOne("Syncify.Web.Server.Features.Users.User", "User")
+                        .WithMany("Recipes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Authorization.ProfileColor", b =>
                 {
                     b.Navigation("Users");
@@ -328,6 +367,8 @@ namespace Syncify.Web.Server.Migrations
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Users.User", b =>
                 {
+                    b.Navigation("Recipes");
+
                     b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
