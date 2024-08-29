@@ -1,17 +1,58 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//using System.ComponentModel.DataAnnotations;
+
+//namespace Syncify.Web.Server.Features.Authorization;
+
+//public class CreateUserDto
+//{
+//    [Required]
+//    public string UserName { get; set; } = string.Empty;
+//    [Required]
+//    public string Password { get; set; } = string.Empty;
+//    public List<string>? Roles { get; set; }
+//    public List<string>? ProfileColors { get; set; }
+//}
+using FluentValidation;
 
 namespace Syncify.Web.Server.Features.Authorization;
 
-public class CreateUserDto
+public record UserDto
 {
-    [Required]
+    public int Id { get; set; }
     public string UserName { get; set; } = string.Empty;
-    [Required]
-    public string Password { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty ;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public List<string>? Roles { get; set; }
-    public List<string>? ProfileColors { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string[] Roles { get; set; } = [];
+    public string ProfileColor { get; set; } = string.Empty;
 }
+
+public record UserGetDto : UserDto
+{
+}
+
+public record CreateUserDto
+{
+    public required string UserName { get; set; }
+    public required string Password { get; set; }
+    public required string Email { get; set; }
+    public required string PhoneNumber { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+
+    public IEnumerable<string> Roles { get; set; } = [];
+}
+
+public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
+{
+    public CreateUserDtoValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty();
+        RuleFor(x => x.LastName).NotEmpty();
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
+        RuleFor(x => x.PhoneNumber).NotEmpty();
+        RuleFor(x => x.Password).NotEmpty().Length(8);
+        RuleFor(x => x.UserName).NotEmpty();
+    }
+}
+
