@@ -1,10 +1,14 @@
 using System.Reflection;
+using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.Recipes;
+using Syncify.Web.Server.Features.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+builder.Services.AddSingleton<MapperProvider>();
+
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -32,6 +40,14 @@ using (var scope = app.Services.CreateScope())
     var dataContext = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<User>>();
     var roleManager = services.GetRequiredService<RoleManager<Role>>();
+
+    var mapperProvider = services.GetRequiredService<MapperProvider>();
+    
+    MapperProvider.ServiceProvider = services;
+    
+    var mapper = mapperProvider.GetMapper();
+    
+    MappingExtensions.Mapper = mapper;
     
     await dataContext.Database.MigrateAsync();
 

@@ -7,7 +7,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {
     public void Configure(EntityTypeBuilder<UserRole> builder)
     {
-        builder.HasKey(x => new {x.UserId, x.RoleId, x.ProfileColorId});
+        builder.HasKey(x => new { x.UserId, x.RoleId, x.ProfileColorId });
 
         builder
             .HasOne(x => x.Role)
