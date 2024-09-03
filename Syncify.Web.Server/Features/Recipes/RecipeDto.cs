@@ -11,7 +11,6 @@ public class RecipeMappingProfile : Profile
     public RecipeMappingProfile()
     {
         CreateMap<Recipe, RecipeGetDto>();
-        
         CreateMap<RecipeCreateDto, Recipe>();
     }
 }

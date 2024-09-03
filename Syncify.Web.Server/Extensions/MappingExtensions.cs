@@ -1,5 +1,8 @@
-﻿using System.Reflection;
+﻿using System.Linq.Expressions;
+using System.Reflection;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+
 
 namespace Syncify.Web.Server.Extensions;
 
@@ -48,7 +51,11 @@ public static class MappingExtensions
     
     public static TTarget MapTo<TTarget>(this object source)
     {
-        
         return Mapper.Map<TTarget>(source);
     }
+    
+    public static IQueryable<TDestination> ProjectTo<TDestination>(
+        this IQueryable source,
+        params Expression<Func<TDestination, object>>[] membersToExpand
+    ) => source.ProjectTo(MappingExtensions.Mapper.ConfigurationProvider, null, membersToExpand);
 }
