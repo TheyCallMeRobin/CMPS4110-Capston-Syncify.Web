@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Syncify.Web.Server.Configurations;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.Users;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
@@ -58,8 +58,8 @@ try
 
     builder.Services.AddSingleton<MapperProvider>();
 
-    builder.Services.AddScoped<IRecipeService, RecipeService>();
-
+    ServiceConfigurations.ConfigureServices(builder.Services);
+    
     var app = builder.Build();
     app.UseSerilogRequestLogging();
     app.UseMiddleware<ErrorHandlingMiddleware>();
