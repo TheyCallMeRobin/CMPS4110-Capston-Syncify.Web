@@ -19,6 +19,7 @@ mono_crash.*
 .idea
 /.idea
 /.idea/
+/.idea/.idea.Syncify.Web/.idea
 
 # Build results
 [Dd]ebug/

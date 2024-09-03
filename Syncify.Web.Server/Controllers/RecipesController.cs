@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Common;
 using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Controllers;
@@ -15,26 +16,22 @@ public class RecipesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<RecipeGetDto[]>> GetRecipes()
+    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes()
     {
         var data = await _recipeService.GetRecipes();
-        var results = data.ToArray(); 
-        return Ok(results);
+        return Ok(data);
     }
         
     [HttpGet("{id}")]
-    public async Task<ActionResult<RecipeGetDto?>> GetRecipeById(int id)
+    public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeById(int id)
     {
         var data = await _recipeService.GetRecipeById(id);
-        if (data is null)
-            return NotFound(data);
-
         return Ok(data);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<RecipeGetDto>> CreateRecipe([FromBody] RecipeCreateDto dto)
+    public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
         var data = await _recipeService.CreateRecipe(dto);
         return Ok(data);
