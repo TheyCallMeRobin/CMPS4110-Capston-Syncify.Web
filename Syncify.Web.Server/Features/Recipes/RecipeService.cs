@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Syncify.Common;
+using Syncify.Common.Errors;
+using Syncify.Common.Extensions;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 
@@ -6,9 +9,9 @@ namespace Syncify.Web.Server.Features.Recipes;
 
 public interface IRecipeService
 {
-    Task<IEnumerable<RecipeGetDto>> GetRecipes();
-    Task<RecipeGetDto?> GetRecipeById(int id);
-    Task<RecipeGetDto> CreateRecipe(RecipeCreateDto createDto);
+    Task<Response<List<RecipeGetDto>>> GetRecipes();
+    Task<Response<RecipeGetDto>> GetRecipeById(int id);
+    Task<Response<RecipeGetDto>> CreateRecipe(RecipeCreateDto createDto);
 }
 
 public class RecipeService : IRecipeService
@@ -21,33 +24,41 @@ public class RecipeService : IRecipeService
         _dataContext = dataContext;
     }
 
-    public async Task<IEnumerable<RecipeGetDto>> GetRecipes()
+    public async Task<Response<List<RecipeGetDto>>> GetRecipes()
     {
         var data = await _dataContext
             .Set<Recipe>()
             .Select(x => x.MapTo<RecipeGetDto>())
             .ToListAsync();
 
-        return data;
+        return data.AsResponse();
     }
 
-    public async Task<RecipeGetDto?> GetRecipeById(int id)
+    public async Task<Response<RecipeGetDto>> GetRecipeById(int id)
     {
         var data = await _dataContext
             .Set<Recipe>()
             .FindAsync(id);
+
+        if (data is null)
+            return Error.AsResponse<RecipeGetDto>("Unable to find recipe.", nameof(id));
         
-        return data?.MapTo<RecipeGetDto>();
+        return data.MapTo<RecipeGetDto>().AsResponse();
     }
 
-    public async Task<RecipeGetDto> CreateRecipe(RecipeCreateDto createDto)
+    public async Task<Response<RecipeGetDto>> CreateRecipe(RecipeCreateDto createDto)
     {
+        if (await RecipeHasSameName(createDto.Name))
+            return Error.AsResponse<RecipeGetDto>("A recipe with this name already exists.", nameof(createDto.Name));
+        
         var recipe = createDto.MapTo<Recipe>();
         
         _dataContext.Set<Recipe>().Add(recipe);
         await _dataContext.SaveChangesAsync();
 
-        return recipe.MapTo<RecipeGetDto>();
-
+        return recipe.MapTo<RecipeGetDto>().AsResponse();
     }
+
+    private Task<bool> RecipeHasSameName(string name)
+        => _dataContext.Set<Recipe>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
 }
