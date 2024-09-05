@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Calendars;
 
 namespace Syncify.Web.Server.Controllers;
@@ -20,7 +21,10 @@ public class CalendarsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Response<CalendarGetDto>>> Create([FromBody] CalendarCreateDto dto)
     {
-        var result = await _calendarService.CreateCalendar(dto);
+        var result = await _calendarService.CreateCalendar(dto with
+        {
+            CreatedByUserId = HttpContext.User.GetCurrentUserId() ?? 0
+        });
         return Ok(result);
     }
 }

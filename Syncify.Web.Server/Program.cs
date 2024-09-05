@@ -9,7 +9,6 @@ using Syncify.Web.Server.Configurations.FluentValidation;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.Users;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
@@ -40,11 +39,10 @@ try
         options.SerializerOptions.WriteIndented = true;
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-    
-    builder.Services.AddControllers().AddNewtonsoftJson();
+
+    builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-    builder.Services.AddMvc().AddNewtonsoftJson();
+    builder.Services.AddMvc();
     
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts => opts.UseSqlServer(connectionString));
@@ -55,8 +53,11 @@ try
 
     ServiceConfigurations.ConfigureServices(builder.Services);
     FluentValidationConfiguration.ConfigureServices(builder.Services);
+
+    builder.Services.AddSwaggerGen();
     
     var app = builder.Build();
+    
     app.UseSerilogRequestLogging();
     app.UseMiddleware<ErrorHandlingMiddleware>();
     

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Syncify.Web.Server.Features.Users;
+using Syncify.Web.Server.Features.Authorization;
 
 namespace Syncify.Web.Server.Features.Calendars;
 

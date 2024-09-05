@@ -177,6 +177,29 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("Calendars", (string)null);
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
                 {
                     b.Property<int>("Id")
@@ -319,7 +342,7 @@ namespace Syncify.Web.Server.Migrations
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Authorization.UserRole", b =>
                 {
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.ProfileColor", "ProfileColor")
+                    b.HasOne("Syncify.Web.Server.Features.Authorization.ProfileColor", null)
                         .WithMany("Users")
                         .HasForeignKey("ProfileColorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -337,11 +360,20 @@ namespace Syncify.Web.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProfileColor");
-
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
+                {
+                    b.HasOne("Syncify.Web.Server.Features.Users.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>

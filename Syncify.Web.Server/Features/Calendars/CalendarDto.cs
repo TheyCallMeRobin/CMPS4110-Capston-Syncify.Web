@@ -5,8 +5,8 @@ using Syncify.Web.Server.Features.Authorization;
 
 namespace Syncify.Web.Server.Features.Calendars;
 
-public record CalendarGetDto(int Id, string Name, int CreatedByUserId, UserGetDto CreatedByUser);
-public record CalendarCreateDto(string Name, int CreatedByUserId);
+public record CalendarGetDto(int Id, string Name, int CreatedByUserId);
+public record CalendarCreateDto(string Name, [property: JsonIgnore] int CreatedByUserId);
 public record CalendarUpdateDto(string Name);
 public class CalendarMappingProfile : Profile
 {
