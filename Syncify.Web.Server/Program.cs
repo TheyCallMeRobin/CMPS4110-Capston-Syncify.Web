@@ -1,13 +1,11 @@
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Syncify.Web.Server.Configurations;
+using Syncify.Web.Server.Configurations.FluentValidation;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
@@ -53,12 +51,10 @@ try
     builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>();
 
     builder.Services.AddAutoMapper(typeof(Program));
-    builder.Services.AddFluentValidationAutoValidation();
-    builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
     builder.Services.AddSingleton<MapperProvider>();
 
     ServiceConfigurations.ConfigureServices(builder.Services);
+    FluentValidationConfiguration.ConfigureServices(builder.Services);
     
     var app = builder.Build();
     app.UseSerilogRequestLogging();
