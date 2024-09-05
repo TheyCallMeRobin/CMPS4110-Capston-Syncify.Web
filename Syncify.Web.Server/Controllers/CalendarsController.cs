@@ -27,4 +27,40 @@ public class CalendarsController : ControllerBase
         });
         return Ok(result);
     }
+
+    [HttpGet]
+    public async Task<ActionResult<Response<List<CalendarGetDto>>>> GetAll()
+    {
+        var results = await _calendarService.GetAllCalendars();
+        return Ok(results);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Response<CalendarGetDto>>> GetById(int id)
+    {
+        var results = await _calendarService.GetCalendarById(id);
+        return Ok(results);
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<Response<List<CalendarGetDto>>>> GetByUserId(int userId)
+    {
+        var results = await _calendarService.GetByUserId(userId);
+        return Ok(results);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Response<CalendarGetDto>>> Update([FromRoute] int id, 
+        [FromBody] CalendarUpdateDto dto)
+    {
+        var results = await _calendarService.UpdateCalendar(id, dto);
+        return Ok(results);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Response>> Update([FromRoute] int id)
+    {
+        var result = await _calendarService.DeleteCalendar(id);
+        return Ok(result);
+    }
 }
