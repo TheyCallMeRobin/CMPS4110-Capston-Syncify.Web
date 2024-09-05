@@ -21,6 +21,6 @@ public class CalendarCreateDtoValidator : AbstractValidator<CalendarCreateDto>
 {
     public CalendarCreateDtoValidator()
     {
-        RuleFor(x => x.Name).MaximumLength(128).NotEmpty();
+        RuleFor(x => x.Name).MaximumLength(CalendarEntityConfiruation.NameMaxLength).NotEmpty();
     }
 }

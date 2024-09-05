@@ -15,9 +15,13 @@ public class Calendar
 
 public class CalendarEntityConfiruation : IEntityTypeConfiguration<Calendar>
 {
+    public const short NameMaxLength = 128;
     public void Configure(EntityTypeBuilder<Calendar> builder)
     {
         builder.ToTable("Calendars");
+
+        builder.Property(x => x.Name).HasMaxLength(NameMaxLength);
+        
         builder.HasOne(x => x.CreatedByUser).WithMany();
     }
 }
