@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.Users;
 
 
 namespace Syncify.Web.Server.Controllers;

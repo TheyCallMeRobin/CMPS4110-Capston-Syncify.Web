@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Syncify.Web.Server.Features.Users;
 
 namespace Syncify.Web.Server.Features.Authorization;
 

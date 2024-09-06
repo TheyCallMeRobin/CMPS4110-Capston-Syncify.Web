@@ -1,8 +1,7 @@
 ﻿using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Serilog;
 using Syncify.Common.Constants;
-using Syncify.Common.Errors;
 
 namespace Syncify.Web.Server.Middlewares;
 
@@ -32,7 +31,7 @@ public class ErrorHandlingMiddleware
             response.StatusCode = (int) HttpStatusCode.InternalServerError;
 
             var error = new Error { ErrorMessage = ErrorMessages.UnknownError };
-            await response.WriteAsync(JsonConvert.SerializeObject(error));
+            await response.WriteAsync(JsonSerializer.Serialize(error));
         }
     }
 }
