@@ -7,11 +7,13 @@ import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { ShoppingLists } from './Routes/ShoppingLists/shoppinglists.tsx';
 import { Calendars } from './Routes/Calendars/calenders.tsx';
+import {MainPage} from './MainPage';
 
 const router = createBrowserRouter([
 
     {
         path: "/",
+        element: <MainPage />,
 
 
         errorElement: <ErrorPage />,

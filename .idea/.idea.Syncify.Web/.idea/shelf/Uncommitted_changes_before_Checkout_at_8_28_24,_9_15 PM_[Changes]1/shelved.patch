@@ -1,0 +1,23 @@
+Index: syncify.web.client/src/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#root {\n    max-width: 1280px;\n    margin: 0 auto;\n    padding: 2rem;\n    text-align: center;\n}\n\nth, td {\n    padding-left: 1rem;\n    padding-right: 1rem;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/syncify.web.client/src/App.css b/syncify.web.client/src/App.css
+--- a/syncify.web.client/src/App.css	(revision 37cebbf7b4130f6810f47bd3498e519a4c629784)
++++ b/syncify.web.client/src/App.css	(date 1724897550659)
+@@ -1,11 +1,0 @@
+-#root {
+-    max-width: 1280px;
+-    margin: 0 auto;
+-    padding: 2rem;
+-    text-align: center;
+-}
+-
+-th, td {
+-    padding-left: 1rem;
+-    padding-right: 1rem;
+-}
+\ No newline at end of file
