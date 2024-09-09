@@ -73,7 +73,7 @@ public class AuthenticationController : Controller
         {
             Id = x.Id,
             UserName = x.UserName!,
-            Roles = x.Roles.Select(y => y.Role!.Name).ToArray()!
+            Roles = x.UserRoles.Select(y => y.Role.Name).ToArray()!
         });
     }
 }
