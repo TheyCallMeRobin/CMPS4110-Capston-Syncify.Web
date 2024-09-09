@@ -24,11 +24,5 @@ public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
-
-        modelBuilder.Entity<User>()
-                .HasMany(u => u.Recipes)
-                .WithOne(r => r.User)
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
     }
 }
