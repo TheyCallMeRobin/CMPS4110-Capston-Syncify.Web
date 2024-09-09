@@ -35,7 +35,8 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-        CreateMap<User, UserGetDto>();
+        CreateMap<User, UserGetDto>()
+            .ForMember(x => x.Roles, opts => opts.MapFrom(src => src.UserRoles.Select(x => x.Role.Name)));
         CreateMap<CreateUserDto, User>();
     }
 }
@@ -48,7 +49,7 @@ public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
         RuleFor(x => x.LastName).NotEmpty();
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.PhoneNumber).NotEmpty();
-        RuleFor(x => x.Password).NotEmpty().Length(8);
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
         RuleFor(x => x.UserName).NotEmpty();
     }
 }
