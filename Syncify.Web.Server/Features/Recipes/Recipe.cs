@@ -22,6 +22,8 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(x => x.Name).HasMaxLength(128).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(128).IsRequired();
 
-        builder.HasOne(x => x.User).WithMany();
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.Recipes)
+            .HasForeignKey(x => x.UserId);
     }
 }

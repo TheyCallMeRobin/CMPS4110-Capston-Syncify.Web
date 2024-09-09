@@ -9,8 +9,8 @@ public class User : IdentityUser<int>
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public ICollection<UserRole> UserRoles { get; set; } = [];
-    public ICollection<Recipe> Recipes { get; set; } = [];
+    public List<UserRole> UserRoles { get; set; } = [];
+    public List<Recipe> Recipes { get; set; } = [];
 
 }
 
@@ -23,12 +23,6 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
     {
         builder.Property(x => x.FirstName).HasMaxLength(FirstNameMaxLength);
         builder.Property(x => x.LastName).HasMaxLength(LastNameMaxLength);
-
         builder.Property(x => x.UserName).IsRequired();
-        
-        builder.HasMany(u => u.Recipes)
-            .WithOne(r => r.User)
-            .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
