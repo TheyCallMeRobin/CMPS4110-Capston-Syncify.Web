@@ -9,7 +9,7 @@ public class DataSeeder
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
 
-    private const string BASIC_PASSWORD = "SuperPassword1!";
+    private const string BasicPassword = "SuperPassword1!";
     
     public DataSeeder(DataContext dataContext, UserManager<User> userManager, RoleManager<Role> roleManager)
     {
@@ -26,13 +26,13 @@ public class DataSeeder
 
     private async Task CreateRoles()
     {
-        if (!_dataContext.Roles.Any())
+        if (_dataContext.Roles.Any())
             return;
         
         Role[] roles =
         [
-            new Role { Name = Role.Admin },
-            new Role { Name = Role.Member }
+            new() { Name = Role.Admin },
+            new() { Name = Role.Member }
         ];
 
         foreach (var role in roles)
@@ -44,19 +44,19 @@ public class DataSeeder
     
     private async Task CreateUsers()
     {
-        if (!_dataContext.Users.Any())
+        if (_dataContext.Users.Any())
             return;
         
         User[] users =
         [
-            new User
+            new()
             {
                 Email = "Johnjohnson@testing.com",
                 FirstName = "John",
                 LastName = "Johnson",
                 UserName = "johnjohnson",
             },
-            new User
+            new()
             {
                 Email = "janeadams@testing.com",
                 FirstName = "Jane",
@@ -67,7 +67,7 @@ public class DataSeeder
         
         foreach (var user in users)
         {
-            await _userManager.CreateAsync(user, BASIC_PASSWORD);
+            await _userManager.CreateAsync(user, BasicPassword);
             await _dataContext.SaveChangesAsync();
         }
     }
