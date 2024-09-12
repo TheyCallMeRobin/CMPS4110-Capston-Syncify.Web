@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom'; // Import Outlet for child route rendering
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart } from 'react-icons/fa';
@@ -13,24 +13,24 @@ export const MainPage: React.FC = () => {
 
                 <ul className="navbar-nav flex-column w-100">
                     <li className="nav-item">
-                        <a className="nav-link d-flex align-items-center" href="#">
+                        <Link className="nav-link d-flex align-items-center" to="/calendars">
                             <FaCalendarAlt className="me-2" /> Calendar
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link d-flex align-items-center" href="#">
+                        <Link className="nav-link d-flex align-items-center" to="/reminders">
                             <FaBell className="me-2" /> Reminder
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link d-flex align-items-center" href="#">
+                        <Link className="nav-link d-flex align-items-center" to="/recipes">
                             <FaBook className="me-2" /> Recipes
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link d-flex align-items-center" href="#">
+                        <Link className="nav-link d-flex align-items-center" to="/shopping-list">
                             <FaShoppingCart className="me-2" /> Shopping List
-                        </a>
+                        </Link>
                     </li>
                 </ul>
 
@@ -38,9 +38,9 @@ export const MainPage: React.FC = () => {
 
                 <ul className="navbar-nav flex-column w-100 mb-3 bottom-links">
                     <li className="nav-item mb-2">
-                        <a className="nav-link d-flex align-items-center" href="#">
+                        <Link className="nav-link d-flex align-items-center" to="/settings">
                             <FaCog className="me-2" /> Account Settings
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center" to="/register">
@@ -81,14 +81,9 @@ export const MainPage: React.FC = () => {
                     </div>
                 </nav>
 
+                
                 <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
-                    <div className="w-100 text-center">
-                        <h1 className="mb-4">
-                            <span className="text-dark">Welcome to </span>
-                            <span className="text-highlight">Syncify</span>
-                        </h1>
-                        <p>This is the future main page of your new favorite calendar app!</p>
-                    </div>
+                    <Outlet /> 
                 </main>
             </div>
         </div>

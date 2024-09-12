@@ -1,5 +1,3 @@
-/* src/recipe.css */
-
 .container {
     display: flex;
     flex-direction: column;
@@ -29,6 +27,24 @@
     cursor: pointer;
 }
 
+/* Center search bar at the top of the page */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 400px; /* Limit the width of the search bar */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 .content {
     display: flex;
     flex-wrap: wrap;
@@ -51,10 +67,10 @@
     box-sizing: border-box; /* Include padding and border in width */
 }
 
-.section:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
-}
+    .section:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+    }
 
 .recipe-image {
     width: 100%;
@@ -104,23 +120,23 @@
     text-align: center; /* Center text */
 }
 
-.modal-content img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 15px;
-}
+    .modal-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 15px;
+    }
 
-.modal-content p {
-    margin-bottom: 10px; /* Adjust margin for paragraphs */
-}
+    .modal-content p {
+        margin-bottom: 10px; /* Adjust margin for paragraphs */
+    }
 
-.modal-content button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 10px 0; /* Space between buttons */
-}
+    .modal-content button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 10px 0; /* Space between buttons */
+    }
 
 .more-info-button {
     background-color: #007BFF;
@@ -133,6 +149,6 @@
     transition: background-color 0.3s;
 }
 
-.more-info-button:hover {
-    background-color: #0056b3;
-}
+    .more-info-button:hover {
+        background-color: #0056b3;
+    }

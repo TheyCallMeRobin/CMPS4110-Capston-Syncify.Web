@@ -1,105 +1,70 @@
-// src/Recipes.tsx
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import Modal from 'react-modal';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
 import './recipe.css';
-import Melon from '../../Images/Melon.jpg';
-import Pear from '../../Images/Pear.jpg';
-import RandomFood from '../../Images/Random Food.jpg';
-
-Modal.setAppElement('#root');
-
-const recipeData = [
-    {
-        id: 1,
-        title: 'Melon Drama Delight',
-        image: Melon,
-        bio: 'This is just a melon, however long it takes you to go to grocery store.',
-        timeToPrepare: '15 minutes',
-        author: 'Chef Melon',
-        moreInfoLink: '/recipes',
-    },
-    {
-        id: 2,
-        title: 'Pair-a-dise Pearfection',
-        image: Pear,
-        bio: 'This is just a pear.',
-        timeToPrepare: 'How long it takes you to go to grocery store',
-        author: 'Chef Pear',
-        moreInfoLink: '/recipes',
-    },
-    {
-        id: 3,
-        title: 'Chaos Cuisine Medley',
-        image: RandomFood,
-        bio: 'AHHHHHHHHHHHHHHHHHHHHHH!',
-        timeToPrepare: '40 decades',
-        author: 'Chef Chaos',
-        moreInfoLink: '/recipes',
-    },
-];
 
 export const Recipes: React.FC = () => {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
+    const [recipes, setRecipes] = useState<any[]>([]); // Holds all recipes
+    const [loading, setLoading] = useState(true); // Loading state
+    const [searchQuery, setSearchQuery] = useState(''); // Holds the search query
 
-    const openModal = (recipe: any) => {
-        setSelectedRecipe(recipe);
-        setModalIsOpen(true);
-    };
+    // Fetch recipes from the backend using Axios
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                const response = await axios.get('https://localhost:7061/api/recipes');
+                console.log('Axios response:', response);
 
-    const closeModal = () => {
-        setModalIsOpen(false);
-        setSelectedRecipe(null);
-    };
+                // Access the recipes from `response.data.data`
+                if (response && response.data && response.data.data) {
+                    setRecipes(response.data.data); // Update this line to use the correct path
+                } else {
+                    console.error('No data found');
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching recipes:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchRecipes();
+    }, []);
+
+    // Filter the recipes based on the search query
+    const filteredRecipes = recipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (loading) {
+        return <div>Loading recipes...</div>;
+    }
 
     return (
         <div className="container">
-            <header className="header">whatever header we decide to go with</header>
-            <div className="sidebar">
-                <div className="menu-item">Your Recipes</div>
-                <div className="menu-item">Friends Recipes</div>
-                <div className="menu-item">Invite / Join More Friends</div>
+            {/* Search Field */}
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search recipes by name"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                />
             </div>
+
+            {/* Recipe List */}
             <div className="content">
-                {recipeData.map((recipe) => (
-                    <div
-                        key={recipe.id}
-                        className="section"
-                        onClick={() => openModal(recipe)}
-                    >
-                        <img src={recipe.image} alt={recipe.title} className="recipe-image" />
-                        <p className="recipe-title">{recipe.title}</p>
-                    </div>
-                ))}
-            </div>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                className="modal"
-                overlayClassName="modal-overlay"
-            >
-                {selectedRecipe && (
-                    <div className="modal-content">
-                        <h2>{selectedRecipe.title}</h2>
-                        <img src={selectedRecipe.image} alt={selectedRecipe.title} />
-                        <p>{selectedRecipe.bio}</p>
-
-                        <p><strong>Time to Prepare:</strong> {selectedRecipe.timeToPrepare}</p>
-
-                        <p><strong>Author:</strong> {selectedRecipe.author}</p>
-
-                        <button
-                            onClick={() => window.open(selectedRecipe.moreInfoLink, '_blank')}
-                            className="more-info-button"
-                        >
-                            More Info
-                        </button>
-                        <button onClick={closeModal}>Close</button>
-                    </div>
+                {filteredRecipes && filteredRecipes.length > 0 ? (
+                    filteredRecipes.map((recipe) => (
+                        <div key={recipe.id} className="section">
+                            <h3 className="recipe-title">{recipe.name}</h3>
+                            <p>{recipe.description}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No recipes match your search.</p>
                 )}
-            </Modal>
-            <Outlet />
+            </div>
         </div>
     );
 };

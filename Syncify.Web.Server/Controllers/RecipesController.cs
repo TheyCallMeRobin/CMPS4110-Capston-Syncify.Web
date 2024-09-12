@@ -16,6 +16,8 @@ public class RecipesController : ControllerBase
     }
 
     [HttpGet]
+    
+
     public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes()
     {
         var data = await _recipeService.GetRecipes();
