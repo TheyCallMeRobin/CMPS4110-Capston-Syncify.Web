@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {MainPage} from './MainPage.tsx';
 
 import './api/generated/config';
-
-
 import './App.css';
 
 const App: React.FC = () => {
