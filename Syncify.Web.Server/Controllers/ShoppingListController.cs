@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Common;
 
 namespace Syncify.Web.Server.Controllers
 {
