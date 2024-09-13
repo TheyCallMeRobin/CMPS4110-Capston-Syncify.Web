@@ -29,6 +29,7 @@ export class RecipesService {
   static getRecipes(options: IRequestOptions = {}): Promise<Response<List<RecipeGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/recipes';
+
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);

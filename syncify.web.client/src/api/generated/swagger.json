@@ -276,7 +276,7 @@
         "tags": [
           "Calendars"
         ],
-        "operationId": "Update",
+        "operationId": "Delete",
         "parameters": [
           {
             "name": "id",

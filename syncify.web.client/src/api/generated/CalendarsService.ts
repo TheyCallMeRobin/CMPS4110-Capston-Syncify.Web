@@ -106,7 +106,7 @@ export class CalendarsService {
   /**
    *
    */
-  static update1(
+  static delete(
     params: {
       /**  */
       id: number;
