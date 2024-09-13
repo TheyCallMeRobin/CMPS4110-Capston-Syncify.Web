@@ -75,19 +75,20 @@ namespace Syncify.Web.Server.Services
             return response;
         }
 
-        public async Task<Response> DeleteShoppingList(int id)
-        {
-            var shoppingList = _shoppingLists.FirstOrDefault(x => x.Id == id);
-            if (shoppingList == null)
-            {
-                var errorResponse = new Response();
-                errorResponse.AddErrors(new Error("Shopping list not found"));
-                return errorResponse;
-            }
+        public async Task<Response<bool>> DeleteShoppingList(int id)
+{
+    var shoppingList = _shoppingLists.FirstOrDefault(x => x.Id == id);
+    if (shoppingList == null)
+    {
+        var errorResponse = new Response<bool>();
+        errorResponse.AddErrors(new Error("Shopping list not found"));
+        return errorResponse;
+    }
 
-            _shoppingLists.Remove(shoppingList);
+    _shoppingLists.Remove(shoppingList);
 
-            return Response.Success();
-        }
+    return new Response<bool> { Data = true }; // Return success with Data = true
+}
+
     }
 }
