@@ -58,7 +58,7 @@ public class CalendarsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Response>> Update([FromRoute] int id)
+    public async Task<ActionResult<Response>> Delete([FromRoute] int id)
     {
         var result = await _calendarService.DeleteCalendar(id);
         return Ok(result);
