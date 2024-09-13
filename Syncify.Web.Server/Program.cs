@@ -11,6 +11,8 @@ using Syncify.Web.Server.Configurations;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Services;
+using Syncify.Web.Server.Features.ShoppingLists;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
@@ -46,7 +48,9 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddMvc();
-    
+    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+
+
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts =>
     {
@@ -59,6 +63,9 @@ try
     builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
     builder.Services.AddSingleton<MapperProvider>();
+
+    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+
 
     ServiceConfigurations.ConfigureServices(builder.Services);
     
