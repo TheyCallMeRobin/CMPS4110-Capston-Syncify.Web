@@ -234,6 +234,68 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.CalendarEvents.CalendarEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CalendarEventType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("CalendarId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2056)
+                        .HasColumnType("nvarchar(2056)");
+
+                    b.Property<string>("DisplayColor")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<TimeOnly?>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateOnly?>("RecurrenceEndDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("RecurrenceType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecurrenceWeekDays")
+                        .HasMaxLength(-1)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly?>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CalendarId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("CalendarEvents", (string)null);
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
                 {
                     b.Property<int>("Id")
@@ -373,6 +435,25 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.CalendarEvents.CalendarEvent", b =>
+                {
+                    b.HasOne("Syncify.Web.Server.Features.Calendars.Calendar", "Calendar")
+                        .WithMany("CalendarEvents")
+                        .HasForeignKey("CalendarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Calendar");
+
+                    b.Navigation("CreatedByUser");
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
@@ -416,6 +497,11 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("Recipes");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
+                {
+                    b.Navigation("CalendarEvents");
                 });
 #pragma warning restore 612, 618
         }
