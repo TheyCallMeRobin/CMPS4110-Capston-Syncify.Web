@@ -1,19 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import {MainPage} from './MainPage.tsx';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes.tsx';
 
 import './api/generated/config';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const App: React.FC = () => {
     return (
-        <Router>
-            <div className="App">
-                <Routes>
-                    <Route path="/" element={<MainPage />} />
-                </Routes>
-            </div>
-        </Router>
+        <RouterProvider router={router} />
     );
 };
 
