@@ -4,18 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "codegen": "node codegen.cjs",
+    "start": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.7",
+    "qs": "^6.13.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.26.2",
+    "react-use": "^17.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/node": "^20.9.0",
+    "@types/qs": "^6.9.15",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-modal": "^3.16.3",
@@ -24,8 +31,17 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "swagger-axios-codegen": "^0.16.14",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
-  }
+  },
+  "prettierIgnore": [
+    "/node_modules/",
+    "/src/api/generated/"
+  ],
+  "eslintIgnore": [
+    "/node_modules",
+    "/src/api/generated/"
+  ]
 }
