@@ -121,6 +121,126 @@ export class CalendarCreateDto {
   }
 }
 
+export class CalendarEventCreateDto {
+  /**  */
+  'title': string;
+
+  /**  */
+  'displayColor'?: string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'startDate': Date;
+
+  /**  */
+  'startTime'?: string;
+
+  /**  */
+  'endTime'?: string;
+
+  /**  */
+  'calendarEventType': CalendarEventType;
+
+  /**  */
+  'recurrenceType': RecurrenceType;
+
+  /**  */
+  'calendarId': number;
+
+  /**  */
+  'recurrenceWeekDays'?: DayOfWeek[];
+
+  constructor(data: CalendarEventCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class CalendarEventGetDto {
+  /**  */
+  'title': string;
+
+  /**  */
+  'displayColor'?: string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'startDate': Date;
+
+  /**  */
+  'startTime'?: string;
+
+  /**  */
+  'endTime'?: string;
+
+  /**  */
+  'calendarEventType': CalendarEventType;
+
+  /**  */
+  'recurrenceType': RecurrenceType;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'calendarId': number;
+
+  /**  */
+  'recurrenceWeekDays'?: DayOfWeek[];
+
+  constructor(data: CalendarEventGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class CalendarEventType {
+  /**  */
+  'Event'?: number;
+
+  /**  */
+  'Task'?: number;
+
+  constructor(data: CalendarEventType = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class CalendarEventUpdateDto {
+  /**  */
+  'title': string;
+
+  /**  */
+  'displayColor'?: string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'startDate': Date;
+
+  /**  */
+  'startTime'?: string;
+
+  /**  */
+  'endTime'?: string;
+
+  /**  */
+  'calendarEventType': CalendarEventType;
+
+  /**  */
+  'recurrenceType': RecurrenceType;
+
+  /**  */
+  'recurrenceWeekDays'?: DayOfWeek[];
+
+  constructor(data: CalendarEventUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class CalendarGetDto {
   /**  */
   'id': number;
@@ -168,6 +288,33 @@ export class CreateUserDto {
   'roles': string[];
 
   constructor(data: CreateUserDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class DayOfWeek {
+  /**  */
+  'Sunday'?: number;
+
+  /**  */
+  'Monday'?: number;
+
+  /**  */
+  'Tuesday'?: number;
+
+  /**  */
+  'Wednesday'?: number;
+
+  /**  */
+  'Thursday'?: number;
+
+  /**  */
+  'Friday'?: number;
+
+  /**  */
+  'Satuday'?: number;
+
+  constructor(data: DayOfWeek = {}) {
     Object.assign(this, data);
   }
 }
@@ -297,6 +444,27 @@ export class RecipeIngredientUpdateDto {
   'unit': string;
 
   constructor(data: RecipeIngredientUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class RecurrenceType {
+  /**  */
+  'Daily'?: number;
+
+  /**  */
+  'Weekly'?: number;
+
+  /**  */
+  'BiWeekly'?: number;
+
+  /**  */
+  'Monthly'?: number;
+
+  /**  */
+  'Custom'?: number;
+
+  constructor(data: RecurrenceType = {}) {
     Object.assign(this, data);
   }
 }

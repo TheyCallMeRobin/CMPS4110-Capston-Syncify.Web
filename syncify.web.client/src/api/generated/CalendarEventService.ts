@@ -1,7 +1,10 @@
 import {
-  CalendarCreateDto,
-  CalendarGetDto,
-  CalendarUpdateDto,
+  CalendarEventCreateDto,
+  CalendarEventType,
+  RecurrenceType,
+  DayOfWeek,
+  CalendarEventGetDto,
+  CalendarEventUpdateDto,
   EmptyResponse,
   Error,
   IList,
@@ -20,7 +23,7 @@ import {
   basePath
 } from './index.defs';
 
-export class CalendarsService {
+export class CalendarEventService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
@@ -28,15 +31,15 @@ export class CalendarsService {
   /**
    *
    */
-  static create(
+  static createCalendarEvent(
     params: {
       /** requestBody */
-      body?: CalendarCreateDto;
+      body?: CalendarEventCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<CalendarGetDto>> {
+  ): Promise<Response<CalendarEventGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars';
+      let url = basePath + '/api/calendar-events';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -50,9 +53,16 @@ export class CalendarsService {
   /**
    *
    */
-  static getAll(options: IRequestOptions = {}): Promise<Response<List<CalendarGetDto>>> {
+  static getCalendarEvents(
+    params: {
+      /**  */
+      calendarId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarEventGetDto>>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars';
+      let url = basePath + '/api/calendar-events/calendar/{calendarId}';
+      url = url.replace('{calendarId}', params['calendarId'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
@@ -62,15 +72,15 @@ export class CalendarsService {
   /**
    *
    */
-  static getById(
+  static getCalendarEventById(
     params: {
       /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<CalendarGetDto>> {
+  ): Promise<Response<CalendarEventGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars/{id}';
+      let url = basePath + '/api/calendar-events/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -81,17 +91,17 @@ export class CalendarsService {
   /**
    *
    */
-  static update(
+  static updateCalendarEvent(
     params: {
       /**  */
       id: number;
       /** requestBody */
-      body?: CalendarUpdateDto;
+      body?: CalendarEventUpdateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<CalendarGetDto>> {
+  ): Promise<Response<CalendarEventGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars/{id}';
+      let url = basePath + '/api/calendar-events/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
@@ -106,7 +116,7 @@ export class CalendarsService {
   /**
    *
    */
-  static delete(
+  static deleteCalendarEvent(
     params: {
       /**  */
       id: number;
@@ -114,29 +124,10 @@ export class CalendarsService {
     options: IRequestOptions = {}
   ): Promise<EmptyResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars/{id}';
+      let url = basePath + '/api/calendar-events/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
-
-      axios(configs, resolve, reject);
-    });
-  }
-  /**
-   *
-   */
-  static getByUserId(
-    params: {
-      /**  */
-      userId: number;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<Response<List<CalendarGetDto>>> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + '/api/calendars/user/{userId}';
-      url = url.replace('{userId}', params['userId'] + '');
-
-      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });
