@@ -53,7 +53,7 @@ public class AuthenticationController : Controller
             return BadRequest();
         }
 
-        await _signInManager.SignInAsync(user, false);
+        await _signInManager.SignInAsync(user, isPersistent: false);
 
         var resultDto = await GetUserDto(_userManager.Users).SingleAsync(x => x.UserName == user.UserName);
         return Ok(resultDto);

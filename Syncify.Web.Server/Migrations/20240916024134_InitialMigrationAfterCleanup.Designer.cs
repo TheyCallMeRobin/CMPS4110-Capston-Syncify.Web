@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240916024134_InitialMigrationAfterCleanup")]
+    partial class InitialMigrationAfterCleanup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -337,7 +340,7 @@ namespace Syncify.Web.Server.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -437,9 +440,13 @@ namespace Syncify.Web.Server.Migrations
 
             modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingItem", b =>
                 {
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", null)
+                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "User")
                         .WithMany("ShoppingItems")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Authorization.Role", b =>

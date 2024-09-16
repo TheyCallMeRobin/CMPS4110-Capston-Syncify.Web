@@ -6,14 +6,9 @@ namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController : Controller
+public class UsersController(IUserService userService) : Controller
 {
-    private readonly IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
     [HttpPost("api/createusers")]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto createUserDto)
@@ -29,3 +24,4 @@ public class UsersController : Controller
         return Ok(data);
     }
 }
+
