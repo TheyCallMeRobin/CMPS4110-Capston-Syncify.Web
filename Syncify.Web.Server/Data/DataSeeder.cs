@@ -4,19 +4,26 @@ using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Data;
 
-public class DataSeeder(DataContext dataContext, UserManager<User> userManager, RoleManager<Role> roleManager)
+public class DataSeeder
 {
-    private readonly DataContext _dataContext = dataContext;
-    private readonly UserManager<User> _userManager = userManager;
-    private readonly RoleManager<Role> _roleManager = roleManager;
+    private readonly DataContext _dataContext;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
 
     private const string BasicPassword = "SuperPassword1!";
+
+    public DataSeeder(DataContext dataContext, UserManager<User> userManager, RoleManager<Role> roleManager)
+    {
+        _dataContext = dataContext;
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
 
     public async Task SeedData()
     {
         await CreateRoles();
         await CreateUsers();
-        await CreateShoppingItems();
+        await CreateShoppingLists();
     }
 
     private async Task CreateRoles()
@@ -42,16 +49,16 @@ public class DataSeeder(DataContext dataContext, UserManager<User> userManager, 
         if (_dataContext.Users.Any())
             return;
 
-        var users = new[]
+        User[] users =
         {
-            new User
+            new()
             {
                 Email = "Johnjohnson@testing.com",
                 FirstName = "John",
                 LastName = "Johnson",
                 UserName = "johnjohnson",
             },
-            new User
+            new()
             {
                 Email = "janeadams@testing.com",
                 FirstName = "Jane",
@@ -63,28 +70,36 @@ public class DataSeeder(DataContext dataContext, UserManager<User> userManager, 
         foreach (var user in users)
         {
             await _userManager.CreateAsync(user, BasicPassword);
-            await _dataContext.SaveChangesAsync();
         }
+
+        await _dataContext.SaveChangesAsync();  // Save changes after all users are created
     }
 
-    private async Task CreateShoppingItems()
+    private async Task CreateShoppingLists()
     {
         // Check if there are existing shopping items
-        if (_dataContext.ShoppingItems.Any())
+        if (_dataContext.ShoppingLists.Any())
             return;
 
-        // Create six shopping items
-        var shoppingItems = new[]
+        // Fetch the users to assign them to shopping items
+        var john = await _userManager.FindByNameAsync("johnjohnson");
+        var jane = await _userManager.FindByNameAsync("janeadams");
+
+        if (john == null || jane == null)
+            throw new Exception("Seed users not found");
+
+        // Create six shopping items, assigning them to users
+        var shoppingLists = new[]
         {
-            new ShoppingItem { Name = "Milk", Completed = false, Checked = false },
-            new ShoppingItem { Name = "Bread", Completed = false, Checked = false },
-            new ShoppingItem { Name = "Eggs", Completed = false, Checked = false },
-            new ShoppingItem { Name = "Butter", Completed = false, Checked = false },
-            new ShoppingItem { Name = "Cheese", Completed = false, Checked = false },
-            new ShoppingItem { Name = "Apples", Completed = false, Checked = false }
+            new ShoppingList { Name = "Milk", Completed = false, Checked = false, UserId = john.Id },
+            new ShoppingList { Name = "Bread", Completed = false, Checked = false, UserId = john.Id },
+            new ShoppingList { Name = "Eggs", Completed = false, Checked = false, UserId = john.Id },
+            new ShoppingList { Name = "Butter", Completed = false, Checked = false, UserId = jane.Id },
+            new ShoppingList { Name = "Cheese", Completed = false, Checked = false, UserId = jane.Id },
+            new ShoppingList { Name = "Apples", Completed = false, Checked = false, UserId = jane.Id }
         };
 
-        _dataContext.ShoppingItems.AddRange(shoppingItems);
-        await _dataContext.SaveChangesAsync();
-    }
+        _dataContext.ShoppingLists.AddRange(shoppingLists);
+        await _dataContext.SaveChangesAsync();  // Save all shopping items at once
+    } 
 }

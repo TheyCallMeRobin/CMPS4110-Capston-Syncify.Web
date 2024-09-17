@@ -8,7 +8,7 @@ namespace Syncify.Web.Server.Data;
 
 public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
 {
-    public DbSet<ShoppingItem> ShoppingItems { get; set; }
+    public DbSet<ShoppingList> ShoppingLists { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {

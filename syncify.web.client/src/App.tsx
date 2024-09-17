@@ -1,12 +1,10 @@
 import React from 'react';
 import { MyAppContextProvider } from './Context/MyAppContext';
-import ErrorBoundary from './Components/ErrorBoundary';
 import './App.css';
 
 const App: React.FC = () => {
     return (
         <MyAppContextProvider>
-            <ErrorBoundary>
                 <div className="App">
                     {/* Other global components can go here */}
                     <header className="App-header">
@@ -14,7 +12,6 @@ const App: React.FC = () => {
                     </header>
                     {/* The rest of your app will be managed by RouterProvider in main.tsx */}
                 </div>
-            </ErrorBoundary>
         </MyAppContextProvider>
     );
 };

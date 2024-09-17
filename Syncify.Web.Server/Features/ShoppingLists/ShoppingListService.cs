@@ -9,11 +9,9 @@ namespace Syncify.Web.Server.Features.ShoppingLists;
 
 public interface IShoppingListService
 {
-    Task<Response<List<ShoppingItemGetDto>>> GetShoppingItems();
-    Task<Response<ShoppingItemGetDto>> GetShoppingItemById(int id);
-    Task<Response<ShoppingItemGetDto>> CreateShoppingItem(ShoppingItem item);
-    Task UpdateItem(ShoppingItem item);
-    Task DeleteItem(int id);
+    Task<Response<List<ShoppingListGetDto>>> GetShoppingLists();
+    Task<Response<ShoppingListGetDto>> GetShoppingListById(int id);
+    Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
 }
 
 public class ShoppingListService : IShoppingListService
@@ -25,56 +23,41 @@ public class ShoppingListService : IShoppingListService
         _dataContext = dataContext;
     }
 
-    public async Task<Response<List<ShoppingItemGetDto>>> GetShoppingItems()
+    public async Task<Response<List<ShoppingListGetDto>>> GetShoppingLists()
     {
         var data = await _dataContext
-            .Set<ShoppingItem>()
-            .Select(x => x.MapTo<ShoppingItemGetDto>())
+            .Set<ShoppingList>()
+            .Select(x => x.MapTo<ShoppingListGetDto>())
             .ToListAsync();
 
         return data.AsResponse();
     }
 
-    public async Task<Response<ShoppingItemGetDto>> GetShoppingItemById(int id)
+    public async Task<Response<ShoppingListGetDto>> GetShoppingListById(int id)
     {
         var data = await _dataContext
-            .Set<ShoppingItem>()
+            .Set<ShoppingList>()
             .FindAsync(id);
 
         if (data is null)
-            return Error.AsResponse<ShoppingItemGetDto>("Unable to find shopping item.", nameof(id));
+            return Error.AsResponse<ShoppingListGetDto>("Unable to find shopping list.", nameof(id));
 
-        return data.MapTo<ShoppingItemGetDto>().AsResponse();
+        return data.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
-    public async Task<Response<ShoppingItemGetDto>> CreateShoppingItem(ShoppingItem item)
+    public async Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto)
     {
-        _dataContext.Set<ShoppingItem>().Add(item);
+        if (await ShoppingListHasSameName(createDto.Name))
+            return Error.AsResponse<ShoppingListGetDto>("A shopping list with this name already exists.", nameof(createDto.Name));
+
+        var shoppingList = createDto.MapTo<ShoppingList>();
+
+        _dataContext.Set<ShoppingList>().Add(shoppingList);
         await _dataContext.SaveChangesAsync();
 
-        return item.MapTo<ShoppingItemGetDto>().AsResponse();
+        return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
-    public async Task UpdateItem(ShoppingItem item)
-    {
-        var existingItem = await _dataContext.Set<ShoppingItem>().FindAsync(item.Id);
-        if (existingItem != null)
-        {
-            _dataContext.Entry(existingItem).State = EntityState.Detached;  // Detach the existing entity
-        }
-
-        _dataContext.Set<ShoppingItem>().Update(item);
-        await _dataContext.SaveChangesAsync();
-    }
-
-
-    public async Task DeleteItem(int id)
-    {
-        var item = await _dataContext.Set<ShoppingItem>().FindAsync(id);
-        if (item != null)
-        {
-            _dataContext.Set<ShoppingItem>().Remove(item);
-            await _dataContext.SaveChangesAsync();
-        }
-    }
+    private Task<bool> ShoppingListHasSameName(string name)
+        => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
 }

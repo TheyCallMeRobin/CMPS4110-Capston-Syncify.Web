@@ -12,8 +12,8 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240916024134_InitialMigrationAfterCleanup")]
-    partial class InitialMigrationAfterCleanup
+    [Migration("20240917012458_ShoppingListBackendAddition")]
+    partial class ShoppingListBackendAddition
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -321,7 +321,7 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("Recipes", (string)null);
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingItem", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -335,6 +335,11 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<bool>("Completed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -347,7 +352,7 @@ namespace Syncify.Web.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ShoppingItems", (string)null);
+                    b.ToTable("ShoppingLists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -438,10 +443,10 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingItem", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Authorization.User", "User")
-                        .WithMany("ShoppingItems")
+                        .WithMany("ShoppingLists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -458,7 +463,7 @@ namespace Syncify.Web.Server.Migrations
                 {
                     b.Navigation("Recipes");
 
-                    b.Navigation("ShoppingItems");
+                    b.Navigation("ShoppingLists");
 
                     b.Navigation("UserRoles");
                 });

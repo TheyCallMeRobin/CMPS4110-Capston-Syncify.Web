@@ -12,7 +12,7 @@ public class User : IdentityUser<int>
     public required string LastName { get; set; }
     public List<UserRole> UserRoles { get; set; } = [];
     public List<Recipe> Recipes { get; set; } = [];
-    public ICollection<ShoppingItem> ShoppingItems { get; set; } = [];
+    public ICollection<ShoppingList> ShoppingLists { get; set; } = new List<ShoppingList>();
 
 }
 

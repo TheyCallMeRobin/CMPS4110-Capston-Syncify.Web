@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css'
-import ErrorPage from "./ErrorPage/error-page.tsx";
+import { ErrorPage } from "./ErrorPage/error-page.tsx";
 import { Authorization } from './Routes/Authorization/authorization.tsx';
 import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';

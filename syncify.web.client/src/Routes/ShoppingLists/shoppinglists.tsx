@@ -1,118 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import './shoppinglists.css';
-import { logError } from '../../utils/logger';
 
-interface ShoppingItem {
-    id: number;
-    name: string;
-    completed: boolean;
-    checked: boolean;
-}
-
-export const ShoppingLists: React.FC = () => {
-    const [items, setItems] = useState<ShoppingItem[]>([]);
+const ShoppingLists = () => {
+    // Initialize state for items and newItem
+    const [items, setItems] = useState<{ id: number, name: string, checked: boolean, completed: boolean }[]>([]);
     const [newItem, setNewItem] = useState<string>('');
 
-    // Fetch shopping list items from the backend
-    useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const response = await fetch('/api/shoppinglists');
-                const { data } = await response.json();  // Extract the 'data' property
-                logError('Fetched items:', data);  // Log the fetched data
-                setItems(Array.isArray(data) ? data : []);  // Ensure it's an array
-            } catch (error) {
-                logError('Error fetching shopping list items:', error);
-            }
-        };
-
-        fetchItems();
-    }, []);
-
-    // Add a new item to the list (POST to backend)
-    const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Stubs for the necessary event handlers
+    const handleAddItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
-            try {
-                const response = await fetch('/api/shoppinglists', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: newItem })  // Only name is required for creation
-                });
-                const addedItem = await response.json();
-                setItems([...items, addedItem.data]);  // Make sure to add the new item correctly
-                setNewItem('');  // Clear the input after adding
-            } catch (error) {
-                logError('Error adding item:', error);
-            }
+            const newItemObj = {
+                id: items.length + 1,  // Fake ID for demonstration
+                name: newItem,
+                checked: false,
+                completed: false
+            };
+            setItems([...items, newItemObj]);  // Add the new item
+            setNewItem('');  // Clear the input
         }
     };
 
-    // Delete checked items (DELETE from backend)
-    const handleRemoveCheckedItems = async () => {
-        const confirmed = window.confirm('Are you sure you want to remove all checked items?');
-        if (confirmed) {
-            try {
-                const checkedItems = items.filter(item => item.checked);
-                for (const item of checkedItems) {
-                    await fetch(`/api/shoppinglists/${item.id}`, {
-                        method: 'DELETE'
-                    });
-                }
-                // Remove checked items from the list
-                setItems(items.filter(item => !item.checked));
-            } catch (error) {
-                logError('Error removing items:', error);
-            }
-        }
-    };
-
-    // Toggle checkbox state (PATCH to backend)
-    const handleToggleChecked = async (id: number) => {
+    const handleToggleChecked = (id: number) => {
         const updatedItems = items.map(item =>
             item.id === id ? { ...item, checked: !item.checked, completed: !item.checked } : item
         );
         setItems(updatedItems);  // Update the state locally
-
-        try {
-            const updatedItem = updatedItems.find(item => item.id === id);
-            if (updatedItem) {
-                await fetch(`/api/shoppinglists/${id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: updatedItem.name,  // Ensure the name is sent, as it's part of the object
-                        completed: updatedItem.completed,
-                        checked: updatedItem.checked
-                    })
-                });
-            }
-        } catch (error) {
-            logError('Error updating item:', error);
-        }
     };
 
-    // Update an item name (PATCH to backend)
-    const handleUpdateItemName = async (id: number, newName: string) => {
-        const updatedItems = items.map(item =>
-            item.id === id ? { ...item, name: newName } : item
-        );
-        setItems(updatedItems);  // Update the state locally
-
-        try {
-            const updatedItem = updatedItems.find(item => item.id === id);
-            if (updatedItem) {
-                await fetch(`/api/shoppinglists/${id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: updatedItem.name,
-                        completed: updatedItem.completed,
-                        checked: updatedItem.checked
-                    })
-                });
-            }
-        } catch (error) {
-            logError('Error updating item name:', error);
+    const handleRemoveCheckedItems = () => {
+        const confirmed = window.confirm('Are you sure you want to remove all checked items?');
+        if (confirmed) {
+            setItems(items.filter(item => !item.checked));  // Remove checked items
         }
     };
 

@@ -1,7 +1,7 @@
 import { useRouteError, isRouteErrorResponse, Link } from "react-router-dom";  // Import Link
 import { logError } from '../utils/logger';
 
-export default function ErrorPage() {
+export function ErrorPage() {
     const error = useRouteError();
 
     logError(error);
