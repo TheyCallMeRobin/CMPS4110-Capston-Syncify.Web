@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css'
-import ErrorPage from "./ErrorPage/error-page.tsx";
+import { ErrorPage } from "./ErrorPage/error-page.tsx";
 import { Authorization } from './Routes/Authorization/authorization.tsx';
 import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
@@ -9,36 +9,33 @@ import { ShoppingLists } from './Routes/ShoppingLists/shoppinglists.tsx';
 import { Calendars } from './Routes/Calendars/calenders.tsx';
 import {MainPage} from './MainPage';
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
 
     {
         path: "/",
         element: <MainPage />,
-
-
         errorElement: <ErrorPage />,
-
         children: [
 
             {
-                path: "/authorization",
+                path: "authorization",
                 element: <Authorization />,
             },
             {
-                path: "/calendars",
+                path: "calendars",
                 element: <Calendars />,
             },
             {
-                path: "/recipes",
+                path: "recipes",
                 element: <Recipes />,
 
             },
             {
-                path: "/reminders",
+                path: "reminders",
                 element: <Reminders />,
             },
             {
-                path: "/shopping-list",
+                path: "shoppinglists",
                 element: <ShoppingLists />,
             },
         ],
