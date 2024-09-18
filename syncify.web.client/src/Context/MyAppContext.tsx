@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
-interface MyAppContextProps {
+type MyAppContextProps = {
     user: string | null;
     setUser: (user: string | null) => void;
 }
