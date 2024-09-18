@@ -1,0 +1,83 @@
+/* General Layout */
+.shopping-list-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    padding-top: 20px;
+}
+
+/* Shopping List Section */
+.list-group-item {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: center; /* Center the items */
+    background-color: white;
+    color: black;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s;
+}
+
+    .list-group-item input[type="checkbox"] {
+        margin-right: 10px; /* Adds space between checkbox and the rest of the content */
+        margin-left: 0; /* Aligns checkbox to the left */
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Centering Text and Keeping Checkboxes Left */
+    .list-group-item div {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center; /* Centers the text/content */
+    }
+
+.completed {
+    background-color: #d4edda; /* Light green for completed items */
+    color: #155724;
+    text-decoration: line-through;
+}
+
+/* Form and Buttons */
+.form-control {
+    border: 1px solid #333;
+    width: 100%; /* Ensure full width of input */
+}
+
+button {
+    font-size: 1rem;
+}
+
+    button.btn-primary {
+        background-color: #228B22;
+        border-color: #228B22;
+    }
+
+        button.btn-primary:hover {
+            background-color: #1c7c1c;
+        }
+
+    button.btn-danger {
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+        button.btn-danger:hover {
+            background-color: #ff4d4d;
+        }
+
+/* Main Content Area */
+.container {
+    padding: 20px;
+    max-width: 600px; /* Keeps the content centered and manageable */
+}
+
+/* Input Field as a List Item */
+.list-group-item input[type="text"] {
+    width: 100%; /* Full width input as part of the list */
+    border: 1px solid #333;
+    padding: 5px;
+}
