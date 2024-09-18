@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart } from 'react-icons/fa';
 import './MainPage.css';
 

@@ -1,20 +1,16 @@
 import React from 'react';
 import { MyAppContextProvider } from './Context/MyAppContext';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes.tsx';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import './api/generated/config';
 import './App.css';
 
-const App: React.FC = () => {
-    return (
-        <MyAppContextProvider>
-                <div className="App">
-                    {/* Other global components can go here */}
-                    <header className="App-header">
-                        <h1>Welcome to Syncify</h1>
-                    </header>
-                    {/* The rest of your app will be managed by RouterProvider in main.tsx */}
-                </div>
-        </MyAppContextProvider>
-    );
+export const App: React.FC = () => {
+  return (
+      <MyAppContextProvider>
+        <RouterProvider router={router}/>
+      </MyAppContextProvider>
+  );
 };
-
-export default App;
-
