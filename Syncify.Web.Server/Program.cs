@@ -9,6 +9,7 @@ using Syncify.Web.Server.Configurations.FluentValidation;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.ShoppingLists;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
@@ -47,6 +48,7 @@ try
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts => opts.UseSqlServer(connectionString));
     builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>();
+    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddSingleton<MapperProvider>();
@@ -91,6 +93,8 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
+
+    app.UseRouting();
 
     app.MapControllers();
 
