@@ -48,7 +48,7 @@ public class ShoppingListService : IShoppingListService
     public async Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto)
     {
         if (await ShoppingListHasSameName(createDto.Name, createDto.UserId))
-            return Error.AsResponse<ShoppingListGetDto>("A shopping list with this name already exists.", nameof(createDto.Name));
+            return Error.AsResponse<ShoppingListGetDto>("A shopping list with this name already exists for this user.", nameof(createDto.Name));
 
         var shoppingList = createDto.MapTo<ShoppingList>();
 
