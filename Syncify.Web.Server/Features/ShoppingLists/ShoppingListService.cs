@@ -58,6 +58,6 @@ public class ShoppingListService : IShoppingListService
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
-    private Task<bool> ShoppingListHasSameName(string name)
-        => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
+    private Task<bool> ShoppingListHasSameName(string name, int userId)
+        => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.UserId == userId);
 }
