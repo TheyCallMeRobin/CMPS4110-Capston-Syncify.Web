@@ -86,7 +86,7 @@ public class DataSeeder
         var jane = await _userManager.FindByNameAsync("janeadams");
 
         if (john == null || jane == null)
-            throw new Exception("Seed users not found");
+            return;
 
         // Create six shopping items, assigning them to users
         var shoppingLists = new[]
