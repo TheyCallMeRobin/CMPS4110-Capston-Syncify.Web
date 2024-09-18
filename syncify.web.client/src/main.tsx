@@ -8,15 +8,26 @@ import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { ShoppingLists } from './Routes/ShoppingLists/shoppinglists.tsx';
 import { Calendars } from './Routes/Calendars/calenders.tsx';
 import {MainPage} from './MainPage';
+import {RegisterPage} from "./RegisterPage.tsx";
+import {LoginPage} from "./LoginPage.tsx";
 
 const router = createBrowserRouter([
 
     {
+     path: "/register",
+     element: <RegisterPage />,
+    },
+    {
+        path: "/login",
+        element: <LoginPage />,
+    },
+    {
         path: "/",
-        element: <MainPage />,
+        element: <MainPage/>,
+    },
+    {
 
-
-        errorElement: <ErrorPage />,
+        errorElement: <ErrorPage/>,
 
         children: [
 
