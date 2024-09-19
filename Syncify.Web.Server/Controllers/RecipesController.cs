@@ -21,7 +21,7 @@ public class RecipesController : ControllerBase
         var data = await _recipeService.GetRecipes();
         return Ok(data);
     }
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeById(int id)
     {
@@ -34,6 +34,6 @@ public class RecipesController : ControllerBase
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
         var data = await _recipeService.CreateRecipe(dto);
-        return Ok(data);
+        return CreatedAtAction(nameof(GetRecipeById), new { id = data.Data.Id }, data); // Updated to return 201 Created
     }
 }
