@@ -1,6 +1,4 @@
-// src/Recipes.tsx
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import Modal from 'react-modal';
 import './recipe.css';
 import Melon from '../../Images/Melon.jpg';
@@ -93,7 +91,6 @@ export const Recipes: React.FC = () => {
                     </div>
                 )}
             </Modal>
-            <Outlet />
         </div>
     );
 };

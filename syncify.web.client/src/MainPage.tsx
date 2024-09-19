@@ -1,11 +1,12 @@
+
 import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome } from 'react-icons/fa';
-import { FaAlignJustify } from 'react-icons/fa';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify } from 'react-icons/fa';
 import './MainPage.css';
 
 export const MainPage: React.FC = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const location = useLocation();
 
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -95,17 +96,21 @@ export const MainPage: React.FC = () => {
                         </ul>
                     </div>
                 </nav>
-                <Outlet />
 
-                <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
-                    <div className="w-100 text-center">
-                        <h1 className="mb-4">
-                            <span className="text-dark">Welcome to </span>
-                            <span className="text-highlight">Syncify</span>
-                        </h1>
-                        <p>This is the future main page of your new favorite calendar app!</p>
-                    </div>
-                </main>
+                {/* Conditionally render the welcome message */}
+                {location.pathname === '/' && (
+                    <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
+                        <div className="w-100 text-center">
+                            <h1 className="mb-4">
+                                <span className="text-dark">Welcome to </span>
+                                <span className="text-highlight">Syncify</span>
+                            </h1>
+                            <p>This is the future main page of your new favorite calendar app!</p>
+                        </div>
+                    </main>
+                )}
+
+                <Outlet />
             </div>
         </div>
     );
