@@ -1,55 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart } from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome } from 'react-icons/fa';
+import { FaAlignJustify } from 'react-icons/fa';
 import './MainPage.css';
 
 export const MainPage: React.FC = () => {
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarCollapsed(!isSidebarCollapsed);
+    };
+
     return (
         <div className="d-flex min-vh-100">
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark flex-column vh-100 sidebar">
-                <Link className="navbar-brand text-center mb-4" to="/">Syncify</Link>
+            {/* Sidebar */}
+            <nav className={`navbar navbar-expand-lg navbar-dark bg-dark flex-column vh-100 sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <div className="d-flex justify-content-center align-items-center w-100">
+                    <button className="btn btn-link nav-link text-light toggle-btn" onClick={toggleSidebar}>
+                        {isSidebarCollapsed ? <FaAlignJustify size={24} /> : "Syncify"}
+                    </button>
+                </div>
 
-                <ul className="navbar-nav flex-column w-100">
+                <ul className="navbar-nav flex-column w-100 icon-list">
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center" to="/calendars">
-                            <FaCalendarAlt /*className="me-2"*/ /> Calendar
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/calendars">
+                            <FaCalendarAlt /> {!isSidebarCollapsed && "Calendar"}
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center" to="/reminders">
-                            <FaBell /*className="me-2"*/ /> Reminder
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/reminders">
+                            <FaBell /> {!isSidebarCollapsed && "Reminder"}
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center" to="/recipes">
-                            <FaBook /*className="me-2"*/ /> Recipes
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/recipes">
+                            <FaBook /> {!isSidebarCollapsed && "Recipes"}
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center" to="/shoppinglists">
-                            <FaShoppingCart /*className="me-2"*/ /> Shopping List
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/shoppinglists">
+                            <FaShoppingCart /> {!isSidebarCollapsed && "Shopping List"}
                         </Link>
                     </li>
                 </ul>
 
                 <div className="flex-grow-1"></div>
 
-                <ul className="navbar-nav flex-column w-100 mb-3 bottom-links">
+                <ul className="navbar-nav flex-column w-100 mb-3 bottom-links icon-list">
                     <li className="nav-item mb-2">
-                        <Link className="nav-link d-flex align-items-center" to="/">
-                            <FaCog /*className="me-2"*/ /> Account Settings
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/">
+                            <FaCog /> {!isSidebarCollapsed && "Account Settings"}
+                        </Link>
+                    </li>
+                    <li className="nav-item mb-2">
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/register">
+                            <FaUserPlus /> {!isSidebarCollapsed && "Invite"}
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center" to="/register">
-                            <FaUserPlus /*className="me-2"*/ /> Invite
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/">
+                            <FaHome /> {!isSidebarCollapsed && "Home"}
                         </Link>
                     </li>
                 </ul>
             </nav>
 
+            {/* Main content */}
             <div className="flex-grow-1 d-flex flex-column">
-
                 <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div className="container-fluid justify-content-between">
                         <ul className="navbar-nav">
@@ -68,7 +85,7 @@ export const MainPage: React.FC = () => {
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item dropdown">
                                 <Link className="nav-link dropdown-toggle" to="/" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <FaUser size={24} /*className="icon"*/ />
+                                    <FaUser size={24} />
                                 </Link>
                                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                     <li><Link className="dropdown-item" to="/login">Login</Link></li>
