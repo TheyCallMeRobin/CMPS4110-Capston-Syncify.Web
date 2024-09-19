@@ -97,6 +97,234 @@
         }
       }
     },
+    "/api/calendar-events": {
+      "post": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "CreateCalendarEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calendar-events/calendar/{calendarId}": {
+      "get": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "GetCalendarEvents",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calendar-events/{id}": {
+      "get": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "GetCalendarEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "UpdateCalendarEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "DeleteCalendarEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/calendars": {
       "post": {
         "tags": [
@@ -803,6 +1031,185 @@
         },
         "additionalProperties": false
       },
+      "CalendarEventCreateDto": {
+        "required": [
+          "calendarEventType",
+          "calendarId",
+          "recurrenceType",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "calendarEventType": {
+            "$ref": "#/components/schemas/CalendarEventType"
+          },
+          "recurrenceType": {
+            "$ref": "#/components/schemas/RecurrenceType"
+          },
+          "calendarId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recurrenceWeekDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CalendarEventGetDto": {
+        "required": [
+          "calendarEventType",
+          "calendarId",
+          "id",
+          "recurrenceType",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "calendarEventType": {
+            "$ref": "#/components/schemas/CalendarEventType"
+          },
+          "recurrenceType": {
+            "$ref": "#/components/schemas/RecurrenceType"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "calendarId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recurrenceWeekDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CalendarEventType": {
+        "type": "object",
+        "properties": {
+          "Event": {
+            "type": "integer",
+            "example": 0
+          },
+          "Task": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "format": "int32"
+      },
+      "CalendarEventUpdateDto": {
+        "required": [
+          "calendarEventType",
+          "recurrenceType",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "calendarEventType": {
+            "$ref": "#/components/schemas/CalendarEventType"
+          },
+          "recurrenceType": {
+            "$ref": "#/components/schemas/RecurrenceType"
+          },
+          "recurrenceWeekDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CalendarGetDto": {
         "required": [
           "createdByUserId",
@@ -875,6 +1282,40 @@
           }
         },
         "additionalProperties": false
+      },
+      "DayOfWeek": {
+        "type": "object",
+        "properties": {
+          "Sunday": {
+            "type": "integer",
+            "example": 0
+          },
+          "Monday": {
+            "type": "integer",
+            "example": 1
+          },
+          "Tuesday": {
+            "type": "integer",
+            "example": 2
+          },
+          "Wednesday": {
+            "type": "integer",
+            "example": 3
+          },
+          "Thursday": {
+            "type": "integer",
+            "example": 4
+          },
+          "Friday": {
+            "type": "integer",
+            "example": 5
+          },
+          "Satuday": {
+            "type": "integer",
+            "example": 6
+          }
+        },
+        "format": "int32"
       },
       "EmptyResponse": {
         "required": [
@@ -1062,6 +1503,56 @@
         },
         "additionalProperties": false
       },
+      "RecurrenceType": {
+        "type": "object",
+        "properties": {
+          "Daily": {
+            "type": "integer",
+            "example": 0
+          },
+          "Weekly": {
+            "type": "integer",
+            "example": 1
+          },
+          "BiWeekly": {
+            "type": "integer",
+            "example": 2
+          },
+          "Monthly": {
+            "type": "integer",
+            "example": 3
+          },
+          "Custom": {
+            "type": "integer",
+            "example": 4
+          }
+        },
+        "format": "int32"
+      },
+      "Response<CalendarEventGetDto>": {
+        "required": [
+          "data",
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "$ref": "#/components/schemas/CalendarEventGetDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "Response<CalendarGetDto>": {
         "required": [
           "data",
@@ -1082,6 +1573,33 @@
           },
           "data": {
             "$ref": "#/components/schemas/CalendarGetDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Response<List<CalendarEventGetDto>>": {
+        "required": [
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarEventGetDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

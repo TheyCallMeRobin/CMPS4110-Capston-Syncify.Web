@@ -16,6 +16,7 @@ public class SwaggerConfiguration
             
             options.OperationFilter<HideParamsFilter>();
             options.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
+            options.SchemaFilter<EnumSchemaFilter>();
         });
     }
 }
