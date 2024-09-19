@@ -32,7 +32,7 @@ const recipeData = [
         id: 3,
         title: 'Chaos Cuisine Medley',
         image: RandomFood,
-        bio: 'AHHHHHHHHHHHHHHHHHHHHHH!',
+        bio: 'AHHHHHHHHHHHHHHHHHHHHHHHH!',
         timeToPrepare: '40 decades',
         author: 'Chef Chaos',
         moreInfoLink: '/recipes',
@@ -55,12 +55,6 @@ export const Recipes: React.FC = () => {
 
     return (
         <div className="container">
-            <header className="header">whatever header we decide to go with</header>
-            <div className="sidebar">
-                <div className="menu-item">Your Recipes</div>
-                <div className="menu-item">Friends Recipes</div>
-                <div className="menu-item">Invite / Join More Friends</div>
-            </div>
             <div className="content">
                 {recipeData.map((recipe) => (
                     <div
