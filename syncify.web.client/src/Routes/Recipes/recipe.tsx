@@ -18,16 +18,11 @@ export const Recipes: React.FC = () => {
 
     useEffect(() => {
         // Fetch recipes from the backend
-        const fetchRecipes = async () => {
-            try {
-                const response = await fetch('/api/recipes');
-                const data = await response.json();
-                setRecipes(data.data); // Assuming the API response format is { data: Recipe[], hasErrors: boolean, errors: any[] }
-            } catch (error) {
-                console.error('Error fetching recipes:', error);
-            } finally {
-                setLoading(false);
-            }
+        const fetchRecipes = () => {
+            fetch('/api/recipes')
+                .then(response => response.json())
+                .then(data => setRecipes(data.data))
+                .finally(() => setLoading(false));
         };
 
         fetchRecipes();

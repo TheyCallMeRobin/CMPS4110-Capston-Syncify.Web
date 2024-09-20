@@ -6,6 +6,20 @@ const ShoppingLists = () => {
     const [items, setItems] = useState<{ id: number, name: string, checked: boolean, completed: boolean }[]>([]);
     const [newItem, setNewItem] = useState<string>('');
 
+    useEffect(() => {
+        const fetchItems = () => {
+            fetch('/api/shoppinglist')
+                .then(response => response.json())
+                .then(data => {
+                    setItems(Array.isArray(data) ? data : []);
+                })
+                .catch(() => {
+                    setItems([]);
+                });
+        };
+        fetchItems();
+    }, []);
+
     // Stubs for the necessary event handlers
     const handleAddItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
