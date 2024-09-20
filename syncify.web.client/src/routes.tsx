@@ -35,7 +35,7 @@ const routes: RouteObject[] = [
         element: <Reminders />,
       },
       {
-        path: "/shopping-list",
+        path: "/shoppinglists",
         element: <ShoppingLists />,
       },
     ],
