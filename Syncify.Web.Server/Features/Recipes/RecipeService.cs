@@ -16,7 +16,6 @@ public interface IRecipeService
 
 public class RecipeService : IRecipeService
 {
-
     private readonly DataContext _dataContext;
 
     public RecipeService(DataContext dataContext)
@@ -28,6 +27,7 @@ public class RecipeService : IRecipeService
     {
         var data = await _dataContext
             .Set<Recipe>()
+            .Include(x => x.User) // Include User to get the FirstName
             .Select(x => x.MapTo<RecipeGetDto>())
             .ToListAsync();
 
@@ -38,11 +38,12 @@ public class RecipeService : IRecipeService
     {
         var data = await _dataContext
             .Set<Recipe>()
-            .FindAsync(id);
+            .Include(x => x.User) // Include User to get the FirstName
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (data is null)
             return Error.AsResponse<RecipeGetDto>("Unable to find recipe.", nameof(id));
-        
+
         return data.MapTo<RecipeGetDto>().AsResponse();
     }
 
@@ -50,9 +51,9 @@ public class RecipeService : IRecipeService
     {
         if (await RecipeHasSameName(createDto.Name))
             return Error.AsResponse<RecipeGetDto>("A recipe with this name already exists.", nameof(createDto.Name));
-        
+
         var recipe = createDto.MapTo<Recipe>();
-        
+
         _dataContext.Set<Recipe>().Add(recipe);
         await _dataContext.SaveChangesAsync();
 
