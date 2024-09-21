@@ -49,7 +49,7 @@ const router = createBrowserRouter([
                 element: <Reminders />,
             },
             {
-                path: "/shopping-list",
+                path: "/shoppinglists",
                 element: <ShoppingLists />,
             },
         ],
