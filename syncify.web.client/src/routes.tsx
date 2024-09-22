@@ -5,12 +5,18 @@ import { Calendars } from './Routes/Calendars/calenders.tsx';
 import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { ErrorPage } from './ErrorPage/error-page.tsx';
+import {RegisterPage} from './Routes/RegisterPage/RegisterPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shoppinglists.tsx';
 
 const routes: RouteObject[] = [
+    
+  {
+    path: "/register",
+    element: <RegisterPage/>
+  },
   {
     path: "/",
-    element: <MainPage />,
+    element: <MainPage/>,
 
 
     errorElement: <ErrorPage />,
@@ -38,6 +44,10 @@ const routes: RouteObject[] = [
         path: "/shoppinglists",
         element: <ShoppingLists />,
       },
+      {
+        path: "/register",
+        element: <RegisterPage/>
+      }
     ],
   },
 ]

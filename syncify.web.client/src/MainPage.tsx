@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify } from 'react-icons/fa';
@@ -49,7 +48,7 @@ export const MainPage: React.FC = () => {
 
                 <ul className="navbar-nav flex-column w-100 mb-3 bottom-links icon-list">
                     <li className="nav-item mb-2">
-                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/">
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/account-settings">
                             <FaCog /> {!isSidebarCollapsed && "Account Settings"}
                         </Link>
                     </li>
