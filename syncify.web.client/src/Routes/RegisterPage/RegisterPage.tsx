@@ -26,59 +26,30 @@ export const RegisterPage: React.FC = () => {
         toast.dismiss();
         toast.success(message);
     };
-
-    const validateEmail = (email: string) => {
-        const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(email)) {
-            notifyError('Email address is invalid.');
-            return false;
-        }
-        return true;
+    const formatPhoneNumber = (value: string) => {
+        const phone = value.replace(/[^\d]/g, '');
+        if (phone.length <= 3) return phone;
+        if (phone.length <= 6) return `(${phone.slice(0, 3)}) ${phone.slice(3)}`;
+        return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`;
     };
-
-    const validatePassword = (password: string) => {
-        const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasDigits = /[0-9]/.test(password);
-
-        if (password.length < minLength) {
-            notifyError('Password must be at least 8 characters long.');
-            return false;
-        }
-        if (!hasUpperCase) {
-            notifyError('Password must contain at least one uppercase letter.');
-            return false;
-        }
-        if (!hasLowerCase) {
-            notifyError('Password must contain at least one lowercase letter.');
-            return false;
-        }
-        if (!hasDigits) {
-            notifyError('Password must contain at least one digit.');
-            return false;
-        }
-        return true;
-    };
-
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const FirstNameMaxLength = 128;
+        const LastNameMaxLength = 128;
+
+        if (firstName.length > FirstNameMaxLength) {
+            notifyError(`First name cannot exceed ${FirstNameMaxLength} characters!`);
+            return;
+        }
+
+        if (lastName.length > LastNameMaxLength) {
+            notifyError(`Last name cannot exceed ${LastNameMaxLength} characters!`);
+            return;
+        }
+
         if (password !== confirmPassword) {
             notifyError('Passwords do not match!');
-            return;
-        }
-
-        if (!/^\d{10}$/.test(phoneNumber)) {
-            notifyError('Phone number must be 10 digits.');
-            return;
-        }
-
-        if (!validateEmail(email)) {
-            return;
-        }
-
-        if (!validatePassword(password)) {
             return;
         }
 
@@ -113,13 +84,6 @@ export const RegisterPage: React.FC = () => {
         }
     };
 
-    const formatPhoneNumber = (value: string) => {
-        const phone = value.replace(/[^\d]/g, '');
-        if (phone.length <= 3) return phone;
-        if (phone.length <= 6) return `(${phone.slice(0, 3)}) ${phone.slice(3)}`;
-        return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`;
-    };
-
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
             <div className="register-form bg-white p-5 rounded shadow">
@@ -133,6 +97,7 @@ export const RegisterPage: React.FC = () => {
                             id="firstName"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
+                            maxLength={128}
                             required
                         />
                     </div>
@@ -144,6 +109,7 @@ export const RegisterPage: React.FC = () => {
                             id="lastName"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
+                            maxLength={128}
                             required
                         />
                     </div>
