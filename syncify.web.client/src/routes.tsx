@@ -9,9 +9,14 @@ import {RegisterPage} from './Routes/RegisterPage/RegisterPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shoppinglists.tsx';
 
 const routes: RouteObject[] = [
+    
+  {
+    path: "/register",
+    element: <RegisterPage/>
+  },
   {
     path: "/",
-    element: <MainPage />,
+    element: <MainPage/>,
 
 
     errorElement: <ErrorPage />,
@@ -42,7 +47,6 @@ const routes: RouteObject[] = [
       {
         path: "/register",
         element: <RegisterPage/>
-        
       }
     ],
   },
