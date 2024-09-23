@@ -6,13 +6,19 @@ import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { ErrorPage } from './ErrorPage/error-page.tsx';
 import {RegisterPage} from './Routes/RegisterPage/RegisterPage.tsx';
+import {LoginPage} from './Routes/LoginPage/LoginPage.tsx'
 import ShoppingLists from './Routes/ShoppingLists/shoppinglists.tsx';
+
 
 const routes: RouteObject[] = [
     
   {
     path: "/register",
     element: <RegisterPage/>
+  },
+  {
+    path: "/login",
+    element: <LoginPage/>
   },
   {
     path: "/",
