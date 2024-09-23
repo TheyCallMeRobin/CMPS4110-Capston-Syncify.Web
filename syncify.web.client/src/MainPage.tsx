@@ -24,22 +24,22 @@ export const MainPage: React.FC = () => {
                 <ul className="navbar-nav flex-column w-100 icon-list">
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/calendars">
-                            <FaCalendarAlt /> {!isSidebarCollapsed && "Calendar"}
+                            <FaCalendarAlt /> {!isSidebarCollapsed && " Calendar"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/reminders">
-                            <FaBell /> {!isSidebarCollapsed && "Reminder"}
+                            <FaBell /> {!isSidebarCollapsed && " Reminder"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/recipes">
-                            <FaBook /> {!isSidebarCollapsed && "Recipes"}
+                            <FaBook /> {!isSidebarCollapsed && " Recipes"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/shoppinglists">
-                            <FaShoppingCart /> {!isSidebarCollapsed && "Shopping List"}
+                            <FaShoppingCart /> {!isSidebarCollapsed && " Shopping List"}
                         </Link>
                     </li>
                 </ul>
@@ -49,23 +49,22 @@ export const MainPage: React.FC = () => {
                 <ul className="navbar-nav flex-column w-100 mb-3 bottom-links icon-list">
                     <li className="nav-item mb-2">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/account-settings">
-                            <FaCog /> {!isSidebarCollapsed && "Account Settings"}
+                            <FaCog /> {!isSidebarCollapsed && " Account Settings"}
                         </Link>
                     </li>
                     <li className="nav-item mb-2">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/register">
-                            <FaUserPlus /> {!isSidebarCollapsed && "Invite"}
+                            <FaUserPlus /> {!isSidebarCollapsed && " Invite"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/">
-                            <FaHome /> {!isSidebarCollapsed && "Home"}
+                            <FaHome /> {!isSidebarCollapsed && " Home"}
                         </Link>
                     </li>
                 </ul>
             </nav>
-
-            {/* Main content */}
+            
             <div className="flex-grow-1 d-flex flex-column">
                 <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div className="container-fluid justify-content-between">
@@ -95,8 +94,7 @@ export const MainPage: React.FC = () => {
                         </ul>
                     </div>
                 </nav>
-
-                {/* Conditionally render the welcome message */}
+                
                 {location.pathname === '/' && (
                     <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
                         <div className="w-100 text-center">
