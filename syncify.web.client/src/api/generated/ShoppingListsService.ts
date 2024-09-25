@@ -1,7 +1,6 @@
 import {
-  UserDto,
-  LoginDto,
-  UserGetDto,
+  ShoppingListGetDto,
+  ShoppingListCreateDto,
   IList,
   List,
   IListResult,
@@ -19,7 +18,7 @@ import {
   basePath
 } from './index.defs';
 
-export class AuthenticationService {
+export class ShoppingListsService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
@@ -27,9 +26,9 @@ export class AuthenticationService {
   /**
    *
    */
-  static me(options: IRequestOptions = {}): Promise<UserDto> {
+  static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/authentication/me';
+      let url = basePath + '/api/shoppinglist';
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
@@ -39,15 +38,15 @@ export class AuthenticationService {
   /**
    *
    */
-  static login(
+  static createShoppingList(
     params: {
       /** requestBody */
-      body?: LoginDto;
+      body?: ShoppingListCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<UserGetDto>> {
+  ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/authentication/login';
+      let url = basePath + '/api/shoppinglist';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -61,11 +60,18 @@ export class AuthenticationService {
   /**
    *
    */
-  static logout(options: IRequestOptions = {}): Promise<any> {
+  static getShoppingListById(
+    params: {
+      /**  */
+      id: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/authentication/logout';
+      let url = basePath + '/api/shoppinglist/{id}';
+      url = url.replace('{id}', params['id'] + '');
 
-      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });

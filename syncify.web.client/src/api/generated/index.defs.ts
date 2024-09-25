@@ -196,18 +196,6 @@ export class CalendarEventGetDto {
   }
 }
 
-export class CalendarEventType {
-  /**  */
-  'Event'?: number;
-
-  /**  */
-  'Task'?: number;
-
-  constructor(data: CalendarEventType = {}) {
-    Object.assign(this, data);
-  }
-}
-
 export class CalendarEventUpdateDto {
   /**  */
   'title': string;
@@ -292,33 +280,6 @@ export class CreateUserDto {
   }
 }
 
-export class DayOfWeek {
-  /**  */
-  'Sunday'?: number;
-
-  /**  */
-  'Monday'?: number;
-
-  /**  */
-  'Tuesday'?: number;
-
-  /**  */
-  'Wednesday'?: number;
-
-  /**  */
-  'Thursday'?: number;
-
-  /**  */
-  'Friday'?: number;
-
-  /**  */
-  'Satuday'?: number;
-
-  constructor(data: DayOfWeek = {}) {
-    Object.assign(this, data);
-  }
-}
-
 export class EmptyResponse {
   /**  */
   'hasErrors': boolean;
@@ -363,6 +324,15 @@ export class RecipeCreateDto {
   'description': string;
 
   /**  */
+  'prepTimeInMinutes': number;
+
+  /**  */
+  'cookTimeInMinutes': number;
+
+  /**  */
+  'servings': number;
+
+  /**  */
   'userId': number;
 
   constructor(data: RecipeCreateDto = {}) {
@@ -379,6 +349,18 @@ export class RecipeGetDto {
 
   /**  */
   'description': string;
+
+  /**  */
+  'prepTimeInMinutes': number;
+
+  /**  */
+  'cookTimeInMinutes': number;
+
+  /**  */
+  'servings': number;
+
+  /**  */
+  'userFirstName': string;
 
   constructor(data: RecipeGetDto = {}) {
     Object.assign(this, data);
@@ -448,23 +430,32 @@ export class RecipeIngredientUpdateDto {
   }
 }
 
-export class RecurrenceType {
+export class ShoppingListCreateDto {
   /**  */
-  'Daily'?: number;
+  'name': string;
 
   /**  */
-  'Weekly'?: number;
+  'description': string;
 
   /**  */
-  'BiWeekly'?: number;
+  'userId': number;
+
+  constructor(data: ShoppingListCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListGetDto {
+  /**  */
+  'id': number;
 
   /**  */
-  'Monthly'?: number;
+  'name': string;
 
   /**  */
-  'Custom'?: number;
+  'description': string;
 
-  constructor(data: RecurrenceType = {}) {
+  constructor(data: ShoppingListGetDto = {}) {
     Object.assign(this, data);
   }
 }
@@ -497,4 +488,57 @@ export class UserDto {
   constructor(data: UserDto = {}) {
     Object.assign(this, data);
   }
+}
+
+export class UserGetDto {
+  /**  */
+  'id': number;
+
+  /**  */
+  'userName': string;
+
+  /**  */
+  'firstName': string;
+
+  /**  */
+  'lastName': string;
+
+  /**  */
+  'email': string;
+
+  /**  */
+  'phoneNumber': string;
+
+  /**  */
+  'roles': string[];
+
+  /**  */
+  'profileColor': string;
+
+  constructor(data: UserGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export enum CalendarEventType {
+  'Event' = 'Event',
+  'Task' = 'Task'
+}
+
+export enum DayOfWeek {
+  'Sunday' = 'Sunday',
+  'Monday' = 'Monday',
+  'Tuesday' = 'Tuesday',
+  'Wednesday' = 'Wednesday',
+  'Thursday' = 'Thursday',
+  'Friday' = 'Friday',
+  'Satuday' = 'Satuday'
+}
+
+export enum RecurrenceType {
+  'Daily' = 'Daily',
+  'Weekly' = 'Weekly',
+  'BiWeekly' = 'BiWeekly',
+  'Monthly' = 'Monthly',
+  'Custom' = 'Custom'
 }
