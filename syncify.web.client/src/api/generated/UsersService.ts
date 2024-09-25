@@ -1,6 +1,6 @@
 import {
   CreateUserDto,
-  UserDto,
+  UserGetDto,
   IList,
   List,
   IListResult,
@@ -32,7 +32,7 @@ export class UsersService {
       body?: CreateUserDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<UserDto> {
+  ): Promise<Response<UserGetDto>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/users/api/createusers';
 
@@ -54,7 +54,7 @@ export class UsersService {
       id?: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<UserDto> {
+  ): Promise<Response<UserGetDto>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/users/id';
 
