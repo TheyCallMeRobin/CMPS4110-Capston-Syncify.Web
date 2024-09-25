@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-
 
 namespace Syncify.Web.Server.Controllers;
 
@@ -12,15 +9,11 @@ namespace Syncify.Web.Server.Controllers;
 [Route("api/authentication")]
 public class AuthenticationController : Controller
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
+    private readonly IAuthenticationService _authenticationService;
 
-    public AuthenticationController(
-        SignInManager<User> signInManager, 
-        UserManager<User> userManager)
+    public AuthenticationController(IAuthenticationService authenticationService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
+        _authenticationService = authenticationService;
     }
 
     [HttpGet("me")]
@@ -28,52 +21,22 @@ public class AuthenticationController : Controller
     public async Task<ActionResult<UserDto>> Me()
     {
         var username = User.GetCurrentUserName();
-        var resultDto = await GetUserDto(_userManager.Users)
-            .SingleOrDefaultAsync(x => x.UserName == username);
-
-        if (resultDto == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(resultDto);
+        var response = await _authenticationService.GetCurrentUser(username ?? string.Empty);
+        return Ok(response);
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(LoginDto dto)
+    public async Task<ActionResult<Response<UserGetDto>>> Login(LoginDto dto)
     {
-        var user = await _userManager.FindByNameAsync(dto.Username);
-        if (user == null)
-        {
-            return BadRequest();
-        }
-        var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, true);
-        if (!result.Succeeded)
-        {
-            return BadRequest();
-        }
-
-        await _signInManager.SignInAsync(user, isPersistent: false);
-
-        var resultDto = await GetUserDto(_userManager.Users).SingleAsync(x => x.UserName == user.UserName);
-        return Ok(resultDto);
+        var response = await _authenticationService.Login(dto);
+        return Ok(response);
     }
 
     [HttpPost("logout")]
     [Authorize]
     public async Task<ActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
-        return Ok();
-    }
-
-    private static IQueryable<UserDto> GetUserDto(IQueryable<User> users)
-    {
-        return users.Select(x => new UserDto
-        {
-            Id = x.Id,
-            UserName = x.UserName!,
-            Roles = x.UserRoles.Select(y => y.Role.Name).ToArray()!
-        });
+        var response = await _authenticationService.SignOut();
+        return Ok(response);
     }
 }
