@@ -92,10 +92,9 @@ try
 
     app.UseHttpsRedirection();
 
-    app.UseAuthorization();
-
     app.UseRouting();
-
+    app.UseAuthorization();
+    
     app.MapControllers();
 
     app.MapFallbackToFile("/index.html");
