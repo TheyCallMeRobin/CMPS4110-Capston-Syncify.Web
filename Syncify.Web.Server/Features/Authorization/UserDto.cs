@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Syncify.Web.Server.Extensions;
 
 namespace Syncify.Web.Server.Features.Authorization;
 
@@ -49,7 +50,7 @@ public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
         RuleFor(x => x.LastName).NotEmpty();
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.PhoneNumber).NotEmpty();
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(8).HasSpecialCharacters();
         RuleFor(x => x.UserName).NotEmpty();
     }
 }
