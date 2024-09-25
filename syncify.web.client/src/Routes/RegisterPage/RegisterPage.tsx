@@ -18,6 +18,13 @@ const defaultValues: CreateUserDto = {
   roles: ['Member'],
 };
 
+const formatPhoneNumber = (value: string) => {
+  const phone = value.replace(/\D/g, '');
+  if (phone.length <= 3) return phone;
+  if (phone.length <= 6) return `(${phone.slice(0, 3)}) ${phone.slice(3)}`;
+  return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`;
+};
+
 export const RegisterPage: React.FC = () => {
   const [newUser, setNewUser] = useState<CreateUserDto>(defaultValues);
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -35,36 +42,9 @@ export const RegisterPage: React.FC = () => {
     toast.success(message);
   };
 
-  const formatPhoneNumber = (value: string) => {
-    const phone = value.replace(/\D/g, '');
-    if (phone.length <= 3) return phone;
-    if (phone.length <= 6) return `(${phone.slice(0, 3)}) ${phone.slice(3)}`;
-    return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`;
-  };
-
   const [, handleRegister] = useAsyncFn(
     async (e: React.FormEvent) => {
       e.preventDefault();
-
-      const FirstNameMaxLength = 128;
-      const LastNameMaxLength = 128;
-
-      if (newUser.firstName.length > FirstNameMaxLength) {
-        notifyError(
-          `First name cannot exceed ${FirstNameMaxLength} characters!`
-        );
-        return;
-      }
-
-      if (newUser.lastName.length > LastNameMaxLength) {
-        notifyError(`Last name cannot exceed ${LastNameMaxLength} characters!`);
-        return;
-      }
-
-      if (newUser.password !== confirmPassword) {
-        notifyError('Passwords do not match!');
-        return;
-      }
 
       const response = await UsersService.create({ body: newUser });
       if (response.hasErrors) {
@@ -74,7 +54,7 @@ export const RegisterPage: React.FC = () => {
       notifySuccess('Registration successful');
       navigate('/login');
     },
-    [confirmPassword, navigate, newUser]
+    [navigate, newUser]
   );
 
   return (
