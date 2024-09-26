@@ -25,7 +25,7 @@ namespace Syncify.Web.Server.Features.Recipes
         public async Task<ActionResult<Response<RecipeTagDto>>> GetTagById(int id)
         {
             var result = await _recipeTagService.GetTagById(id);
-            if (result.IsError)
+            if (result.HasErrors)
             {
                 return NotFound(result);
             }
@@ -37,14 +37,14 @@ namespace Syncify.Web.Server.Features.Recipes
         public async Task<ActionResult<Response<RecipeTagDto>>> CreateTag([FromBody] RecipeTagCreateDto dto)
         {
             var result = await _recipeTagService.CreateTag(dto);
-            return CreatedAtAction(nameof(GetTagById), new { id = result.Data.Id }, result);
+            return CreatedAtAction(nameof(GetTagById), new { id = result.Data?.Id }, result);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Response<RecipeTagDto>>> UpdateTag(int id, [FromBody] RecipeTagCreateDto dto)
         {
             var result = await _recipeTagService.UpdateTag(id, dto);
-            if (result.IsError)
+            if (result.HasErrors)
             {
                 return NotFound(result);
             }
@@ -56,7 +56,7 @@ namespace Syncify.Web.Server.Features.Recipes
         public async Task<ActionResult<Response<bool>>> DeleteTag(int id)
         {
             var result = await _recipeTagService.DeleteTag(id);
-            if (result.IsError)
+            if (result.HasErrors)
             {
                 return NotFound(result);
             }
