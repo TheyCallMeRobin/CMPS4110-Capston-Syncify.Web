@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Syncify.Web.Server.Features.Recipes
 { 
-    public class ShoppingListTagEntityConfiguration : IEntityTypeConfiguration<ShoppingListTag>
-    {
-        public void Configure(EntityTypeBuilder<ShoppingListTag> builder)
+    public class RecipeTagEntityConfiguration : IEntityTypeConfiguration<RecipeTag>
+    { 
+        public void Configure(EntityTypeBuilder<RecipeTag> builder)
         {
-            builder.ToTable("ShoppingListTags");
+            builder.ToTable("RecipeTags");
 
             builder.Property(x => x.Name)
                 .HasMaxLength(50)
