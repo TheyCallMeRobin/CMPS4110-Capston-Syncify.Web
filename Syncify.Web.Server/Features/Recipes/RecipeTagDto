@@ -1,0 +1,8 @@
+namespace Syncify.Web.Server.Features.Recipes
+{
+    // DTO for retrieving a RecipeTag
+    public record RecipeTagDto(int Id, string Name, int RecipeId);
+
+    // DTO for creating/updating a RecipeTag
+    public record RecipeTagCreateDto(string Name, int RecipeId);
+}
