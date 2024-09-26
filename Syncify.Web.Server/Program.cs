@@ -50,6 +50,7 @@ try
     builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>();
     builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 
+
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddSingleton<MapperProvider>();
 
