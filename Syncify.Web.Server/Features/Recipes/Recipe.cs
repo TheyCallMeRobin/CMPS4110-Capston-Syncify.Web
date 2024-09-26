@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
@@ -20,6 +21,9 @@ public class Recipe
     // Foreign key to associate the recipe with a user
     public int UserId { get; set; }
     public User User { get; set; } = default!;
+
+    // Property for tags
+    public List<ShoppingListTag> Tags { get; set; } = new List<ShoppingListTag>();
 }
 
 public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
