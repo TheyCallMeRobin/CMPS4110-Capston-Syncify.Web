@@ -23,7 +23,7 @@ public class Recipe
     public User User { get; set; } = default!;
 
     // Property for tags
-    public List<ShoppingListTag> Tags { get; set; } = new List<ShoppingListTag>();
+    public List<RecipeTag> Tags { get; set; } = new List<RecipeTag>();
 }
 
 public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
