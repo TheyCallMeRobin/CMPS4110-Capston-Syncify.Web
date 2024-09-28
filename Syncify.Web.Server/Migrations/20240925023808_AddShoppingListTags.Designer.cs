@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240925023808_AddShoppingListTags")]
+    partial class AddShoppingListTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -388,7 +391,7 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("Recipes", (string)null);
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.RecipeTag", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.ShoppingListTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -408,7 +411,7 @@ namespace Syncify.Web.Server.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("RecipeTags", (string)null);
+                    b.ToTable("ShoppingListTags", (string)null);
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
@@ -551,7 +554,7 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.RecipeTag", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.ShoppingListTag", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
                         .WithMany("Tags")

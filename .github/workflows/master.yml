@@ -1,0 +1,26 @@
+name: CI-Check
+
+on:
+  push:
+    branches:
+      - master  # Or whatever your main branch is called
+  pull_request:
+    branches:
+      - master  # Also run tests on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2  # This checks out your code
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'  # Specify your Node.js version
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test  # Replace with the actual test command for your project

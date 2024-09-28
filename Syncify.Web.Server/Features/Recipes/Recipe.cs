@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
@@ -20,6 +21,9 @@ public class Recipe
     // Foreign key to associate the recipe with a user
     public int UserId { get; set; }
     public User User { get; set; } = default!;
+
+    // Property for tags
+    public List<RecipeTag> Tags { get; set; } = new List<RecipeTag>();
 }
 
 public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
@@ -52,5 +56,11 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
             .WithMany(x => x.Recipes)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete if the user is deleted
+        // Configure the relationship with RecipeTag
+        builder.HasMany(x => x.Tags)
+            .WithOne(x => x.Recipe)
+            .HasForeignKey(x => x.RecipeId)
+            .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete if the recipe is deleted
     }
-}
+    }
+
