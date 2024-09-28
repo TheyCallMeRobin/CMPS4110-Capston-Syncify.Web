@@ -56,5 +56,11 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
             .WithMany(x => x.Recipes)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete if the user is deleted
+        // Configure the relationship with RecipeTag
+        builder.HasMany(x => x.Tags)
+            .WithOne(x => x.Recipe)
+            .HasForeignKey(x => x.RecipeId)
+            .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete if the recipe is deleted
     }
-}
+    }
+
