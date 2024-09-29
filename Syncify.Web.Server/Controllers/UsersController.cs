@@ -11,14 +11,14 @@ public class UsersController(IUserService userService) : Controller
     private readonly IUserService _userService = userService;
 
     [HttpPost("api/createusers")]
-    public async Task<ActionResult<UserDto>> Create(CreateUserDto createUserDto)
+    public async Task<ActionResult<Response<UserGetDto>>> Create(CreateUserDto createUserDto)
     {
         var data = await _userService.CreateUser(createUserDto);
         return Ok(data);
     }
 
     [HttpGet("id")]
-    public async Task<ActionResult<UserDto>> GetUserById(int id)
+    public async Task<ActionResult<Response<UserGetDto>>> GetUserById(int id)
     {
         var data = await _userService.GetById(id);
         return Ok(data);
