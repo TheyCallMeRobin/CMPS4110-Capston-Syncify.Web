@@ -16,6 +16,7 @@ public static class ServiceConfigurations
         services.AddScoped<ICalendarService, CalendarService>();
         services.AddScoped<IRecipeIngredientService, RecipeIngredientService>();
         services.AddScoped<ICalendarEventService, CalendarEventService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
     }
     
 }

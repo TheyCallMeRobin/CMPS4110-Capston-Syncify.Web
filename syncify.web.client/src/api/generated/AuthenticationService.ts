@@ -1,6 +1,7 @@
 import {
   UserDto,
   LoginDto,
+  UserGetDto,
   IList,
   List,
   IListResult,
@@ -44,7 +45,7 @@ export class AuthenticationService {
       body?: LoginDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<UserDto> {
+  ): Promise<Response<UserGetDto>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/authentication/login';
 

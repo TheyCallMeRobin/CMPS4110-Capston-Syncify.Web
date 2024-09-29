@@ -1,6 +1,6 @@
 import {
-  CreateUserDto,
-  UserGetDto,
+  ShoppingListGetDto,
+  ShoppingListCreateDto,
   IList,
   List,
   IListResult,
@@ -18,7 +18,7 @@ import {
   basePath
 } from './index.defs';
 
-export class UsersService {
+export class ShoppingListsService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
@@ -26,15 +26,27 @@ export class UsersService {
   /**
    *
    */
-  static create(
+  static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shoppinglist';
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static createShoppingList(
     params: {
       /** requestBody */
-      body?: CreateUserDto;
+      body?: ShoppingListCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<UserGetDto>> {
+  ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/users/api/createusers';
+      let url = basePath + '/api/shoppinglist';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -48,18 +60,18 @@ export class UsersService {
   /**
    *
    */
-  static getUserById(
+  static getShoppingListById(
     params: {
       /**  */
-      id?: number;
+      id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<UserGetDto>> {
+  ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/users/id';
+      let url = basePath + '/api/shoppinglist/{id}';
+      url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-      configs.params = { id: params['id'] };
 
       axios(configs, resolve, reject);
     });
