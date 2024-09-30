@@ -2,6 +2,7 @@
 
 public class Units
 {
+    public const string Count = "count";
     public const string Teaspoon = "tsp";
     public const string Tablespoon = "tbsp";
     public const string Cup = "cup";
