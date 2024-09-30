@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Syncify.Web.Server.Common;
+using Syncify.Web.Server.Extensions;
 
 namespace Syncify.Web.Server.Features.RecipeIngredients;
 
@@ -32,7 +34,7 @@ public class RecipeIngredientDtoValidator : AbstractValidator<RecipeIngredientDt
     public RecipeIngredientDtoValidator()
     {
         RuleFor(x => x.Name).MaximumLength(RecipeIngredientEntityConfiguration.RecipeIngredientNameMaxLength);
-        RuleFor(x => x.Unit).Must(x => RecipeUnits.List.Contains(x));
+        RuleFor(x => x.Unit).MustBeInList(Units.List);
         RuleFor(x => x.Quantity).GreaterThan(0);
     }
 }
