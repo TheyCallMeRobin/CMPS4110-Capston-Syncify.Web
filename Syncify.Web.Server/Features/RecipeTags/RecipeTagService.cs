@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Syncify.Common;
 using Syncify.Web.Server.Data;
 
-namespace Syncify.Web.Server.Features.Recipes
+namespace Syncify.Web.Server.Features.RecipeTags
 {
     public class RecipeTagService
     {
@@ -16,7 +15,7 @@ namespace Syncify.Web.Server.Features.Recipes
         public async Task<Response<List<RecipeTagDto>>> GetTags()
         {
             var tags = await _dataContext
-                .Set<RecipeTag>()  // Use Set<T>() here to query RecipeTag
+                .Set<RecipeTag>()  
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .ToListAsync();
 
@@ -26,7 +25,7 @@ namespace Syncify.Web.Server.Features.Recipes
         public async Task<Response<RecipeTagDto>> GetTagById(int id)
         {
             var tag = await _dataContext
-                .Set<RecipeTag>() // Use Set<T>() here to query RecipeTag
+                .Set<RecipeTag>() 
                 .Where(tag => tag.Id == id)
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .FirstOrDefaultAsync();
@@ -47,7 +46,7 @@ namespace Syncify.Web.Server.Features.Recipes
                 RecipeId = dto.RecipeId
             };
 
-            _dataContext.Set<RecipeTag>().Add(tag); // Use Set<T>() here to add RecipeTag
+            _dataContext.Set<RecipeTag>().Add(tag);
             await _dataContext.SaveChangesAsync();
 
             var result = new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId);
