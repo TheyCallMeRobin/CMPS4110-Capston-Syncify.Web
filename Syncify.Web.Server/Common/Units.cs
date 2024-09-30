@@ -1,6 +1,6 @@
-﻿namespace Syncify.Web.Server.Features.RecipeIngredients;
+﻿namespace Syncify.Web.Server.Common;
 
-public static class RecipeUnits
+public class Units
 {
     public const string Teaspoon = "tsp";
     public const string Tablespoon = "tbsp";
@@ -21,7 +21,7 @@ public static class RecipeUnits
     public const string Piece = "piece";
     
     public static List<string> List =>
-        typeof(RecipeUnits)
+        typeof(Units)
             .GetFields()
             .Where(x => x.GetRawConstantValue() is not null)
             .Select(x => x.GetRawConstantValue()!.ToString())
