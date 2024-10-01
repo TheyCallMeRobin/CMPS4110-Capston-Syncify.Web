@@ -3,6 +3,7 @@ using Syncify.Web.Server.Features.CalendarEvents;
 using Syncify.Web.Server.Features.Calendars;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.Recipes;
+using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Configurations;
 
@@ -17,6 +18,7 @@ public static class ServiceConfigurations
         services.AddScoped<IRecipeIngredientService, RecipeIngredientService>();
         services.AddScoped<ICalendarEventService, CalendarEventService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IShoppingListService, ShoppingListService>();
     }
     
 }

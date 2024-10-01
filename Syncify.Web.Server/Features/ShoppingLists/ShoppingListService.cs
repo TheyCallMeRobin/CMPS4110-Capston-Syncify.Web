@@ -11,7 +11,10 @@ public interface IShoppingListService
 {
     Task<Response<List<ShoppingListGetDto>>> GetShoppingLists();
     Task<Response<ShoppingListGetDto>> GetShoppingListById(int id);
+    Task<Response<List<ShoppingListGetDto>>> GetShoppingListsByUserId(int userId);
     Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
+    Task<Response<ShoppingListGetDto>> UpdateShoppingList(int id, ShoppingListUpdateDto updateDto);
+    Task DeleteShoppingList(int id);
 }
 
 public class ShoppingListService : IShoppingListService
@@ -45,6 +48,18 @@ public class ShoppingListService : IShoppingListService
         return data.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
+    public async Task<Response<List<ShoppingListGetDto>>> GetShoppingListsByUserId(int userId)
+    {
+        var data = await _dataContext
+            .Set<ShoppingList>()
+            .Where(x => x.UserId == userId)
+            .Select(x => x.MapTo<ShoppingListGetDto>())
+            .ToListAsync();
+
+        return data.AsResponse();
+    }
+
+
     public async Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto)
     {
         if (await ShoppingListHasSameName(createDto.Name, createDto.UserId))
@@ -56,6 +71,30 @@ public class ShoppingListService : IShoppingListService
         await _dataContext.SaveChangesAsync();
 
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
+    }
+
+    public async Task<Response<ShoppingListGetDto>> UpdateShoppingList(int id, ShoppingListUpdateDto updateDto)
+    {
+        var shoppingList = await _dataContext.ShoppingLists.FindAsync(id);
+        if (shoppingList == null)
+            return Error.AsResponse<ShoppingListGetDto>("Shopping list not found");
+
+        shoppingList.Name = updateDto.Name;
+        shoppingList.Description = updateDto.Description ?? shoppingList.Description;
+
+        await _dataContext.SaveChangesAsync();
+
+        return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
+    }
+
+    public async Task DeleteShoppingList(int id)
+    {
+        var shoppingList = await _dataContext.ShoppingLists.FindAsync(id);
+        if (shoppingList != null)
+        {
+            _dataContext.ShoppingLists.Remove(shoppingList);
+            await _dataContext.SaveChangesAsync();
+        }
     }
 
     private Task<bool> ShoppingListHasSameName(string name, int userId)

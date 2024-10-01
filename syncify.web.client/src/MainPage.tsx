@@ -38,7 +38,7 @@ export const MainPage: React.FC = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/shoppinglists">
+                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/shoppinglist">
                             <FaShoppingCart /> {!isSidebarCollapsed && " Shopping List"}
                         </Link>
                     </li>

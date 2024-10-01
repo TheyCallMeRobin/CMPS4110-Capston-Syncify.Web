@@ -29,6 +29,18 @@ public class ShoppingListsController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet("by-user/{userId}")]
+    public async Task<ActionResult<Response<List<ShoppingListGetDto>>>> GetShoppingListsByUserId(int userId)
+    {
+        var data = await _shoppingListService.GetShoppingListsByUserId(userId);
+        if (data.HasErrors)
+        {
+            return BadRequest(data);
+        }
+        return Ok(data);
+    }
+
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<ShoppingListGetDto>>> CreateShoppingList([FromBody] ShoppingListCreateDto dto)
@@ -36,4 +48,32 @@ public class ShoppingListsController : ControllerBase
         var data = await _shoppingListService.CreateShoppingList(dto);
         return Ok(data);
     }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateShoppingList(int id, [FromBody] ShoppingListUpdateDto dto)
+    {
+        var existingList = await _shoppingListService.GetShoppingListById(id);
+        if (existingList.Data == null)
+        {
+            return NotFound(new { message = "Shopping list not found." });
+        }
+
+        var updatedList = await _shoppingListService.UpdateShoppingList(id, dto);
+        return Ok(updatedList);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteShoppingList(int id)
+    {
+        var existingList = await _shoppingListService.GetShoppingListById(id);
+        if (existingList.Data == null)
+        {
+            return NotFound(new { message = "Shopping list not found." });
+        }
+
+        await _shoppingListService.DeleteShoppingList(id);
+        return NoContent();
+    }
+
+
 }
