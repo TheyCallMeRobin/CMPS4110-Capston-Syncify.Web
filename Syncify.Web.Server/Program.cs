@@ -39,6 +39,7 @@ try
         options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.SerializerOptions.WriteIndented = true;
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.SerializerOptions.IncludeFields = true;
     });
 
     builder.Services.AddControllers();

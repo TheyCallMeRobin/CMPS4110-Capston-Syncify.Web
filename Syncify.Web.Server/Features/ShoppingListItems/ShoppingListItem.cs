@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Common;
 using Syncify.Web.Server.Extensions;
@@ -14,7 +13,8 @@ public class ShoppingListItem
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string Unit { get; set; } = string.Empty;
-    
+    public int Quantity { get; set; }
+    public bool IsChecked { get; set; }
     public ShoppingList ShoppingList { get; set; } = default!;
 }
 
@@ -27,9 +27,18 @@ public class ShoppingListItemConfiguration : IEntityTypeConfiguration<ShoppingLi
     {
         builder.ToTable("ShoppingListItems");
 
-        builder.Property(x => x.Name).HasMaxLength(NameMaxLength);
-        builder.Property(x => x.Description).HasMaxLength(DescriptionMaxLength).IsRequired(false);
-        builder.Property(x => x.Unit).HasMaxLength(UnitMaxLength);
+        builder.Property(x => x.Name)
+            .HasMaxLength(NameMaxLength)
+            .IsRequired();
+        
+        builder.Property(x => x.Description)
+            .HasMaxLength(DescriptionMaxLength)
+            .IsRequired(false);
+        
+        builder.Property(x => x.Unit)
+            .HasMaxLength(UnitMaxLength)
+            .HasDefaultValue(Units.Count)
+            .IsRequired();
         
         builder
             .HasOne(x => x.ShoppingList)

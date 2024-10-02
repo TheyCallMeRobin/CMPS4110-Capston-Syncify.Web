@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Syncify.Common;
-using Syncify.Common.Errors;
-using Syncify.Common.Extensions;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
@@ -12,6 +10,8 @@ public interface IShoppingListService
     Task<Response<List<ShoppingListGetDto>>> GetShoppingLists();
     Task<Response<ShoppingListGetDto>> GetShoppingListById(int id);
     Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
+    Task<Response<ShoppingListGetDto>> CreateListFromRecipe(ShoppingListRecipeCreateDto dto);
+
 }
 
 public class ShoppingListService : IShoppingListService
@@ -58,6 +58,14 @@ public class ShoppingListService : IShoppingListService
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
+    public Task<Response<ShoppingListGetDto>> CreateListFromRecipe(ShoppingListRecipeCreateDto dto)
+    {
+        var facade = new RecipeToShoppingListFacade(_dataContext);
+        return facade.CreateListFromRecipe(dto);
+    }
+    
+   
+    
     private Task<bool> ShoppingListHasSameName(string name, int userId)
         => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.UserId == userId);
 }

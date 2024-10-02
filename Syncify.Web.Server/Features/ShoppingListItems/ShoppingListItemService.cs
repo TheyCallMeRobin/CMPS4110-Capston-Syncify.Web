@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
+using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.RecipeIngredients;
+using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Features.ShoppingListItems;
 
 public interface IShoppingListItemService
 {
-    Task<List<ShoppingListItem>> CreateItemsFromRecipe(int recipeId);
+    Task<Response<ShoppingListItemGetDto>> GetShoppingListItemById(int id);
 }
 
 public class ShoppingListItemService : IShoppingListItemService
@@ -17,8 +20,8 @@ public class ShoppingListItemService : IShoppingListItemService
     {
         _dataContext = dataContext;
     }
-
     
+
     
     private Task<bool> IsItemUnique(int shoppingListId, string name)
     {
@@ -27,9 +30,13 @@ public class ShoppingListItemService : IShoppingListItemService
             .AnyAsync(x => x.ShoppingListId == shoppingListId && x.Name.Equals(name));
     }
 
-    public Task<List<ShoppingListItem>> CreateItemsFromRecipe(int recipeId)
+    public async Task<Response<ShoppingListItemGetDto>> GetShoppingListItemById(int id)
     {
-        throw new NotImplementedException();
+        var item = await _dataContext.Set<ShoppingListItem>().FirstOrDefaultAsync(x => x.Id == id);
+        if (item is null)
+            return Error.AsResponse<ShoppingListItemGetDto>("Item not found.", nameof(id));
+
+        return item.MapTo<ShoppingListItemGetDto>().AsResponse();
     }
 }
 

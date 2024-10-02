@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Syncify.Common;
 using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
-[Route("api/shoppinglist")]
+[Route("api/shopping-lists")]
 public class ShoppingListsController : ControllerBase
 {
     private readonly IShoppingListService _shoppingListService;
@@ -36,4 +35,14 @@ public class ShoppingListsController : ControllerBase
         var data = await _shoppingListService.CreateShoppingList(dto);
         return Ok(data);
     }
+
+    [HttpPost("recipe")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<Response<ShoppingListGetDto>>> CreateListFromRecipe(
+        [FromBody] ShoppingListRecipeCreateDto dto)
+    {
+        var data = await _shoppingListService.CreateListFromRecipe(dto);
+        return Ok(data);
+    }
+
 }

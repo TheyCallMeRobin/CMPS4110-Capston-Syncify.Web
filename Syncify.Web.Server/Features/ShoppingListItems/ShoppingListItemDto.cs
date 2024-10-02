@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
 using AutoMapper;
 using FluentValidation;
 
@@ -13,11 +12,12 @@ public record ShoppingListItemDto
     public string Unit { get; set; } = string.Empty;
     public string? Description { get; set; }
     public int Quantity { get; set; }
+    public bool IsChecked { get; set; }
 }
 
 public record ShoppingListItemGetDto(int Id, int ShoppingListId) : ShoppingListItemDto;
 public record ShoppingListItemCreateDto(int ShoppingListId) : ShoppingListItemDto;
-public record ShoppingListItemUpdateDto : ShoppingListItemDto;
+public record ShoppingListItemUpdateDto(bool IsChecked) : ShoppingListItemDto;
 
 public class ShoppingListItemMappingProfile : Profile
 {
