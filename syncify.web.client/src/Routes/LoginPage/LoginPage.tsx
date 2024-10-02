@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginPage.css';
@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LoginDto } from '../../api/generated/index.defs.ts';
 import { useAsyncFn } from 'react-use';
 import { AuthenticationService } from '../../api/generated/AuthenticationService.ts';
+import { MyAppContext } from '../../Context/MyAppContext';
 
 const defaultLoginData: LoginDto = {
   username: '',
@@ -15,9 +16,9 @@ const defaultLoginData: LoginDto = {
 
 export const LoginPage: React.FC = () => {
   const [loginData, setLoginData] = useState<LoginDto>(defaultLoginData);
-
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const appContext = useContext(MyAppContext);
 
   const notifyError = (message: string) => {
     toast.dismiss();
@@ -32,12 +33,24 @@ export const LoginPage: React.FC = () => {
       if (response.hasErrors) {
         response.errors.forEach((err) => notifyError(err.errorMessage));
         return;
-      }
+          }
+
+          const userData = response.data;
+
+          if (!userData) {
+              notifyError('Login failed: user data is null');
+              return;
+          }
+
+          appContext?.setUser({
+              id: String(userData.id),
+              email: userData.email,
+          });
 
       toast.success('Logged in');
       navigate('/');
     },
-    [loginData, navigate]
+    [loginData, navigate, appContext]
   );
 
   return (
