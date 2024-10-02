@@ -79,13 +79,19 @@ public class ShoppingListService : IShoppingListService
         if (shoppingList == null)
             return Error.AsResponse<ShoppingListGetDto>("Shopping list not found");
 
+        // Update the fields from the DTO
         shoppingList.Name = updateDto.Name;
         shoppingList.Description = updateDto.Description ?? shoppingList.Description;
+        shoppingList.Checked = updateDto.Checked;  // Ensure Checked is updated
+        shoppingList.Completed = updateDto.Completed;  // Ensure Completed is updated
 
+        // Save the changes to the database
         await _dataContext.SaveChangesAsync();
 
+        // Return the updated entity mapped to a DTO
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
+
 
     public async Task DeleteShoppingList(int id)
     {

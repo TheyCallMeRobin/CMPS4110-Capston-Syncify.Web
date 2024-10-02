@@ -3,9 +3,10 @@ using FluentValidation;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
-public record ShoppingListGetDto(int Id, string Name, string Description);
+public record ShoppingListGetDto(int Id, string Name, string Description, bool Checked, bool Completed);
 public record ShoppingListCreateDto(string Name, string Description, int UserId);
-public record ShoppingListUpdateDto(string Name, string? Description);
+public record ShoppingListUpdateDto(string Name, string? Description, bool Checked, bool Completed);
+
 
 
 public class ShoppingListMappingProfile : Profile

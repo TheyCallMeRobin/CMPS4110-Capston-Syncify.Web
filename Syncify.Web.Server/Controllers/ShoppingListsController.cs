@@ -58,9 +58,24 @@ public class ShoppingListsController : ControllerBase
             return NotFound(new { message = "Shopping list not found." });
         }
 
-        var updatedList = await _shoppingListService.UpdateShoppingList(id, dto);
-        return Ok(updatedList);
+        var shoppingListToUpdate = new ShoppingListUpdateDto
+        (
+            dto.Name,
+            dto.Description,
+            dto.Checked,
+            dto.Completed
+        );
+
+        var updateResult = await _shoppingListService.UpdateShoppingList(id, shoppingListToUpdate);
+
+        if (updateResult.Errors != null && updateResult.Errors.Any())
+        {
+            return BadRequest(new { message = "Failed to update shopping list.", errors = updateResult.Errors });
+        }
+
+        return Ok(updateResult.Data);
     }
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShoppingList(int id)

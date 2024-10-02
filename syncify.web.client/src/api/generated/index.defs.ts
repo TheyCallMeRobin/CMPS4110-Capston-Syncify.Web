@@ -455,6 +455,11 @@ export class ShoppingListGetDto {
   /**  */
   'description': string;
 
+  /** */
+  'checked': boolean;
+
+  /** */
+  'completed': boolean;
   constructor(data: ShoppingListGetDto = {}) {
     Object.assign(this, data);
   }
