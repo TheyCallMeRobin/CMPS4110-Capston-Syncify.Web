@@ -47,7 +47,7 @@ try
     
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts => opts.UseSqlServer(connectionString));
-    builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>();
+   
     builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 
 
@@ -57,6 +57,7 @@ try
     ServiceConfigurations.ConfigureServices(builder.Services);
     FluentValidationConfiguration.ConfigureServices(builder.Services);
     SwaggerConfiguration.Configure(builder.Services);
+    AuthenticationConfiguration.ConfigureServices(builder.Services);
     
     var app = builder.Build();
     

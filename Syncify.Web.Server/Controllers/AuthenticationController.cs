@@ -18,7 +18,7 @@ public class AuthenticationController : Controller
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<ActionResult<UserDto>> Me()
+    public async Task<ActionResult<Response<UserGetDto>>> Me()
     {
         var username = User.GetCurrentUserName();
         var response = await _authenticationService.GetCurrentUser(username ?? string.Empty);
