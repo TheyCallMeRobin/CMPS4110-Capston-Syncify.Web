@@ -41,7 +41,17 @@
     .sidebar.collapsed {
         width: 50px;
     }
-    
+
+.icon-list .nav-link {
+    justify-content: center;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.icon-list .nav-link svg {
+    margin-right: 7px; 
+}
 .toggle-btn {
     background: none;
     border: none;
@@ -53,7 +63,12 @@
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    font-weight: 500; 
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.navbar .toggle-btn {
+    font-size: 1.9rem !important;
 }
 
     .toggle-btn:hover {
@@ -109,4 +124,9 @@
 
 .sidebar.collapsed .nav-link .svg-inline--fa {
     margin-right: 0;
+}
+
+.signout-button {
+    font-size: 0.875rem; 
+    padding: 5px 10px; 
 }
