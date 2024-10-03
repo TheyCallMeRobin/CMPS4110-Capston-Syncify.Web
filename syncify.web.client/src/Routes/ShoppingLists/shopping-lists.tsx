@@ -1,33 +1,42 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import './shoppinglists.css';
-import { MyAppContext } from '../../Context/MyAppContext';
 import { logError } from '../../utils/logger';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
 import { ShoppingListCreateDto } from '../../api/generated/index.defs.ts';
+import { useUser } from '../../auth/auth-context.tsx';
 
 const ShoppingLists = () => {
-    const [items, setItems] = useState<{ id: number, name: string, description: string, checked: boolean, completed: boolean }[]>([]);
+    const [items, setItems] = useState<
+        {
+            id: number;
+            name: string;
+            description: string;
+            checked: boolean;
+            completed: boolean;
+        }[]
+    >([]);
     const [newItem, setNewItem] = useState<string>('');
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
     const [editedName, setEditedName] = useState<string>('');
 
-    const appContext = useContext(MyAppContext);
-    const userId = appContext?.user?.id;
+    const user = useUser();
 
     useEffect(() => {
-        if (!userId) return;
+        if (!user?.id) return;
 
         const fetchItems = async () => {
             try {
-                const response = await ShoppingListsService.getShoppingListsByUserId({ userId: Number(userId) });
-                if (response.hasErrors) throw new Error('Failed to fetch shopping lists');
+                const response = await ShoppingListsService.getShoppingListsByUserId({
+                    userId: Number(user?.id),
+                });
+                if (response.hasErrors)
+                    throw new Error('Failed to fetch shopping lists');
                 const validItems = Array.isArray(response.data)
                     ? response.data.map((item) => ({
                         ...item,
                         checked: item.checked ?? false,
-                        completed: item.completed ?? false
+                        completed: item.completed ?? false,
                     }))
-                    
                     : [];
 
                 setItems(validItems);
@@ -38,22 +47,28 @@ const ShoppingLists = () => {
         };
 
         fetchItems();
-    }, [userId]);
+    }, [user?.id]);
 
     const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
             const newItemObj: ShoppingListCreateDto = {
                 name: newItem,
                 description: '',
-                userId: Number(userId),
+                userId: Number(user?.id),
             };
 
             try {
-                const response = await ShoppingListsService.createShoppingList({ body: newItemObj });
-                if (response.hasErrors) throw new Error('Failed to create shopping list item');
+                const response = await ShoppingListsService.createShoppingList({
+                    body: newItemObj,
+                });
+                if (response.hasErrors)
+                    throw new Error('Failed to create shopping list item');
 
                 if (response.data) {
-                    setItems([...items, { ...response.data, checked: false, completed: false }]);
+                    setItems([
+                        ...items,
+                        { ...response.data, checked: false, completed: false },
+                    ]);
                 }
                 setNewItem('');
             } catch (error) {
@@ -62,18 +77,21 @@ const ShoppingLists = () => {
         }
     };
 
-
     const handleSaveItem = async (id: number) => {
         const updatedItemObj = {
             name: editedName,
             description: '',
-            userId: Number(userId),
+            userId: Number(user?.id),
         };
 
         try {
-            const response = await ShoppingListsService.updateShoppingList({ id, body: updatedItemObj });
-            if (response.hasErrors) throw new Error('Failed to update shopping list item');
-            const updatedItems = items.map(item =>
+            const response = await ShoppingListsService.updateShoppingList({
+                id,
+                body: updatedItemObj,
+            });
+            if (response.hasErrors)
+                throw new Error('Failed to update shopping list item');
+            const updatedItems = items.map((item) =>
                 item.id === id ? { ...item, name: editedName } : item
             );
             setItems(updatedItems);
@@ -83,45 +101,57 @@ const ShoppingLists = () => {
         }
     };
 
-
     const handleBlur = (id: number) => {
         handleSaveItem(id);
         setEditingItemId(null);
     };
 
     const handleToggleChecked = async (id: number) => {
-        const item = items.find(i => i.id === id);
+        const item = items.find((i) => i.id === id);
         if (!item) return;
 
-        const updatedItem = { ...item, checked: !item.checked, completed: !item.checked };
+        const updatedItem = {
+            ...item,
+            checked: !item.checked,
+            completed: !item.checked,
+        };
 
         try {
-            const response = await ShoppingListsService.updateShoppingList({ id, body: updatedItem });
+            const response = await ShoppingListsService.updateShoppingList({
+                id,
+                body: updatedItem,
+            });
             if (response.hasErrors) throw new Error('Failed to update item');
 
-            setItems(items.map(i => (i.id === id ? updatedItem : i)));
+            setItems(items.map((i) => (i.id === id ? updatedItem : i)));
         } catch (error) {
             logError('Error while updating item:', error);
         }
     };
 
     const handleRemoveCheckedItems = async () => {
-        const confirmed = window.confirm('Are you sure you want to remove all checked items?');
+        const confirmed = window.confirm(
+            'Are you sure you want to remove all checked items?'
+        );
         if (confirmed) {
-            const checkedItems = items.filter(item => item.checked);
+            const checkedItems = items.filter((item) => item.checked);
 
             try {
                 for (const item of checkedItems) {
-                    const response = await ShoppingListsService.deleteShoppingList({ id: item.id });
-                    if (response.hasErrors) throw new Error(`Failed to delete item: ${item.id}`);
+                    const response = await ShoppingListsService.deleteShoppingList({
+                        id: item.id,
+                    });
+                    if (response.hasErrors)
+                        throw new Error(`Failed to delete item: ${item.id}`);
                 }
-                setItems(currentItems => currentItems.filter(item => !item.checked));
+                setItems((currentItems) =>
+                    currentItems.filter((item) => !item.checked)
+                );
             } catch (error) {
                 logError('Error while deleting item:', error);
             }
         }
     };
-
 
     return (
         <div className="shopping-list-page">
@@ -132,9 +162,13 @@ const ShoppingLists = () => {
                         items.map((item) => (
                             <li
                                 key={item.id}
-                                className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
+                                className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''
+                                    }`}
                             >
-                                <div className="d-flex align-items-center" style={{ width: '100%' }}>
+                                <div
+                                    className="d-flex align-items-center"
+                                    style={{ width: '100%' }}
+                                >
                                     <input
                                         type="checkbox"
                                         checked={item.checked}
@@ -154,7 +188,9 @@ const ShoppingLists = () => {
                                     ) : (
                                         <span
                                             style={{
-                                                textDecoration: item.completed ? 'line-through' : 'none',
+                                                textDecoration: item.completed
+                                                    ? 'line-through'
+                                                    : 'none',
                                                 flexGrow: 1,
                                                 textAlign: 'center',
                                             }}
@@ -184,9 +220,13 @@ const ShoppingLists = () => {
                         />
                     </li>
                 </ul>
-                {items.some(item => item.checked) && (
+                {items.some((item) => item.checked) && (
                     <div className="mt-4" style={{ textAlign: 'right' }}>
-                        <button className="btn btn-danger" style={{ width: 'auto' }} onClick={handleRemoveCheckedItems}>
+                        <button
+                            className="btn btn-danger"
+                            style={{ width: 'auto' }}
+                            onClick={handleRemoveCheckedItems}
+                        >
                             Remove Checked
                         </button>
                     </div>
