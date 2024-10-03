@@ -12,8 +12,8 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240925023808_AddShoppingListTags")]
-    partial class AddShoppingListTags
+    [Migration("20241002204428_Add_ShoppingListAndItems")]
+    partial class Add_ShoppingListAndItems
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -355,6 +355,29 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("RecipeIngredients", (string)null);
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.RecipeTags.RecipeTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeTags", (string)null);
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
                 {
                     b.Property<int>("Id")
@@ -391,30 +414,7 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("Recipes", (string)null);
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.ShoppingListTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("ShoppingListTags", (string)null);
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingListItems.ShoppingListItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -425,8 +425,27 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<bool>("Checked")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Completed")
-                        .HasColumnType("bit");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShoppingListId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShoppingListId");
+
+                    b.ToTable("ShoppingListItems");
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(128)
@@ -543,6 +562,17 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("Syncify.Web.Server.Features.RecipeTags.RecipeTag", b =>
+                {
+                    b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
+                        .WithMany("Tags")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Authorization.User", "User")
@@ -554,15 +584,15 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.ShoppingListTag", b =>
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingListItems.ShoppingListItem", b =>
                 {
-                    b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
-                        .WithMany("Tags")
-                        .HasForeignKey("RecipeId")
+                    b.HasOne("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", "ShoppingList")
+                        .WithMany("Items")
+                        .HasForeignKey("ShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Recipe");
+                    b.Navigation("ShoppingList");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
@@ -598,6 +628,11 @@ namespace Syncify.Web.Server.Migrations
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
                 {
                     b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

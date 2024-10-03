@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.Authorization;
 
@@ -13,6 +14,7 @@ public class User : IdentityUser<int>
     public List<UserRole> UserRoles { get; set; } = [];
     public List<Recipe> Recipes { get; set; } = [];
     public ICollection<ShoppingList> ShoppingLists { get; set; } = new List<ShoppingList>();
+    public ICollection<ShoppingListItem> ShoppingListItems { get; set; } = new List<ShoppingListItem>();
 
 }
 

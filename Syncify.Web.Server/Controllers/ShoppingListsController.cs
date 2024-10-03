@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Syncify.Common;
+using Syncify.Web.Server.Features.ShoppingListItems;
 using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Controllers;
@@ -9,10 +10,12 @@ namespace Syncify.Web.Server.Controllers;
 public class ShoppingListsController : ControllerBase
 {
     private readonly IShoppingListService _shoppingListService;
+    private readonly IShoppingListItemService _shoppingListItemService;
 
-    public ShoppingListsController(IShoppingListService shoppingListService)
+    public ShoppingListsController(IShoppingListService shoppingListService, IShoppingListItemService shoppingListItemService)
     {
         _shoppingListService = shoppingListService;
+        _shoppingListItemService = shoppingListItemService;
     }
 
     [HttpGet]
@@ -26,7 +29,21 @@ public class ShoppingListsController : ControllerBase
     public async Task<ActionResult<Response<ShoppingListGetDto>>> GetShoppingListById(int id)
     {
         var data = await _shoppingListService.GetShoppingListById(id);
-        return Ok(data);
+        if (data.Data != null)
+        {
+            var shoppingListItems = await _shoppingListItemService.GetShoppingListItemsByShoppingListId(id);
+
+            var shoppingListDto = new ShoppingListGetDto(
+                data.Data.Id,
+                data.Data.Name,
+                data.Data.Description,
+                shoppingListItems.Data
+            );
+
+            return Ok(shoppingListDto.AsResponse());
+        }
+
+        return NotFound(new { message = "Shopping list not found." });
     }
 
     [HttpGet("by-user/{userId}")]
@@ -39,7 +56,6 @@ public class ShoppingListsController : ControllerBase
         }
         return Ok(data);
     }
-
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -58,24 +74,15 @@ public class ShoppingListsController : ControllerBase
             return NotFound(new { message = "Shopping list not found." });
         }
 
-        var shoppingListToUpdate = new ShoppingListUpdateDto
-        (
-            dto.Name,
-            dto.Description,
-            dto.Checked,
-            dto.Completed
-        );
+        var updateResult = await _shoppingListService.UpdateShoppingList(id, dto);
 
-        var updateResult = await _shoppingListService.UpdateShoppingList(id, shoppingListToUpdate);
-
-        if (updateResult.Errors != null && updateResult.Errors.Any())
+        if (updateResult.HasErrors)
         {
             return BadRequest(new { message = "Failed to update shopping list.", errors = updateResult.Errors });
         }
 
         return Ok(updateResult.Data);
     }
-
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShoppingList(int id)
@@ -89,6 +96,5 @@ public class ShoppingListsController : ControllerBase
         await _shoppingListService.DeleteShoppingList(id);
         return NoContent();
     }
-
-
 }
+

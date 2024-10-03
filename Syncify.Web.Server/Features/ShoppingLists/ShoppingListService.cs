@@ -4,6 +4,7 @@ using Syncify.Common.Errors;
 using Syncify.Common.Extensions;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
@@ -38,9 +39,9 @@ public class ShoppingListService : IShoppingListService
 
     public async Task<Response<ShoppingListGetDto>> GetShoppingListById(int id)
     {
-        var data = await _dataContext
-            .Set<ShoppingList>()
-            .FindAsync(id);
+        var data = await _dataContext.ShoppingLists
+            .Include(s => s.ShoppingListItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (data is null)
             return Error.AsResponse<ShoppingListGetDto>("Unable to find shopping list.", nameof(id));
@@ -59,7 +60,6 @@ public class ShoppingListService : IShoppingListService
         return data.AsResponse();
     }
 
-
     public async Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto)
     {
         if (await ShoppingListHasSameName(createDto.Name, createDto.UserId))
@@ -75,34 +75,62 @@ public class ShoppingListService : IShoppingListService
 
     public async Task<Response<ShoppingListGetDto>> UpdateShoppingList(int id, ShoppingListUpdateDto updateDto)
     {
-        var shoppingList = await _dataContext.ShoppingLists.FindAsync(id);
+        var shoppingList = await _dataContext.ShoppingLists
+            .Include(s => s.ShoppingListItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
         if (shoppingList == null)
             return Error.AsResponse<ShoppingListGetDto>("Shopping list not found");
 
-        // Update the fields from the DTO
+        // Update basic properties
         shoppingList.Name = updateDto.Name;
         shoppingList.Description = updateDto.Description ?? shoppingList.Description;
-        shoppingList.Checked = updateDto.Checked;  // Ensure Checked is updated
-        shoppingList.Completed = updateDto.Completed;  // Ensure Completed is updated
 
-        // Save the changes to the database
+        // Update ShoppingListItems
+        foreach (var updatedItem in updateDto.ShoppingListItems)
+        {
+            var existingItem = shoppingList.ShoppingListItems
+                .FirstOrDefault(item => item.Id == updatedItem.Id);
+
+            if (existingItem != null)
+            {
+                // Update existing item
+                existingItem.Name = updatedItem.Name;
+                existingItem.Checked = updatedItem.Checked;
+            }
+            else
+            {
+                // Add new item
+                shoppingList.ShoppingListItems.Add(updatedItem.MapTo<ShoppingListItem>());
+            }
+        }
+
+        // Remove items that are no longer in the updated list
+        shoppingList.ShoppingListItems.RemoveAll(item =>
+            !updateDto.ShoppingListItems.Any(updated => updated.Id == item.Id));
+
         await _dataContext.SaveChangesAsync();
 
-        // Return the updated entity mapped to a DTO
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
 
-
     public async Task DeleteShoppingList(int id)
     {
-        var shoppingList = await _dataContext.ShoppingLists.FindAsync(id);
+        var shoppingList = await _dataContext.ShoppingLists
+            .Include(s => s.ShoppingListItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
         if (shoppingList != null)
         {
+            _dataContext.ShoppingListItems.RemoveRange(shoppingList.ShoppingListItems);
             _dataContext.ShoppingLists.Remove(shoppingList);
             await _dataContext.SaveChangesAsync();
         }
     }
 
     private Task<bool> ShoppingListHasSameName(string name, int userId)
-        => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.UserId == userId);
+    {
+        return _dataContext.Set<ShoppingList>()
+            .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.UserId == userId);
+    }
 }

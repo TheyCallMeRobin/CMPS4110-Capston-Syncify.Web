@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Web.Server.Features.ShoppingListItems;
 using Syncify.Web.Server.Features.Recipes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Syncify.Web.Server.Data;
 
@@ -25,7 +27,8 @@ public class DataSeeder
         await CreateRoles();
         await CreateUsers();
         await CreateShoppingLists();
-        await CreateRecipes();  // Add this line to seed recipes
+        await CreateShoppingListItems();
+        await CreateRecipes();
     }
 
     private async Task CreateRoles()
@@ -74,7 +77,7 @@ public class DataSeeder
             await _userManager.CreateAsync(user, BasicPassword);
         }
 
-        await _dataContext.SaveChangesAsync();  // Save changes after all users are created
+        await _dataContext.SaveChangesAsync();
     }
 
     private async Task CreateShoppingLists()
@@ -90,19 +93,51 @@ public class DataSeeder
 
         var shoppingLists = new[]
         {
-            new ShoppingList { Name = "Milk", Completed = false, Checked = false, UserId = john.Id },
-            new ShoppingList { Name = "Bread", Completed = false, Checked = false, UserId = john.Id },
-            new ShoppingList { Name = "Eggs", Completed = false, Checked = false, UserId = john.Id },
-            new ShoppingList { Name = "Butter", Completed = false, Checked = false, UserId = jane.Id },
-            new ShoppingList { Name = "Cheese", Completed = false, Checked = false, UserId = jane.Id },
-            new ShoppingList { Name = "Apples", Completed = false, Checked = false, UserId = jane.Id }
+            new ShoppingList { Name = "John's Weekly Groceries", Description = "Weekly grocery shopping for John.", UserId = john.Id },
+            new ShoppingList { Name = "John's Party Supplies", Description = "Party supplies for John's upcoming party.", UserId = john.Id },
+            new ShoppingList { Name = "Jane's Vegan Essentials", Description = "Jane's weekly vegan essentials.", UserId = jane.Id },
+            new ShoppingList { Name = "Jane's Office Snacks", Description = "Office snacks for Jane's workplace.", UserId = jane.Id }
         };
 
         _dataContext.ShoppingLists.AddRange(shoppingLists);
-        await _dataContext.SaveChangesAsync();  // Save all shopping items at once
+        await _dataContext.SaveChangesAsync();
     }
 
-    private async Task CreateRecipes() // New method for creating sample recipes
+    private async Task CreateShoppingListItems()
+    {
+        if (_dataContext.ShoppingListItems.Any())
+            return;
+
+        var johnShoppingLists = await _dataContext.ShoppingLists
+            .Where(x => x.User.UserName == "johnjohnson")
+            .ToListAsync();
+
+        var janeShoppingLists = await _dataContext.ShoppingLists
+            .Where(x => x.User.UserName == "janeadams")
+            .ToListAsync();
+
+        var johnsItems = new[]
+        {
+            new ShoppingListItem { Name = "Milk", Checked = false, ShoppingListId = johnShoppingLists[0].Id },
+            new ShoppingListItem { Name = "Bread", Checked = false, ShoppingListId = johnShoppingLists[0].Id },
+            new ShoppingListItem { Name = "Balloons", Checked = false, ShoppingListId = johnShoppingLists[1].Id },
+            new ShoppingListItem { Name = "Cake", Checked = false, ShoppingListId = johnShoppingLists[1].Id }
+        };
+
+        var janesItems = new[]
+        {
+            new ShoppingListItem { Name = "Tofu", Checked = false, ShoppingListId = janeShoppingLists[0].Id },
+            new ShoppingListItem { Name = "Almond Milk", Checked = false, ShoppingListId = janeShoppingLists[0].Id },
+            new ShoppingListItem { Name = "Cookies", Checked = false, ShoppingListId = janeShoppingLists[1].Id },
+            new ShoppingListItem { Name = "Chips", Checked = false, ShoppingListId = janeShoppingLists[1].Id }
+        };
+
+        _dataContext.ShoppingListItems.AddRange(johnsItems);
+        _dataContext.ShoppingListItems.AddRange(janesItems);
+        await _dataContext.SaveChangesAsync();
+    }
+
+    private async Task CreateRecipes()
     {
         if (_dataContext.Set<Recipe>().Any())
             return;
@@ -136,6 +171,6 @@ public class DataSeeder
         };
 
         _dataContext.Set<Recipe>().AddRange(recipes);
-        await _dataContext.SaveChangesAsync();  // Save all recipes at once
+        await _dataContext.SaveChangesAsync();
     }
 }
