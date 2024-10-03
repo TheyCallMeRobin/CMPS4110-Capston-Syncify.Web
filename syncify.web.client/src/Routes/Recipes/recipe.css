@@ -2,35 +2,60 @@
 .container {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center; /* Center container on the page */
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* Center the header and inputs */
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background-color: #ddd;
     padding: 20px;
+    width: 100%;
+    max-width: 1000px; /* Set a max width for the header */
+    box-sizing: border-box;
+    gap: 10px;
 }
 
+/* Ensure search fields have consistent widths */
+.search-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the label horizontally */
+}
+
+    /* Center the labels within the search fields */
+    .search-fields label {
+        text-align: center;
+      
+        margin-bottom: 5px; /* Add space between the label and the input */
+    }
+
+/* Style the search bar inputs */
 .search-bar {
-    flex-grow: 1;
     padding: 10px;
-    font-size: 1.25rem;
+    font-size: 0.85rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-right: 20px;
+    width: 100%; /* Ensure input takes full width */
+    text-align: center; /* Optional: center text inside the input */
 }
 
+/* Button styling */
 .create-button {
     background-color: #007BFF;
+    margin: 10px;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
+    padding: 10px;
     font-size: 1.25rem;
+    border: none;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    cursor: pointer;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
     .create-button:hover {
@@ -42,18 +67,18 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    flex-grow: 1;
-    padding: 20px;
+    width: 100%;
+    max-width: 1000px; /* Center content section and limit max width */
+    margin-top: 20px;
 }
 
 .section {
-    width: 200px; /* Adjusted width */
+    width: 200px;
     margin: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s;
     padding: 15px;
@@ -73,49 +98,3 @@
     font-weight: bold;
     margin-bottom: 10px;
 }
-
-/* Rest of the styling from previous CSS */
-
-.icon-button {
-    background: transparent;
-    border: none;
-}
-
-.icon {
-    color: black;
-}
-
-.header-separator {
-    height: 4px;
-    background-color: black;
-}
-
-.main-content .main-heading {
-    font-size: 3rem;
-    font-weight: bold;
-    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
-}
-
-.text-dark {
-    color: black;
-}
-
-.text-highlight {
-    color: #228B22;
-    font-weight: bold;
-}
-
-.description {
-    font-size: 1.25rem;
-    color: #333;
-}
-
-.sidebar {
-    width: 180px;
-    background-color: #003366;
-    transition: width 0.3s ease;
-}
-
-    .sidebar.collapsed {
-        width: 50px;
-    }
