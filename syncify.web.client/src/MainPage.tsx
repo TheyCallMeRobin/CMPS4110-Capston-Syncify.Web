@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify } from 'react-icons/fa';
+import { useUser } from './auth/auth-context.tsx';
 import './MainPage.css';
 
 export const MainPage: React.FC = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const user = useUser();
 
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
+    };
+
+    const handleSignOut = async () => {
+        try {
+            await fetch('/api/authentication/logout', { method: 'POST', credentials: 'include' });
+            navigate('/login');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
     };
 
     return (
@@ -64,7 +76,7 @@ export const MainPage: React.FC = () => {
                     </li>
                 </ul>
             </nav>
-            
+
             <div className="flex-grow-1 d-flex flex-column">
                 <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div className="container-fluid justify-content-between">
@@ -74,9 +86,9 @@ export const MainPage: React.FC = () => {
                                     Family
                                 </Link>
                                 <ul className="dropdown-menu" aria-labelledby="familyDropdown">
-                                    <li><Link className="dropdown-item" to="/">Member 1</Link></li>
-                                    <li><Link className="dropdown-item" to="/">Member 2</Link></li>
-                                    <li><Link className="dropdown-item" to="/">Member 3</Link></li>
+                                    <li><Link className="dropdown-item" to="/">Group 1</Link></li>
+                                    <li><Link className="dropdown-item" to="/">Group 2</Link></li>
+                                    <li><Link className="dropdown-item" to="/">Group 3</Link></li>
                                 </ul>
                             </li>
                         </ul>
@@ -87,14 +99,25 @@ export const MainPage: React.FC = () => {
                                     <FaUser size={24} />
                                 </Link>
                                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                                    <li><Link className="dropdown-item" to="/login">Login</Link></li>
-                                    <li><Link className="dropdown-item" to="/register">Register</Link></li>
+                                    {user ? (
+                                        <>
+                                            <li className="dropdown-item">
+                                                {`${user.firstName} ${user.lastName}`}
+                                            </li>
+                                            <li><button className="dropdown-item signout-button" onClick={handleSignOut}>Sign Out</button></li>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <li><Link className="dropdown-item" to="/login">Login</Link></li>
+                                            <li><Link className="dropdown-item" to="/register">Register</Link></li>
+                                        </>
+                                    )}
                                 </ul>
                             </li>
                         </ul>
                     </div>
                 </nav>
-                
+
                 {location.pathname === '/' && (
                     <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
                         <div className="w-100 text-center">
