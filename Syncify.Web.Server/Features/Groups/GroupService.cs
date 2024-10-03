@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.CalendarGroups;
 
 namespace Syncify.Web.Server.Features.Groups;
 
@@ -11,6 +12,8 @@ public interface IGroupService
     Task<Response<GroupGetDto>> GetGroupById(int id);
     Task<Response<GroupGetDto>> UpdateGroup(int id, GroupUpdateDto dto);
     Task<Response> DeleteGroup(int id);
+
+    Task<Response<CalendarGroupGetDto>> AddCalendarToGroup(int groupId, int calendarId);
 }
 
 public class GroupService : IGroupService
@@ -90,6 +93,11 @@ public class GroupService : IGroupService
         await _dataContext.SaveChangesAsync();
 
         return Response.Success();
+    }
+
+    public Task<Response<CalendarGroupGetDto>> AddCalendarToGroup(int groupId, int calendarId)
+    {
+        
     }
 
     private Task<bool> IsNotUnique(GroupCreateDto dto)
