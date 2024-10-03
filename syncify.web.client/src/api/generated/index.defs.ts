@@ -430,6 +430,33 @@ export class RecipeIngredientUpdateDto {
   }
 }
 
+export class RecipeTagCreateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'recipeId': number;
+
+  constructor(data: RecipeTagCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class RecipeTagDto {
+  /**  */
+  'id': number;
+
+  /**  */
+  'name': string;
+
+  /**  */
+  'recipeId': number;
+
+  constructor(data: RecipeTagDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class ShoppingListCreateDto {
   /**  */
   'name': string;
@@ -461,36 +488,6 @@ export class ShoppingListGetDto {
   /** */
   'completed': boolean;
   constructor(data: ShoppingListGetDto = {}) {
-    Object.assign(this, data);
-  }
-}
-
-export class UserDto {
-  /**  */
-  'id': number;
-
-  /**  */
-  'userName': string;
-
-  /**  */
-  'firstName': string;
-
-  /**  */
-  'lastName': string;
-
-  /**  */
-  'email': string;
-
-  /**  */
-  'phoneNumber': string;
-
-  /**  */
-  'roles': string[];
-
-  /**  */
-  'profileColor': string;
-
-  constructor(data: UserDto = {}) {
     Object.assign(this, data);
   }
 }
