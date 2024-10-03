@@ -108,17 +108,7 @@ export const App: React.FC = () => {
                     </div>
                 </nav>
 
-                {location.pathname === '/' && (
-                    <main className="flex-fill d-flex flex-column justify-content-center align-items-center bg-light">
-                        <div className="w-100 text-center">
-                            <h1 className="mb-4">
-                                <span className="text-dark">Welcome to </span>
-                                <span className="text-highlight">Syncify</span>
-                            </h1>
-                            <p>This is the future main page of your new favorite calendar app!</p>
-                        </div>
-                    </main>
-                )}
+
 
                 <Outlet />
             </div>
