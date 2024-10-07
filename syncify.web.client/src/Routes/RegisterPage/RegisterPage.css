@@ -83,7 +83,7 @@ p a:hover {
     position: relative;
 }
 
-#phoneNumber {
+.phoneNumber {
     font-size: 1rem;
     padding: 0.75rem;
     border: 1px solid #000;
