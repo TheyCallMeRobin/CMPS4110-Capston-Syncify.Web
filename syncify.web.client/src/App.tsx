@@ -6,17 +6,7 @@ import './App.css';
 import { useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import {
-  FaUser,
-  FaCalendarAlt,
-  FaBell,
-  FaCog,
-  FaUserPlus,
-  FaBook,
-  FaShoppingCart,
-  FaHome,
-  FaAlignJustify,
-} from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify,} from 'react-icons/fa';
 
 export const App: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
