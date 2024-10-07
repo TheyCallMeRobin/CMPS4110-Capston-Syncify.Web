@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify } from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaBook, FaShoppingCart, FaHome, FaAlignJustify } from 'react-icons/fa';
 import { useUser } from './auth/auth-context.tsx';
+import { useAsyncFn } from 'react-use';
 import './MainPage.css';
+import { AuthenticationService } from "./api/generated/AuthenticationService.ts";
 
 export const MainPage: React.FC = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -14,14 +16,10 @@ export const MainPage: React.FC = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
     };
 
-    const handleSignOut = async () => {
-        try {
-            await fetch('/api/authentication/logout', { method: 'POST', credentials: 'include' });
-            navigate('/login');
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
-    };
+    const [{ loading: signingOut, error }, handleSignOut] = useAsyncFn(async () => {
+        await AuthenticationService.logout();
+        navigate('/login');
+    }, []);
 
     return (
         <div className="d-flex min-vh-100">
@@ -36,42 +34,22 @@ export const MainPage: React.FC = () => {
                 <ul className="navbar-nav flex-column w-100 icon-list">
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/calendars">
-                            <FaCalendarAlt /> {!isSidebarCollapsed && " Calendar"}
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/reminders">
-                            <FaBell /> {!isSidebarCollapsed && " Reminder"}
+                            <FaCalendarAlt className={'p-1'}/> {!isSidebarCollapsed && " Calendar"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/recipes">
-                            <FaBook /> {!isSidebarCollapsed && " Recipes"}
+                            <FaBook className={'p-1'}/> {!isSidebarCollapsed && " Recipes"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/shoppinglist">
-                            <FaShoppingCart /> {!isSidebarCollapsed && " Shopping List"}
-                        </Link>
-                    </li>
-                </ul>
-
-                <div className="flex-grow-1"></div>
-
-                <ul className="navbar-nav flex-column w-100 mb-3 bottom-links icon-list">
-                    <li className="nav-item mb-2">
-                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/account-settings">
-                            <FaCog /> {!isSidebarCollapsed && " Account Settings"}
-                        </Link>
-                    </li>
-                    <li className="nav-item mb-2">
-                        <Link className="nav-link d-flex align-items-center justify-content-center" to="/register">
-                            <FaUserPlus /> {!isSidebarCollapsed && " Invite"}
+                            <FaShoppingCart className={'p-1'}/> {!isSidebarCollapsed && " Shopping List"}
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link d-flex align-items-center justify-content-center" to="/">
-                            <FaHome /> {!isSidebarCollapsed && " Home"}
+                            <FaHome className={'p-1'}/> {!isSidebarCollapsed && " Home"}
                         </Link>
                     </li>
                 </ul>
@@ -80,19 +58,6 @@ export const MainPage: React.FC = () => {
             <div className="flex-grow-1 d-flex flex-column">
                 <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div className="container-fluid justify-content-between">
-                        <ul className="navbar-nav">
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link dropdown-toggle" to="/" id="familyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Family
-                                </Link>
-                                <ul className="dropdown-menu" aria-labelledby="familyDropdown">
-                                    <li><Link className="dropdown-item" to="/">Group 1</Link></li>
-                                    <li><Link className="dropdown-item" to="/">Group 2</Link></li>
-                                    <li><Link className="dropdown-item" to="/">Group 3</Link></li>
-                                </ul>
-                            </li>
-                        </ul>
-
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item dropdown">
                                 <Link className="nav-link dropdown-toggle" to="/" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,14 +69,18 @@ export const MainPage: React.FC = () => {
                                             <li className="dropdown-item">
                                                 {`${user.firstName} ${user.lastName}`}
                                             </li>
-                                            <li><button className="dropdown-item signout-button" onClick={handleSignOut}>Sign Out</button></li>
+                                            <li>
+                                                <button
+                                                    className="dropdown-item signout-button"
+                                                    onClick={handleSignOut}
+                                                    disabled={signingOut}
+                                                >
+                                                    {signingOut ? 'Signing Out...' : 'Sign Out'}
+                                                </button>
+                                            </li>
+                                            {error && <li className="dropdown-item text-danger">Error signing out: {error.message}</li>}
                                         </>
-                                    ) : (
-                                        <>
-                                            <li><Link className="dropdown-item" to="/login">Login</Link></li>
-                                            <li><Link className="dropdown-item" to="/register">Register</Link></li>
-                                        </>
-                                    )}
+                                    ) : null}
                                 </ul>
                             </li>
                         </ul>
@@ -129,7 +98,6 @@ export const MainPage: React.FC = () => {
                         </div>
                     </main>
                 )}
-
                 <Outlet />
             </div>
         </div>
