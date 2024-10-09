@@ -1,6 +1,6 @@
 import {
-  ShoppingListGetDto,
-  ShoppingListCreateDto,
+  RecipeTagDto,
+  RecipeTagCreateDto,
   IList,
   List,
   IListResult,
@@ -18,30 +18,35 @@ import {
   basePath
 } from './index.defs';
 
-export class ShoppingListsService {
+export class RecipeTagsService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
 
-  static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
+  /**
+   *
+   */
+  static getTags(options: IRequestOptions = {}): Promise<Response<List<RecipeTagDto>>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist';
+      let url = basePath + '/api/recipetags';
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });
   }
-
-  static createShoppingList(
+  /**
+   *
+   */
+  static createTag(
     params: {
-
-      body?: ShoppingListCreateDto;
+      /** requestBody */
+      body?: RecipeTagCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
+  ): Promise<Response<RecipeTagDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist';
+      let url = basePath + '/api/recipetags';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -52,16 +57,18 @@ export class ShoppingListsService {
       axios(configs, resolve, reject);
     });
   }
-
-  static getShoppingListById(
+  /**
+   *
+   */
+  static getTagById(
     params: {
-
+      /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
+  ): Promise<Response<RecipeTagDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist/{id}';
+      let url = basePath + '/api/recipetags/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -69,51 +76,43 @@ export class ShoppingListsService {
       axios(configs, resolve, reject);
     });
   }
-
-  static getShoppingListsByUserId(
+  /**
+   *
+   */
+  static updateTag(
     params: {
-
-      userId: number;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<Response<List<ShoppingListGetDto>>> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist/by-user/{userId}';
-      url = url.replace('{userId}', params['userId'] + '');
-
-      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-
-      axios(configs, resolve, reject);
-    });
-  }
-
-  static updateShoppingList(
-    params: {
+      /**  */
       id: number;
-      body: Partial<ShoppingListGetDto>;
+      /** requestBody */
+      body?: RecipeTagCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
+  ): Promise<Response<RecipeTagDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist/{id}';
+      let url = basePath + '/api/recipetags/{id}';
       url = url.replace('{id}', params['id'] + '');
 
-      const configs: IRequestConfig = getConfigs('patch', 'application/json', url, options);
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
 
-      configs.data = params.body;
+      let data = params.body;
+
+      configs.data = data;
 
       axios(configs, resolve, reject);
     });
   }
-
-  static deleteShoppingList(
+  /**
+   *
+   */
+  static deleteTag(
     params: {
+      /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<null>> {
+  ): Promise<Response<boolean>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shoppinglist/{id}';
+      let url = basePath + '/api/recipetags/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
@@ -121,5 +120,4 @@ export class ShoppingListsService {
       axios(configs, resolve, reject);
     });
   }
-
 }

@@ -17,17 +17,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Response<UserGetDto>"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Response<UserGetDto>"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Response<UserGetDto>"
                 }
               }
             }
@@ -692,6 +692,221 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Response<RecipeGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipetags": {
+      "get": {
+        "tags": [
+          "RecipeTags"
+        ],
+        "operationId": "GetTags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeTagDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeTagDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeTagDto>>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "RecipeTags"
+        ],
+        "operationId": "CreateTag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipetags/{id}": {
+      "get": {
+        "tags": [
+          "RecipeTags"
+        ],
+        "operationId": "GetTagById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "RecipeTags"
+        ],
+        "operationId": "UpdateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeTagCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeTagDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RecipeTags"
+        ],
+        "operationId": "DeleteTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
                 }
               }
             }
@@ -1627,6 +1842,45 @@
         },
         "additionalProperties": false
       },
+      "RecipeTagCreateDto": {
+        "required": [
+          "name",
+          "recipeId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "recipeId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeTagDto": {
+        "required": [
+          "id",
+          "name",
+          "recipeId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "recipeId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "RecurrenceType": {
         "enum": [
           "Daily",
@@ -1636,6 +1890,30 @@
           "Custom"
         ],
         "type": "string"
+      },
+      "Response<Boolean>": {
+        "required": [
+          "data",
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
       },
       "Response<CalendarEventGetDto>": {
         "required": [
@@ -1793,6 +2071,33 @@
         },
         "additionalProperties": false
       },
+      "Response<List<RecipeTagDto>>": {
+        "required": [
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeTagDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Response<List<ShoppingListGetDto>>": {
         "required": [
           "errors",
@@ -1864,6 +2169,30 @@
           },
           "data": {
             "$ref": "#/components/schemas/RecipeIngredientGetDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Response<RecipeTagDto>": {
+        "required": [
+          "data",
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "$ref": "#/components/schemas/RecipeTagDto"
           }
         },
         "additionalProperties": false
@@ -1953,50 +2282,6 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserDto": {
-        "required": [
-          "email",
-          "firstName",
-          "id",
-          "lastName",
-          "phoneNumber",
-          "profileColor",
-          "roles",
-          "userName"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "profileColor": {
             "type": "string"
           }
         },

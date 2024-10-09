@@ -10,8 +10,8 @@ public class ShoppingList
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public bool Checked { get; set; }
-    public bool Completed { get; set; }
+    public bool Checked { get; set; } = false;
+    public bool Completed { get; set; } = false;
     public int UserId { get; set; }
     public User User { get; set; } = default!;
 

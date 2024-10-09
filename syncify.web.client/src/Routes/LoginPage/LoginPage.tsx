@@ -15,7 +15,6 @@ const defaultLoginData: LoginDto = {
 
 export const LoginPage: React.FC = () => {
   const [loginData, setLoginData] = useState<LoginDto>(defaultLoginData);
-
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -31,6 +30,13 @@ export const LoginPage: React.FC = () => {
       const response = await AuthenticationService.login({ body: loginData });
       if (response.hasErrors) {
         response.errors.forEach((err) => notifyError(err.errorMessage));
+        return;
+      }
+
+      const userData = response.data;
+
+      if (!userData) {
+        notifyError('Login failed: user data is null');
         return;
       }
 

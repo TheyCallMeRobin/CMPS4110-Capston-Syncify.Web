@@ -1,110 +1,145 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './shoppinglists.css';
+import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
+import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
+import { useUser } from '../../auth/auth-context.tsx';
+import { useAsync } from 'react-use';
+import { FaTrashAlt } from 'react-icons/fa';
 
 const ShoppingLists = () => {
-    // Initialize state for items and newItem
-    const [items, setItems] = useState<{ id: number, name: string, checked: boolean, completed: boolean }[]>([]);
+    const [items, setItems] = useState<ShoppingListGetDto[]>([]);
     const [newItem, setNewItem] = useState<string>('');
+    const [editingItemId, setEditingItemId] = useState<number | null>(null);
+    const [editedName, setEditedName] = useState<string>('');
+    const user = useUser();
 
-    useEffect(() => {
-        const fetchItems = () => {
-            fetch('/api/shoppinglist')
-                .then(response => response.json())
-                .then(data => {
-                    setItems(Array.isArray(data) ? data : []);
-                })
-                .catch(() => {
-                    setItems([]);
-                });
-        };
-        fetchItems();
-    }, []);
+    const { loading, error } = useAsync(async () => {
+        if (!user?.id) return;
 
-    // Stubs for the necessary event handlers
-    const handleAddItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const response = await ShoppingListsService.getShoppingListsByUserId({
+            userId: user!.id,
+        });
+
+        setItems(response.data || []);
+    }, [user]);
+
+    const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
             const newItemObj = {
-                id: items.length + 1,  // Fake ID for demonstration
                 name: newItem,
-                checked: false,
-                completed: false
+                description: '',
+                userId: user!.id,
             };
-            setItems([...items, newItemObj]);  // Add the new item
-            setNewItem('');  // Clear the input
+
+            const response = await ShoppingListsService.createShoppingList({
+                body: newItemObj,
+            });
+
+            if (response.data) {
+                setItems([...items, response.data]);
+                setNewItem('');
+            }
         }
     };
 
-    const handleToggleChecked = (id: number) => {
-        const updatedItems = items.map(item =>
-            item.id === id ? { ...item, checked: !item.checked, completed: !item.checked } : item
-        );
-        setItems(updatedItems);  // Update the state locally
+    const handleDeleteItem = async (id: number) => {
+        await ShoppingListsService.deleteShoppingList({ id });
+        setItems(items.filter((item) => item.id !== id));
     };
 
-    const handleRemoveCheckedItems = () => {
-        const confirmed = window.confirm('Are you sure you want to remove all checked items?');
-        if (confirmed) {
-            setItems(items.filter(item => !item.checked));  // Remove checked items
+    const handleSaveItem = async (id: number) => {
+        const item = items.find((i) => i.id === id);
+        if (!item) return;
+
+        const updatedItemObj: ShoppingListUpdateDto = {
+            name: editedName,
+            description: item.description,
+            checked: item.checked,
+            completed: item.completed,
+        };
+
+        const response = await ShoppingListsService.updateShoppingList({
+            id,
+            body: updatedItemObj,
+        });
+
+        if (response.errors) {
+            return;
         }
+
+        setItems(items.map((i) => (i.id === id ? { ...i, ...updatedItemObj } : i)));
+        setEditingItemId(null);
+    };
+
+    const handleBlur = (id: number) => {
+        handleSaveItem(id);
+        setEditingItemId(null);
     };
 
     return (
         <div className="shopping-list-page">
-            {/* Main Content */}
             <div className="container mt-4">
-                <h1 className="mb-4">My Shopping List</h1>
-
-                {/* Shopping List Items */}
+                <h1 className="mb-4">My Shopping Lists</h1>
+                {loading && <p>Loading...</p>}
+                {error && <p>Error loading shopping lists.</p>}
                 <ul className="list-group">
-                    {items.map((item) => (
-                        <li
-                            key={item.id}
-                            className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
-                        >
-                            {/* Align checkbox to the left */}
-                            <div className="d-flex align-items-center" style={{ width: '100%' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={item.checked}
-                                    onChange={() => handleToggleChecked(item.id)}
-                                    style={{ marginRight: '10px' }}  // Adds space between checkbox and text
-                                />
-                                {/* Center the text content */}
-                                <span
-                                    style={{
-                                        textDecoration: item.completed ? 'line-through' : 'none',
-                                        flexGrow: 1,  // Ensures the text takes up available space
-                                        textAlign: 'center'  // Centers the text horizontally
-                                    }}
-                                >
-                                    {item.name}
-                                </span>
-                            </div>
-                        </li>
-                    ))}
-
-                    {/* Add New Item at the Bottom (as part of the list) */}
+                    {items.length > 0 ? (
+                        items.map((item) => (
+                            <li
+                                key={item.id}
+                                className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
+                            >
+                                <div className="d-flex align-items-center" style={{ width: '100%' }}>
+                                    {editingItemId === item.id ? (
+                                        <input
+                                            type="text"
+                                            value={editedName}
+                                            onChange={(e) => setEditedName(e.target.value)}
+                                            onBlur={() => handleBlur(item.id)}
+                                            className="form-control"
+                                            style={{ flexGrow: 1, marginRight: '10px' }}
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <span
+                                            style={{
+                                                textDecoration: item.completed ? 'line-through' : 'none',
+                                                flexGrow: 1,
+                                                textAlign: 'center',
+                                            }}
+                                            onDoubleClick={() => {
+                                                setEditingItemId(item.id);
+                                                setEditedName(item.name);
+                                            }}
+                                        >
+                                            {item.name}
+                                        </span>
+                                    )}
+                                    <button
+                                        className="btn"
+                                        onClick={() => handleDeleteItem(item.id)}
+                                        style={{ marginLeft: '10px' }}
+                                    >
+                                        <FaTrashAlt style={{ color: 'black', fontSize: '24px' }} />
+                                    </button>
+                                </div>
+                            </li>
+                        ))
+                    ) : (
+                        <li className="list-group-item">No items found.</li>
+                    )}
                     <li className="list-group-item d-flex align-items-center">
                         <input
                             type="text"
                             value={newItem}
                             onChange={(e) => setNewItem(e.target.value)}
-                            onKeyDown={handleAddItem}  // Adds item when Enter is pressed
+                            onKeyDown={handleAddItem}
                             className="form-control"
-                            placeholder="Add a new item..."
-                            style={{ width: '100%' }}  // Make input field take up the full width
+                            placeholder="Add a new list..."
+                            style={{ width: '100%' }}
                         />
                     </li>
                 </ul>
-
-                {/* Remove Checked Button */}
-                {items.some(item => item.checked) && (
-                    <div className="mt-4" style={{ textAlign: 'right' }}>
-                        <button className="btn btn-danger" style={{ width: 'auto' }} onClick={handleRemoveCheckedItems}>
-                            Remove Checked
-                        </button>
-                    </div>
-                )}
             </div>
         </div>
     );

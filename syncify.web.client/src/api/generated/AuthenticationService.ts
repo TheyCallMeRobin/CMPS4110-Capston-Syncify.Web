@@ -1,7 +1,6 @@
 import {
-  UserDto,
-  LoginDto,
   UserGetDto,
+  LoginDto,
   IList,
   List,
   IListResult,
@@ -27,7 +26,7 @@ export class AuthenticationService {
   /**
    *
    */
-  static me(options: IRequestOptions = {}): Promise<UserDto> {
+  static me(options: IRequestOptions = {}): Promise<Response<UserGetDto>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/authentication/me';
 
