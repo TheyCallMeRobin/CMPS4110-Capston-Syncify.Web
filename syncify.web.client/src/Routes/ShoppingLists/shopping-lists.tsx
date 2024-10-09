@@ -4,6 +4,7 @@ import { ShoppingListsService } from '../../api/generated/ShoppingListsService.t
 import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
 import { useUser } from '../../auth/auth-context.tsx';
 import { useAsync } from 'react-use';
+import { FaTrashAlt } from 'react-icons/fa';
 
 const ShoppingLists = () => {
     const [items, setItems] = useState<ShoppingListGetDto[]>([]);
@@ -16,11 +17,11 @@ const ShoppingLists = () => {
         if (!user?.id) return;
 
         const response = await ShoppingListsService.getShoppingListsByUserId({
-            userId: Number(user?.id),
+            userId: user!.id,
         });
 
         setItems(response.data || []);
-    }, [user?.id]);
+    }, [user]);
 
     const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
@@ -41,21 +42,9 @@ const ShoppingLists = () => {
         }
     };
 
-    const handleRemoveCheckedItems = async () => {
-        const confirmed = window.confirm('Are you sure you want to remove all checked items?');
-        if (!confirmed) return;
-
-        const checkedItems = items.filter((item) => item.checked);
-
-        const deletePromises = checkedItems.map((item) =>
-            ShoppingListsService.deleteShoppingList({
-                id: item.id,
-            })
-        );
-
-        await Promise.all(deletePromises);
-
-        setItems(items.filter((item) => !item.checked));
+    const handleDeleteItem = async (id: number) => {
+        await ShoppingListsService.deleteShoppingList({ id });
+        setItems(items.filter((item) => item.id !== id));
     };
 
     const handleSaveItem = async (id: number) => {
@@ -82,29 +71,6 @@ const ShoppingLists = () => {
         setEditingItemId(null);
     };
 
-    const handleToggleChecked = async (id: number) => {
-        const item = items.find((i) => i.id === id);
-        if (!item) return;
-
-        const updatedItem = {
-            ...item,
-            checked: !item.checked,
-            completed: !item.checked,
-        };
-
-        const response = await ShoppingListsService.updateShoppingList({
-            id,
-            body: updatedItem,
-        });
-
-        if (response.errors) {
-            return;
-        }
-
-        setItems(items.map((i) => (i.id === id ? updatedItem : i)));
-        setEditingItemId(null);
-    };
-
     const handleBlur = (id: number) => {
         handleSaveItem(id);
         setEditingItemId(null);
@@ -113,7 +79,7 @@ const ShoppingLists = () => {
     return (
         <div className="shopping-list-page">
             <div className="container mt-4">
-                <h1 className="mb-4">My Shopping List</h1>
+                <h1 className="mb-4">My Shopping Lists</h1>
                 {loading && <p>Loading...</p>}
                 {error && <p>Error loading shopping lists.</p>}
                 <ul className="list-group">
@@ -123,16 +89,7 @@ const ShoppingLists = () => {
                                 key={item.id}
                                 className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
                             >
-                                <div
-                                    className="d-flex align-items-center"
-                                    style={{ width: '100%' }}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={item.checked}
-                                        onChange={() => handleToggleChecked(item.id)}
-                                        style={{ marginRight: '10px' }}
-                                    />
+                                <div className="d-flex align-items-center" style={{ width: '100%' }}>
                                     {editingItemId === item.id ? (
                                         <input
                                             type="text"
@@ -158,6 +115,13 @@ const ShoppingLists = () => {
                                             {item.name}
                                         </span>
                                     )}
+                                    <button
+                                        className="btn"
+                                        onClick={() => handleDeleteItem(item.id)}
+                                        style={{ marginLeft: '10px' }}
+                                    >
+                                        <FaTrashAlt style={{ color: 'black', fontSize: '24px' }} />
+                                    </button>
                                 </div>
                             </li>
                         ))
@@ -171,22 +135,11 @@ const ShoppingLists = () => {
                             onChange={(e) => setNewItem(e.target.value)}
                             onKeyDown={handleAddItem}
                             className="form-control"
-                            placeholder="Add a new item..."
+                            placeholder="Add a new list..."
                             style={{ width: '100%' }}
                         />
                     </li>
                 </ul>
-                {items.some((item) => item.checked) && (
-                    <div className="mt-4" style={{ textAlign: 'right' }}>
-                        <button
-                            className="btn btn-danger"
-                            style={{ width: 'auto' }}
-                            onClick={handleRemoveCheckedItems}
-                        >
-                            Remove Checked
-                        </button>
-                    </div>
-                )}
             </div>
         </div>
     );
