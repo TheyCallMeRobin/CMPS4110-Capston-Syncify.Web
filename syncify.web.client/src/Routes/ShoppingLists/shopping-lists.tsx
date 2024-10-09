@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import './shoppinglists.css';
-import { logError } from '../../utils/logger';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
 import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
 import { useUser } from '../../auth/auth-context.tsx';
-import { useAsyncFn } from 'react-use';
+import { useAsync } from 'react-use';
 
 const ShoppingLists = () => {
     const [items, setItems] = useState<ShoppingListGetDto[]>([]);
@@ -13,75 +12,51 @@ const ShoppingLists = () => {
     const [editedName, setEditedName] = useState<string>('');
     const user = useUser();
 
-    const [{ loading, error }, fetchShoppingLists] = useAsyncFn(async () => {
+    const { loading, error } = useAsync(async () => {
         if (!user?.id) return;
 
         const response = await ShoppingListsService.getShoppingListsByUserId({
             userId: Number(user?.id),
         });
 
-        if (response.hasErrors) {
-            logError('Failed to fetch shopping lists');
-            setItems([]);
-            return;
-        }
-
-        const validItems = Array.isArray(response.data)
-            ? response.data.map((item) => ({
-                ...item,
-                checked: item.checked ?? false,
-                completed: item.completed ?? false,
-            }))
-            : [];
-
-        setItems(validItems);
+        setItems(response.data || []);
     }, [user?.id]);
 
-    React.useEffect(() => {
-        if (user?.id) {
-            fetchShoppingLists();
-        }
-    }, [user?.id, fetchShoppingLists]);
-
-    const [, handleAddItem] = useAsyncFn(async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newItem.trim() !== '') {
             const newItemObj = {
                 name: newItem,
                 description: '',
-                userId: Number(user?.id),
+                userId: user!.id,
             };
 
             const response = await ShoppingListsService.createShoppingList({
                 body: newItemObj,
             });
 
-            if (response.hasErrors) {
-                logError('Failed to create shopping list item');
-                return;
-            }
-
             if (response.data) {
-                setItems([
-                    ...items,
-                    { ...response.data, checked: false, completed: false },
-                ]);
+                setItems([...items, response.data]);
                 setNewItem('');
             }
         }
-    }, [newItem, items, user?.id]);
+    };
 
-    const [, handleRemoveCheckedItems] = useAsyncFn(async () => {
+    const handleRemoveCheckedItems = async () => {
         const confirmed = window.confirm('Are you sure you want to remove all checked items?');
         if (!confirmed) return;
 
         const checkedItems = items.filter((item) => item.checked);
+
         const deletePromises = checkedItems.map((item) =>
-            ShoppingListsService.deleteShoppingList({ id: item.id })
+            ShoppingListsService.deleteShoppingList({
+                id: item.id,
+            })
         );
 
         await Promise.all(deletePromises);
+
         setItems(items.filter((item) => !item.checked));
-    }, [items]);
+    };
 
     const handleSaveItem = async (id: number) => {
         const item = items.find((i) => i.id === id);
@@ -91,7 +66,7 @@ const ShoppingLists = () => {
             name: editedName,
             description: item.description,
             checked: item.checked,
-            completed: item.completed
+            completed: item.completed,
         };
 
         const response = await ShoppingListsService.updateShoppingList({
@@ -99,8 +74,7 @@ const ShoppingLists = () => {
             body: updatedItemObj,
         });
 
-        if (response.hasErrors) {
-            logError('Failed to update item');
+        if (response.errors) {
             return;
         }
 
@@ -123,8 +97,7 @@ const ShoppingLists = () => {
             body: updatedItem,
         });
 
-        if (response.hasErrors) {
-            logError('Failed to update item');
+        if (response.errors) {
             return;
         }
 
