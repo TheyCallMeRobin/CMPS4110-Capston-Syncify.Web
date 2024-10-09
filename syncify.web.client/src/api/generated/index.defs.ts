@@ -457,6 +457,21 @@ export class RecipeTagDto {
   }
 }
 
+export class ShoppingListUpdateDto {
+  /** */
+  'name': string;
+
+  /** */
+  'description': string;
+
+  /** */
+  'checked': boolean;
+
+  /** */
+  'completed': boolean;
+  
+}
+
 export class ShoppingListCreateDto {
   /**  */
   'name': string;
