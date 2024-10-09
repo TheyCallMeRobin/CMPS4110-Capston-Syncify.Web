@@ -39,7 +39,7 @@ const ShoppingLists = () => {
 
     React.useEffect(() => {
         if (user?.id) {
-            fetchShoppingLists(); 
+            fetchShoppingLists();
         }
     }, [user?.id, fetchShoppingLists]);
 
@@ -70,30 +70,20 @@ const ShoppingLists = () => {
         }
     }, [newItem, items, user?.id]);
 
-    const [, handleRemoveCheckedItems] = useAsyncFn(() => {
+    const [, handleRemoveCheckedItems] = useAsyncFn(async () => {
         const confirmed = window.confirm('Are you sure you want to remove all checked items?');
-        if (!confirmed) {
-            return Promise.resolve();
-        }
+        if (!confirmed) return;
 
         const checkedItems = items.filter((item) => item.checked);
-
         const deletePromises = checkedItems.map((item) =>
-            ShoppingListsService.deleteShoppingList({
-                id: item.id,
-            })
+            ShoppingListsService.deleteShoppingList({ id: item.id })
         );
 
-        return Promise.all(deletePromises)
-            .then(() => {
-                setItems(items.filter((item) => !item.checked));
-            })
-            .catch((error) => {
-                logError('Error while deleting items:', error);
-            });
+        await Promise.all(deletePromises);
+        setItems(items.filter((item) => !item.checked));
     }, [items]);
 
-    const handleSaveItem = (id: number) => {
+    const handleSaveItem = async (id: number) => {
         const item = items.find((i) => i.id === id);
         if (!item) return;
 
@@ -101,27 +91,24 @@ const ShoppingLists = () => {
             name: editedName,
             description: item.description,
             checked: item.checked,
-            completed: item.completed,
+            completed: item.completed
         };
 
-        ShoppingListsService.updateShoppingList({
+        const response = await ShoppingListsService.updateShoppingList({
             id,
             body: updatedItemObj,
-        })
-            .then((response) => {
-                if (response.hasErrors) {
-                    logError('Failed to update item');
-                    return;
-                }
+        });
 
-                setItems(items.map((i) => (i.id === id ? { ...i, ...updatedItemObj } : i)));
-                setEditingItemId(null); // Exit editing mode after saving
-            })
-            .catch((error) => logError('Error while saving item:', error));
+        if (response.hasErrors) {
+            logError('Failed to update item');
+            return;
+        }
+
+        setItems(items.map((i) => (i.id === id ? { ...i, ...updatedItemObj } : i)));
+        setEditingItemId(null);
     };
 
-
-    const handleToggleChecked = (id: number) => {
+    const handleToggleChecked = async (id: number) => {
         const item = items.find((i) => i.id === id);
         if (!item) return;
 
@@ -131,28 +118,24 @@ const ShoppingLists = () => {
             completed: !item.checked,
         };
 
-        ShoppingListsService.updateShoppingList({
+        const response = await ShoppingListsService.updateShoppingList({
             id,
             body: updatedItem,
-        })
-            .then((response) => {
-                if (response.hasErrors) {
-                    logError('Failed to update item');
-                    return;
-                }
+        });
 
-                setItems(items.map((i) => (i.id === id ? updatedItem : i)));
-                setEditingItemId(null);
-            })
-            .catch((error) => logError('Error while updating item:', error));
+        if (response.hasErrors) {
+            logError('Failed to update item');
+            return;
+        }
+
+        setItems(items.map((i) => (i.id === id ? updatedItem : i)));
+        setEditingItemId(null);
     };
 
     const handleBlur = (id: number) => {
         handleSaveItem(id);
         setEditingItemId(null);
     };
-
-
 
     return (
         <div className="shopping-list-page">
