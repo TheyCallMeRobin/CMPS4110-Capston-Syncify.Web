@@ -1,9 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
+using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Features.RecipeTags
 {
-    public class RecipeTagService
+    public interface IRecipeTagService
+    {
+        Task<Response<List<RecipeTagDto>>> GetTags();
+        Task<Response<RecipeTagDto>> GetTagById(int id);
+        Task<Response<RecipeTagDto>> CreateTag(RecipeTagCreateDto dto);
+        Task<Response<RecipeTagDto>> UpdateTag(int id, RecipeTagCreateDto dto);
+        Task<Response<bool>> DeleteTag(int id);
+    }
+
+    public class RecipeTagService : IRecipeTagService
     {
         private readonly DataContext _dataContext;
 
@@ -15,7 +25,7 @@ namespace Syncify.Web.Server.Features.RecipeTags
         public async Task<Response<List<RecipeTagDto>>> GetTags()
         {
             var tags = await _dataContext
-                .Set<RecipeTag>()  
+                .Set<RecipeTag>()
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .ToListAsync();
 
@@ -25,7 +35,7 @@ namespace Syncify.Web.Server.Features.RecipeTags
         public async Task<Response<RecipeTagDto>> GetTagById(int id)
         {
             var tag = await _dataContext
-                .Set<RecipeTag>() 
+                .Set<RecipeTag>()
                 .Where(tag => tag.Id == id)
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .FirstOrDefaultAsync();
@@ -40,20 +50,36 @@ namespace Syncify.Web.Server.Features.RecipeTags
 
         public async Task<Response<RecipeTagDto>> CreateTag(RecipeTagCreateDto dto)
         {
-            var tag = new RecipeTag
+            var recipeExists = await _dataContext.Set<Recipe>().AnyAsync(r => r.Id == dto.RecipeId);
+            if (!recipeExists)
             {
-                Name = dto.Name,
-                RecipeId = dto.RecipeId
-            };
+                return Error.AsResponse<RecipeTagDto>("The specified RecipeId does not exist.", nameof(dto.RecipeId));
+            }
 
-            _dataContext.Set<RecipeTag>().Add(tag);
-            await _dataContext.SaveChangesAsync();
+            try
+            {
+                var tag = new RecipeTag
+                {
+                    Name = dto.Name,
+                    RecipeId = dto.RecipeId
+                };
 
-            var result = new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId);
-            return result.AsResponse();
+                _dataContext.Set<RecipeTag>().Add(tag);
+                await _dataContext.SaveChangesAsync();
+
+                var result = new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId);
+                return result.AsResponse();
+            }
+            catch (Exception ex)
+            {
+                return Error.AsResponse<RecipeTagDto>("An error occurred while creating the tag.");
+            }
         }
 
-        public async Task<Response<RecipeTagDto>> UpdateTag(int id, RecipeTagCreateDto dto)
+    
+
+
+    public async Task<Response<RecipeTagDto>> UpdateTag(int id, RecipeTagCreateDto dto)
         {
             var tag = await _dataContext.Set<RecipeTag>().FindAsync(id);
             if (tag == null)

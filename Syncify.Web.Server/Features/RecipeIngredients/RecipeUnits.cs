@@ -19,7 +19,7 @@ public static class RecipeUnits
     public const string Dash = "dash";
     public const string FluidOunce = "fl oz";
     public const string Piece = "piece";
-    
+
     public static List<string> List =>
         typeof(RecipeUnits)
             .GetFields()

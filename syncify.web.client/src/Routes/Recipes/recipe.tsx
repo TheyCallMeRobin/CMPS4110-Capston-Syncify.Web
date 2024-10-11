@@ -1,42 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import RecipeList from './RecipeList'; // Import the new RecipeList component
-import RecipeModal from './RecipeModal'; // Import the new RecipeModal component
-import './recipe.css';
+import { Button } from 'react-bootstrap';
+import RecipeList from './recipelist';
+import RecipeModal from './recipemodal';
+import RecipeCreateModal from './recipecreatemodal';
+import { logError } from '../../utils/logger';
+import { Recipe, NewRecipe } from './Recipe';  
 
-// Define the Recipe type based on the backend DTO
-interface Recipe {
-    id: number;
-    name: string;
-    description: string;
-    prepTimeInMinutes: number;
-    cookTimeInMinutes: number;
-    servings: number;
-    userFirstName: string;
-}
 
 export const Recipes: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
-    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null); // State for selected recipe
-    const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false); // State for controlling modal visibility
-    const [newRecipe, setNewRecipe] = useState({
-        name: '',
-        description: '',
-        prepTimeInMinutes: 0,
-        cookTimeInMinutes: 0,
-        servings: 0,
-    });
-    const [searchTerm, setSearchTerm] = useState<string>(''); // State for search input
-    const [prepTime, setPrepTime] = useState<number | ''>(''); // State for prep time filter
-    const [cookTime, setCookTime] = useState<number | ''>(''); // State for cook time filter
-    const [servings, setServings] = useState<number | ''>(''); // State for servings filter
+    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+    const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState<string>(''); 
+    const [prepTime, setPrepTime] = useState<number | null>(null); 
+    const [cookTime, setCookTime] = useState<number | null>(null); 
+    const [servings, setServings] = useState<number | null>(null); 
     const [loading, setLoading] = useState<boolean>(true);
-    const [showModal, setShowModal] = useState<boolean>(false); // Bootstrap modal state
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchRecipes = () => {
             const token = localStorage.getItem('authToken');
-            fetch('/api/recipes', {
+            const queryParams = new URLSearchParams();
+
+            if (searchTerm) {
+                queryParams.append('name', searchTerm);
+                queryParams.append('description', searchTerm);
+            }
+            if (prepTime !== null) {
+                queryParams.append('prepTime', prepTime.toString());
+            }
+            if (cookTime !== null) {
+                queryParams.append('cookTime', cookTime.toString());
+            }
+            if (servings !== null) {
+                queryParams.append('servings', servings.toString());
+            }
+
+            fetch(`/api/recipes?${queryParams.toString()}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,10 +48,21 @@ export const Recipes: React.FC = () => {
         };
 
         fetchRecipes();
-    }, []);
+    }, [searchTerm, prepTime, cookTime, servings]);
 
-    const handleCreateRecipe = () => {
+    const handleCreateRecipe = (newRecipe: NewRecipe) => {
         const token = localStorage.getItem('authToken');
+        const recipeToCreate: Recipe = {
+            ...newRecipe,
+            id: 0,
+            userFirstName: 'CurrentUserFirstName',
+            userId: 0,
+            ingredients: newRecipe.ingredients.map(ingredient => ({
+                ...ingredient,
+                id: ingredient.id || 0,
+            })),
+            tags: newRecipe.tags.map(tag => ({ ...tag, recipeId: 0 })),
+        };
 
         fetch('/api/recipes', {
             method: 'POST',
@@ -58,7 +70,7 @@ export const Recipes: React.FC = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(newRecipe),
+            body: JSON.stringify(recipeToCreate),
         })
             .then((response) => {
                 if (!response.ok) {
@@ -68,17 +80,9 @@ export const Recipes: React.FC = () => {
             })
             .then((data) => {
                 setRecipes([...recipes, data.data]);
-                setNewRecipe({
-                    name: '',
-                    description: '',
-                    prepTimeInMinutes: 0,
-                    cookTimeInMinutes: 0,
-                    servings: 0,
-                });
-                setShowModal(false); // Close modal after creation
             })
             .catch((error) => {
-                console.error('Error creating recipe:', error);
+                logError('Error creating recipe:', error);
             });
     };
 
@@ -94,28 +98,28 @@ export const Recipes: React.FC = () => {
                 setRecipes(recipes.filter((recipe) => recipe.id !== recipeId));
             })
             .catch((error) => {
-                console.error('Error deleting recipe:', error);
+                logError('Error deleting recipe:', error);
             });
     };
 
     const openRecipeModal = (recipe: Recipe) => {
-        setSelectedRecipe(recipe); // Set the selected recipe
-        setShowRecipeModal(true); // Show the modal
+        setSelectedRecipe(recipe);
+        setShowRecipeModal(true);
     };
 
     const closeRecipeModal = () => {
-        setShowRecipeModal(false); // Close the modal
-        setSelectedRecipe(null); // Reset the selected recipe
+        setShowRecipeModal(false);
+        setSelectedRecipe(null);
     };
 
-    // Filter recipes based on the search term, prep time, cook time, and servings
     const filteredRecipes = recipes.filter((recipe) => {
         return (
-            (recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                recipe.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-            (prepTime ? recipe.prepTimeInMinutes <= prepTime : true) &&
-            (cookTime ? recipe.cookTimeInMinutes <= cookTime : true) &&
-            (servings ? recipe.servings === servings : true)
+            (searchTerm &&
+                (recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    recipe.description.toLowerCase().includes(searchTerm.toLowerCase()))) ||
+            (prepTime !== null && prepTime > 0 && recipe.prepTimeInMinutes === prepTime) ||
+            (cookTime !== null && cookTime > 0 && recipe.cookTimeInMinutes === cookTime) ||
+            (servings !== null && servings > 0 && recipe.servings === servings)
         );
     });
 
@@ -124,10 +128,9 @@ export const Recipes: React.FC = () => {
     }
 
     return (
-        <div className="container">
-            {/* Create Recipe and Search Section */}
-            <div className="header">
-                <div className="search-fields">
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#ddd', padding: '20px', width: '100%', maxWidth: '1000px', gap: '10px' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <label htmlFor="searchTerm">Recipe Name / Description</label>
                     <input
                         id="searchTerm"
@@ -135,64 +138,68 @@ export const Recipes: React.FC = () => {
                         placeholder="Name or Desc."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-bar"
+                        style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '5px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
                     />
                 </div>
-                <div className="search-fields">
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <label htmlFor="prepTime">Prep Time (minutes)</label>
                     <input
                         id="prepTime"
                         type="number"
                         min="0"
                         placeholder="Prep time"
-                        value={prepTime}
-                        onChange={(e) => setPrepTime(e.target.value ? parseInt(e.target.value) : '')}
-                        className="search-bar"
+                        value={prepTime === null ? '' : prepTime}
+                        onChange={(e) => setPrepTime(e.target.value ? parseInt(e.target.value) : null)}
+                        style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '5px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
                     />
                 </div>
-                <div className="search-fields">
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <label htmlFor="cookTime">Cook Time (minutes)</label>
                     <input
                         id="cookTime"
                         type="number"
                         min="0"
                         placeholder="Cook time"
-                        value={cookTime}
-                        onChange={(e) => setCookTime(e.target.value ? parseInt(e.target.value) : '')}
-                        className="search-bar"
+                        value={cookTime === null ? '' : cookTime}
+                        onChange={(e) => setCookTime(e.target.value ? parseInt(e.target.value) : null)}
+                        style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '5px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
                     />
                 </div>
-                <div className="search-fields">
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <label htmlFor="servings">Servings (quantity)</label>
                     <input
                         id="servings"
                         type="number"
                         min="0"
                         placeholder="Servings"
-                        value={servings}
-                        onChange={(e) => setServings(e.target.value ? parseInt(e.target.value) : '')}
-                        className="search-bar"
+                        value={servings === null ? '' : servings}
+                        onChange={(e) => setServings(e.target.value ? parseInt(e.target.value) : null)}
+                        style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '5px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
                     />
                 </div>
             </div>
 
-            <button className="create-button" onClick={() => setShowModal(true)}>
+            <Button style={{ backgroundColor: '#007BFF', margin: '10px', color: 'white', padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', cursor: 'pointer' }} onClick={() => setShowModal(true)}>
                 Create Recipe
-            </button>
+            </Button>
 
-            {/* Import and use RecipeList to render the recipe content */}
+            <RecipeCreateModal
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleCreateRecipe={handleCreateRecipe}
+            />
             <RecipeList
-                recipes={filteredRecipes}
+                recipes={recipes}
                 onRecipeClick={openRecipeModal}
                 onDeleteRecipe={handleDeleteRecipe}
             />
-
-            {/* Modal for showing selected recipe details */}
             <RecipeModal
                 show={showRecipeModal}
                 onHide={closeRecipeModal}
                 recipe={selectedRecipe}
+                onDeleteRecipe={handleDeleteRecipe}
             />
         </div>
+        
     );
 };

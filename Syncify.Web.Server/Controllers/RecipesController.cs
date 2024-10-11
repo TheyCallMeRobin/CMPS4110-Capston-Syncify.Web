@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Syncify.Common;
+using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.Recipes;
 using System.Security.Claims;
-
-namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
 [Route("api/recipes")]
@@ -16,17 +14,22 @@ public class RecipesController : ControllerBase
         _recipeService = recipeService;
     }
 
-    // Helper method to get the logged-in user ID
+
     private int GetUserId()
     {
         return int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     [HttpGet]
-    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes()
+    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes(
+        [FromQuery] string? name = null,
+        [FromQuery] string? description = null,
+        [FromQuery] int? prepTime = null,
+        [FromQuery] int? cookTime = null,
+        [FromQuery] int? servings = null)
     {
-        var userId = GetUserId(); // Get logged-in user ID
-        var data = await _recipeService.GetRecipesByUser(userId); // Filter by user ID
+        var userId = GetUserId();
+        var data = await _recipeService.GetFilteredRecipes(userId, name, description, prepTime, cookTime, servings);
         return Ok(data);
     }
 
@@ -34,7 +37,7 @@ public class RecipesController : ControllerBase
     public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeById(int id)
     {
         var data = await _recipeService.GetRecipeById(id);
-        if (data.Data.UserId != GetUserId()) // Ensure the logged-in user owns the recipe
+        if (data.Data.UserId != GetUserId())
         {
             return Forbid();
         }
@@ -42,11 +45,10 @@ public class RecipesController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
-        var userId = GetUserId(); // Get logged-in user ID
-        var data = await _recipeService.CreateRecipe(dto, userId); // Link recipe to logged-in user
+        var userId = GetUserId();
+        var data = await _recipeService.CreateRecipe(dto, userId);
         return CreatedAtAction(nameof(GetRecipeById), new { id = data.Data.Id }, data);
     }
 
