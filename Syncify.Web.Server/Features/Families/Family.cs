@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
 
-namespace Syncify.Web.Server.Features.Groups;
+namespace Syncify.Web.Server.Features.Families;
 
-public class Group
+public class Family
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -14,17 +14,23 @@ public class Group
     public User CreatedByUser { get; set; } = default!;
 }
 
-public class GroupEntityConfiguration : IEntityTypeConfiguration<Group>
+public class FamilyEntityConfiguration : IEntityTypeConfiguration<Family>
 {
     internal const int NameMaxLength = 128;
+    internal const int IndentifierMaxLength = 4096;
     
-    public void Configure(EntityTypeBuilder<Group> builder)
+    public void Configure(EntityTypeBuilder<Family> builder)
     {
         builder.ToTable("Groups");
 
         builder
             .Property(x => x.Name)
             .HasMaxLength(NameMaxLength)
+            .IsRequired();
+
+        builder
+            .Property(x => x.Identifier)
+            .HasMaxLength(IndentifierMaxLength)
             .IsRequired();
         
         builder

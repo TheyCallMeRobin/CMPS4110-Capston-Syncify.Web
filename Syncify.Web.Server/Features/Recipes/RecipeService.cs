@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Syncify.Common;
-using Syncify.Common.Errors;
-using Syncify.Common.Extensions;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 

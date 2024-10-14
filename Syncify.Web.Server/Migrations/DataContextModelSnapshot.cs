@@ -319,36 +319,6 @@ namespace Syncify.Web.Server.Migrations
                     b.ToTable("Calendars", (string)null);
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Groups.Group", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Identifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("Identifier")
-                        .IsUnique();
-
-                    b.ToTable("Groups", (string)null);
-                });
-
             modelBuilder.Entity("Syncify.Web.Server.Features.RecipeIngredients.RecipeIngredient", b =>
                 {
                     b.Property<int>("Id")
@@ -380,29 +350,6 @@ namespace Syncify.Web.Server.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeIngredients", (string)null);
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.RecipeTags.RecipeTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("RecipeTags", (string)null);
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.Recipe", b =>
@@ -439,6 +386,29 @@ namespace Syncify.Web.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipes", (string)null);
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.RecipeTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeTags", (string)null);
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>
@@ -559,32 +529,10 @@ namespace Syncify.Web.Server.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
-            modelBuilder.Entity("Syncify.Web.Server.Features.Groups.Group", b =>
-                {
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
-                });
-
             modelBuilder.Entity("Syncify.Web.Server.Features.RecipeIngredients.RecipeIngredient", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
                         .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.RecipeTags.RecipeTag", b =>
-                {
-                    b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
-                        .WithMany("Tags")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -601,6 +549,17 @@ namespace Syncify.Web.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Syncify.Web.Server.Features.Recipes.RecipeTag", b =>
+                {
+                    b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
+                        .WithMany("Tags")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.ShoppingLists.ShoppingList", b =>

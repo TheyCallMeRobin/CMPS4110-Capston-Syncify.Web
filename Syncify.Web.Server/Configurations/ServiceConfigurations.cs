@@ -1,7 +1,7 @@
 ﻿using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.CalendarEvents;
 using Syncify.Web.Server.Features.Calendars;
-using Syncify.Web.Server.Features.Groups;
+using Syncify.Web.Server.Features.Families;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
@@ -20,7 +20,7 @@ public static class ServiceConfigurations
         services.AddScoped<ICalendarEventService, CalendarEventService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IShoppingListService, ShoppingListService>();
-        services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IFamilyService, FamilyService>();
     }
     
 }
