@@ -17,11 +17,12 @@ public class Family
 public class FamilyEntityConfiguration : IEntityTypeConfiguration<Family>
 {
     internal const int NameMaxLength = 128;
-    internal const int IndentifierMaxLength = 4096;
+    
+    private const int IndentifierMaxLength = 4096;
     
     public void Configure(EntityTypeBuilder<Family> builder)
     {
-        builder.ToTable("Groups");
+        builder.ToTable("Families");
 
         builder
             .Property(x => x.Name)
