@@ -189,7 +189,7 @@ export const Recipes: React.FC = () => {
                 handleCreateRecipe={handleCreateRecipe}
             />
             <RecipeList
-                recipes={recipes}
+                recipes={filteredRecipes.length > 0 ? filteredRecipes : recipes} 
                 onRecipeClick={openRecipeModal}
                 onDeleteRecipe={handleDeleteRecipe}
             />
