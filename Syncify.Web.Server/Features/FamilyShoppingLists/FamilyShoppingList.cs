@@ -27,18 +27,21 @@ public class FamilyShoppingListEntityConfiguration : IEntityTypeConfiguration<Fa
         builder
             .HasOne(x => x.Family)
             .WithMany()
-            .HasForeignKey(x => x.FamilyId);
+            .HasForeignKey(x => x.FamilyId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(x => x.ShoppingList)
             .WithMany()
-            .HasForeignKey(x => x.ShoppingListId);
+            .HasForeignKey(x => x.ShoppingListId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => x.ShoppingListId).IsUnique();
 
         builder
             .HasOne(x => x.CreatedByUser)
             .WithMany()
-            .HasForeignKey(x => x.CreatedByUserId);
-
-        builder.HasIndex(x => new { x.FamilyId, x.ShoppingListId }).IsUnique();
+            .HasForeignKey(x => x.CreatedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

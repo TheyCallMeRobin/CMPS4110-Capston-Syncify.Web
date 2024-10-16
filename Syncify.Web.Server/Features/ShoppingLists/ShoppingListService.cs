@@ -4,6 +4,7 @@ using Syncify.Common.Errors;
 using Syncify.Common.Extensions;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.FamilyShoppingLists;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
@@ -14,7 +15,7 @@ public interface IShoppingListService
     Task<Response<List<ShoppingListGetDto>>> GetShoppingListsByUserId(int userId);
     Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
     Task<Response<ShoppingListGetDto>> UpdateShoppingList(int id, ShoppingListUpdateDto updateDto);
-    Task DeleteShoppingList(int id);
+    Task<Response> DeleteShoppingList(int id);
 }
 
 public class ShoppingListService : IShoppingListService
@@ -93,16 +94,39 @@ public class ShoppingListService : IShoppingListService
     }
 
 
-    public async Task DeleteShoppingList(int id)
+    public async Task<Response> DeleteShoppingList(int id)
     {
         var shoppingList = await _dataContext.ShoppingLists.FindAsync(id);
-        if (shoppingList != null)
-        {
-            _dataContext.ShoppingLists.Remove(shoppingList);
-            await _dataContext.SaveChangesAsync();
-        }
+        if (shoppingList is null)
+            return Error.AsResponse("Shopping list not found.", nameof(id));
+
+        await using var transaction = await _dataContext.Database.BeginTransactionAsync();
+
+        await _dataContext.SaveChangesAsync();
+
+        await RemoveShoppingListFromFamily(shoppingList.Id);
+        await _dataContext.SaveChangesAsync();
+
+        _dataContext.Set<ShoppingList>().Remove(shoppingList);
+
+        await _dataContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        
+        return Response.Success();
     }
 
+    private async Task RemoveShoppingListFromFamily(int shoppingListId)
+    {
+        var familyShoppingList = await _dataContext
+            .Set<FamilyShoppingList>()
+            .FirstOrDefaultAsync(x => x.ShoppingListId == shoppingListId);
+        
+        if (familyShoppingList is null)
+            return;
+
+        _dataContext.Set<FamilyShoppingList>().Remove(familyShoppingList);
+    }
+    
     private Task<bool> ShoppingListHasSameName(string name, int userId)
         => _dataContext.Set<ShoppingList>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.UserId == userId);
 }
