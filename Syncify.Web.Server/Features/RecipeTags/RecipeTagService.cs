@@ -70,7 +70,7 @@ namespace Syncify.Web.Server.Features.RecipeTags
                 var result = new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId);
                 return result.AsResponse();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Error.AsResponse<RecipeTagDto>("An error occurred while creating the tag.");
             }

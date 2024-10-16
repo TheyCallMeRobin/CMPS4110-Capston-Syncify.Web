@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaTrashAlt } from 'react-icons/fa';
-import { NewRecipe, RecipeIngredient } from './Recipe';  
+import { NewRecipe } from './Recipe';
 
 interface RecipeCreateModalProps {
     show: boolean;
@@ -77,7 +77,7 @@ const RecipeCreateModal: React.FC<RecipeCreateModalProps> = ({ show, handleClose
             isValid = false;
         }
 
-        newRecipe.ingredients.forEach((ingredient, index) => {
+        newRecipe.ingredients.forEach((ingredient) => {
             if (!ingredient.name || !ingredient.unit || !ingredient.quantity) {
                 newErrors.ingredients = 'Ingredient Name, Unit, or Quantity cannot be empty.';
                 isValid = false;
