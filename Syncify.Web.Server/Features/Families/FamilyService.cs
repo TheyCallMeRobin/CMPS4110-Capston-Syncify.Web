@@ -30,7 +30,6 @@ public class FamilyService : IFamilyService
                 nameof(dto.Name));
 
         var family = dto.MapTo<Family>();
-        family.Identifier = GenerateIdentitfier();
 
         _dataContext.Set<Family>().Add(family);
         await _dataContext.SaveChangesAsync();
@@ -97,7 +96,4 @@ public class FamilyService : IFamilyService
         => _dataContext.Set<Family>()
             .AnyAsync(x => x.Name.ToLower().Equals(dto.Name.ToLower()) && 
                            x.CreatedByUserId == dto.CreatedByUserId);
-    
-    private string GenerateIdentitfier()
-        => Guid.NewGuid().ToString();
 }

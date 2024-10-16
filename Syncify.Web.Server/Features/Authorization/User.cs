@@ -10,6 +10,7 @@ public class User : IdentityUser<int>
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+    public Guid MemberIdentifier { get; init; } = Guid.NewGuid();
     public List<UserRole> UserRoles { get; set; } = [];
     public List<Recipe> Recipes { get; set; } = [];
     public ICollection<ShoppingList> ShoppingLists { get; set; } = new List<ShoppingList>();
@@ -20,11 +21,20 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
     public const int FirstNameMaxLength = 128;
     public const int LastNameMaxLength = 128;
-
+    
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.Property(x => x.FirstName).HasMaxLength(FirstNameMaxLength);
         builder.Property(x => x.LastName).HasMaxLength(LastNameMaxLength);
+        
+        builder
+            .Property(x => x.MemberIdentifier)
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("NEWID()");
+
+        builder.HasIndex(x => x.MemberIdentifier);
+        builder.HasIndex(x => x.Email);
+        
         builder.Property(x => x.UserName).IsRequired();
     }
 }
