@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241016152543_Add_FamilyShoppingLists")]
+    partial class Add_FamilyShoppingLists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -369,22 +372,23 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<int>("CalendarId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreatedByUserId")
+                    b.Property<int>("FamilyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FamilyId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CalendarId")
-                        .IsUnique();
-
-                    b.HasIndex("CreatedByUserId");
-
                     b.HasIndex("FamilyId");
 
-                    b.ToTable("GroupCalendars", (string)null);
+                    b.HasIndex("CalendarId", "GroupId")
+                        .IsUnique();
+
+                    b.ToTable("GroupCalendars", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.FamilyShoppingLists.FamilyShoppingList", b =>
@@ -642,13 +646,7 @@ namespace Syncify.Web.Server.Migrations
                     b.HasOne("Syncify.Web.Server.Features.Calendars.Calendar", "Calendar")
                         .WithMany()
                         .HasForeignKey("CalendarId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Syncify.Web.Server.Features.Families.Family", "Family")
@@ -658,8 +656,6 @@ namespace Syncify.Web.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Calendar");
-
-                    b.Navigation("CreatedByUser");
 
                     b.Navigation("Family");
                 });
