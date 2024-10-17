@@ -57,7 +57,7 @@ namespace Syncify.Web.Server.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Families_Identifier",
                 table: "Families",
-                column: "Identifier");
+                column: "Token");
         }
 
         /// <inheritdoc />
