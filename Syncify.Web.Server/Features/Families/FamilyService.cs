@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.FamilyMembers;
 
 namespace Syncify.Web.Server.Features.Families;
 
@@ -8,6 +9,8 @@ public interface IFamilyService
 {
     Task<Response<FamilyGetDto>> CreateFamily(FamilyCreateDto dto);
     Task<Response<List<FamilyGetDto>>> GetAllFamilies();
+    Task<Response<List<FamilyGetDto>>> GetFamiliesByUserId(int userId);
+
     Task<Response<FamilyGetDto>> GetFamilyById(int id);
     Task<Response<FamilyGetDto>> UpdateFamily(int id, FamilyUpdateDto dto);
     Task<Response> DeleteFamily(int id);
@@ -44,6 +47,17 @@ public class FamilyService : IFamilyService
             .ToListAsync();
 
         return familys.AsResponse();
+    }
+
+    public async Task<Response<List<FamilyGetDto>>> GetFamiliesByUserId(int userId)
+    {
+        var families = await _dataContext
+            .Set<Family>()
+            .Where(x => x.FamilyMembers.Any(fm => fm.UserId == userId))
+            .ProjectTo<FamilyGetDto>()
+            .ToListAsync();
+
+        return families.AsResponse();
     }
 
     public async Task<Response<FamilyGetDto>> GetFamilyById(int id)

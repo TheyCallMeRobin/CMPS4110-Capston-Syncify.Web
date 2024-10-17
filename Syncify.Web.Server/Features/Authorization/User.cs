@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Syncify.Web.Server.Features.Families;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
 
@@ -10,11 +11,13 @@ public class User : IdentityUser<int>
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+    public new string Email { get; set; } = string.Empty;
+    public new string PhoneNumber { get; set; } = string.Empty;
     public Guid MemberIdentifier { get; init; } = Guid.NewGuid();
     public List<UserRole> UserRoles { get; set; } = [];
     public List<Recipe> Recipes { get; set; } = [];
+    public List<Family> Families { get; set; } = [];
     public ICollection<ShoppingList> ShoppingLists { get; set; } = new List<ShoppingList>();
-
 }
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
@@ -31,10 +34,14 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .Property(x => x.MemberIdentifier)
             .ValueGeneratedOnAdd()
             .HasDefaultValueSql("NEWID()");
-
-        builder.HasIndex(x => x.MemberIdentifier);
-        builder.HasIndex(x => x.Email);
         
         builder.Property(x => x.UserName).IsRequired();
+        
+        builder.HasIndex(x => x.MemberIdentifier);
+        
+        builder.HasIndex(x => x.Email).IsUnique();
+        builder.HasIndex(x => x.PhoneNumber).IsUnique();
+        
+        builder.HasIndex(x => new { x.Email, x.PhoneNumber, x.MemberIdentifier });
     }
 }

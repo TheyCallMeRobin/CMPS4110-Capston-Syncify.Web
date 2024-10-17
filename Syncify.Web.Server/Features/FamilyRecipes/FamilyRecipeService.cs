@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.Families;
 
 namespace Syncify.Web.Server.Features.FamilyRecipes;
 
@@ -43,6 +44,10 @@ public class FamilyRecipeService : IFamilyRecipeService
 
     public async Task<Response<FamilyRecipeGetDto>> CreateFamilyRecipe(FamilyRecipeCreateDto createDto)
     {
+        var family = await _dataContext.Set<Family>().FindAsync(createDto.FamilyId);
+        if (family is null)
+            return Error.AsResponse<FamilyRecipeGetDto>("The family could not be found.", nameof(createDto.FamilyId));
+        
         var existingRecipe = await _dataContext
             .Set<FamilyRecipe>()
             .FirstOrDefaultAsync(x => x.FamiyId == createDto.FamilyId && x.RecipeId == createDto.RecipeId);

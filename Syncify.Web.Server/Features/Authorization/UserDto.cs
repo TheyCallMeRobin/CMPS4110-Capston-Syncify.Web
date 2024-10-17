@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.Families;
 
 namespace Syncify.Web.Server.Features.Authorization;
 
@@ -18,6 +19,7 @@ public record UserDto
 
 public record UserGetDto : UserDto
 {
+    public string MemberIdentifier { get; set; } = string.Empty;
 }
 
 public record CreateUserDto
@@ -37,7 +39,9 @@ public class UserMappingProfile : Profile
     public UserMappingProfile()
     {
         CreateMap<User, UserGetDto>()
-            .ForMember(x => x.Roles, opts => opts.MapFrom(src => src.UserRoles.Select(x => x.Role.Name)));
+            .ForMember(x => x.Roles, opts => opts.MapFrom(src => src.UserRoles.Select(x => x.Role.Name)))
+            .ForMember(x => x.MemberIdentifier, opts => opts.MapFrom(src => src.MemberIdentifier.ToString()));
+        
         CreateMap<CreateUserDto, User>();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using Syncify.Web.Server.Features.Families;
 
 namespace Syncify.Web.Server.Features.FamilyShoppingLists;
 
@@ -43,6 +44,10 @@ public class FamilyShoppingListService : IFamilyShoppingListService
 
     public async Task<Response<FamilyShoppingListGetDto>> CreateFamilyShoppingList(FamilyShoppingListCreateDto createDto)
     {
+        var family = await _dataContext.Set<Family>().FindAsync(createDto.FamilyId);
+        if (family is null)
+            return Error.AsResponse<FamilyShoppingListGetDto>("The family could not be found.", nameof(createDto.FamilyId));
+        
         var list = await _dataContext
             .Set<FamilyShoppingList>()
             .FirstOrDefaultAsync(x => x.FamilyId == createDto.FamilyId && x.ShoppingListId == createDto.ShoppingListId);

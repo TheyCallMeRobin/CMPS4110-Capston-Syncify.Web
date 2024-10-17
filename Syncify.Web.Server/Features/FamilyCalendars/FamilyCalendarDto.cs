@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json.Serialization;
+using AutoMapper;
 using FluentValidation;
 
 namespace Syncify.Web.Server.Features.FamilyCalendars;
@@ -10,7 +11,7 @@ public record FamilyCalendarDto
 }
 
 public record FamilyCalendarGetDto(string CalendarName) : FamilyCalendarDto;
-public record FamilyCalendarCreateDto(int CreatedByUserId) : FamilyCalendarDto;
+public record FamilyCalendarCreateDto([property: JsonIgnore] int CreatedByUserId) : FamilyCalendarDto;
 
 public class FamilyCalendarMappingProfile : Profile
 {

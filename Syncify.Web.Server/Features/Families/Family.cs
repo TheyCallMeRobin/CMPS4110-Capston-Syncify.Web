@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.FamilyMembers;
 
 namespace Syncify.Web.Server.Features.Families;
 
@@ -12,6 +13,7 @@ public class Family
     public int CreatedByUserId { get; set; }
 
     public User CreatedByUser { get; set; } = default!;
+    public List<FamilyMember> FamilyMembers { get; set; } = [];
 }
 
 public class FamilyEntityConfiguration : IEntityTypeConfiguration<Family>
