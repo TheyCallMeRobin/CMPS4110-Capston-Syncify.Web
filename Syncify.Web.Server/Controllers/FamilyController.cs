@@ -8,13 +8,13 @@ namespace Syncify.Web.Server.Controllers;
 using GetResponse = Response<FamilyGetDto>;
 
 [ApiController]
-[Route("api/families")]
-public class FamiliesController : Controller
+[Authorize]
+[Route("api/families")] 
+public class FamilyController : Controller
 {
-
     private readonly IFamilyService _familyService;
 
-    public FamiliesController(IFamilyService familyService)
+    public FamilyController(IFamilyService familyService)
     {
         _familyService = familyService;
     }
@@ -25,13 +25,14 @@ public class FamiliesController : Controller
     {
         var data = await _familyService.CreateFamily(dto with
         {
-            CreatedByUserId = HttpContext.User.GetCurrentUserId() ?? 0
+            CreatedByUserId = HttpContext.User.GetCurrentUserId()
         });
 
         return Ok(data);
     }
 
     [HttpGet]
+    
     public async Task<ActionResult<Response<FamilyGetDto>>> GetAllFamilies()
     {
         var data = await _familyService.GetAllFamilies();
@@ -45,8 +46,14 @@ public class FamiliesController : Controller
         return Ok(data);
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<List<FamilyGetDto>>> GetFamiliesByUserId(int userId)
+    {
+        var data = await _familyService.GetFamiliesByUserId(userId);
+        return Ok(data);
+    }
+    
     [HttpPut("{id}")]
-    [Authorize]
     public async Task<ActionResult<GetResponse>> UpdateFamily(int id, FamilyUpdateDto dto)
     {
         var data = await _familyService.UpdateFamily(id, dto);

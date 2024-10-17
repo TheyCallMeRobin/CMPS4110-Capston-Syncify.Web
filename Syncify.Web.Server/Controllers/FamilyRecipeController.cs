@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyRecipes;
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/family-recipes")]
 public class FamilyRecipeController : ControllerBase
 {
@@ -21,7 +23,7 @@ public class FamilyRecipeController : ControllerBase
     {
         var data = await _familyRecipeService.CreateFamilyRecipe(dto with
         {
-            CreatedByUserId = HttpContext.User.GetCurrentUserId() ?? 0
+            CreatedByUserId = HttpContext.User.GetCurrentUserId()
         });
         return Ok(data);
     }

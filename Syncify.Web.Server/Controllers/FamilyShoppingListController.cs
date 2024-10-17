@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syncify.Web.Server.Features.FamilyShoppingLists;
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/family-shopping-lists")]
 public class FamilyShoppingListController : ControllerBase
 {
