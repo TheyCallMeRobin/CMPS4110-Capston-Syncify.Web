@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241016152543_Add_FamilyShoppingLists")]
+    partial class Add_FamilyShoppingLists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,7 +159,6 @@ namespace Syncify.Web.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -196,8 +198,7 @@ namespace Syncify.Web.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -215,8 +216,7 @@ namespace Syncify.Web.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
                     b.HasIndex("MemberIdentifier");
 
@@ -227,11 +227,6 @@ namespace Syncify.Web.Server.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
-                    b.HasIndex("Email", "PhoneNumber", "MemberIdentifier");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -377,122 +372,23 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<int>("CalendarId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("FamilyId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CalendarId")
-                        .IsUnique();
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("FamilyId");
-
-                    b.ToTable("FamilyCalendars", (string)null);
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyInvites.FamilyInvite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiresOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FamilyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SentByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<Guid>("Token")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SentByUserId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("FamilyId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("FamilyInvites", (string)null);
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyMembers.FamilyMember", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FamilyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FamilyId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("FamilyMembers", (string)null);
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyRecipes.FamilyRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FamilyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FamiyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("FamilyId");
-
-                    b.HasIndex("RecipeId")
+                    b.HasIndex("CalendarId", "GroupId")
                         .IsUnique();
 
-                    b.ToTable("FamilyRecipes", (string)null);
+                    b.ToTable("GroupCalendars", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.FamilyShoppingLists.FamilyShoppingList", b =>
@@ -750,13 +646,7 @@ namespace Syncify.Web.Server.Migrations
                     b.HasOne("Syncify.Web.Server.Features.Calendars.Calendar", "Calendar")
                         .WithMany()
                         .HasForeignKey("CalendarId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Syncify.Web.Server.Features.Families.Family", "Family")
@@ -767,82 +657,7 @@ namespace Syncify.Web.Server.Migrations
 
                     b.Navigation("Calendar");
 
-                    b.Navigation("CreatedByUser");
-
                     b.Navigation("Family");
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyInvites.FamilyInvite", b =>
-                {
-                    b.HasOne("Syncify.Web.Server.Features.Families.Family", "Family")
-                        .WithMany()
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "SentByUser")
-                        .WithMany()
-                        .HasForeignKey("SentByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Family");
-
-                    b.Navigation("SentByUser");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyMembers.FamilyMember", b =>
-                {
-                    b.HasOne("Syncify.Web.Server.Features.Families.Family", "Family")
-                        .WithMany()
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Family");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Syncify.Web.Server.Features.FamilyRecipes.FamilyRecipe", b =>
-                {
-                    b.HasOne("Syncify.Web.Server.Features.Authorization.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Families.Family", "Family")
-                        .WithMany()
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syncify.Web.Server.Features.Recipes.Recipe", "Recipe")
-                        .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("Family");
-
-                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.FamilyShoppingLists.FamilyShoppingList", b =>
