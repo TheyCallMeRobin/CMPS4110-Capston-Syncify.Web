@@ -4,7 +4,6 @@ using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
-<<<<<<< HEAD
 public record ShoppingListDto
 {
     public string Name { get; set; } = string.Empty;
@@ -16,15 +15,13 @@ public record ShoppingListGetDto : ShoppingListDto
     public int Id { get; set; }
     public List<ShoppingListItemGetDto> ShoppingListItems { get; set; } = [];
 }
-=======
-public record ShoppingListGetDto(int Id, string Name, string Description, bool Checked, bool Completed);
->>>>>>> 7f79ed95fd4327e88b820bab0a321e0c010734b2
+
 public record ShoppingListCreateDto(string Name, string Description, int UserId);
-public record ShoppingListUpdateDto(string Name, string? Description, bool Checked, bool Completed);
+public record ShoppingListUpdateDto(string Name, string? Description);
 
 
 
-public record ShoppingListRecipeCreateDto(string Name, string Description, int UserId, int RecipeId) 
+public record ShoppingListRecipeCreateDto(string Name, string Description, int UserId, int RecipeId)
     : ShoppingListCreateDto(Name, Description, UserId);
 public class ShoppingListMappingProfile : Profile
 {

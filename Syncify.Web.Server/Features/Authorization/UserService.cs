@@ -1,8 +1,8 @@
-﻿using System.Transactions;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Syncify.Common.Constants;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
+using System.Transactions;
 
 namespace Syncify.Web.Server.Features.Authorization;
 
@@ -27,7 +27,7 @@ public class UserService : IUserService
     public async Task<Response<UserGetDto>> CreateUser(CreateUserDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        
+
         var user = dto.MapTo<User>();
         var createUserResult = await CreateUserInternal(user, dto.Password);
         if (!createUserResult.Succeeded)
@@ -49,7 +49,7 @@ public class UserService : IUserService
             if (!success)
                 return Error.AsResponse<UserGetDto>("One or more roles chosen does not exist.");
         }
-        
+
         transaction.Complete();
 
         return user.MapTo<UserGetDto>().AsResponse();
@@ -77,11 +77,11 @@ public class UserService : IUserService
             return false;
 
         await _userManager.AddToRolesAsync(user, roleNames);
-        
+
         return true;
     }
 
     private bool RolesExist(IEnumerable<string> roles)
         => roles.All(name => _roleManager.Roles.Select(role => role.Name).Contains(name));
-    
+
 }

@@ -34,7 +34,7 @@ export const ROUTES = {
     element: <Reminders />,
   },
   ShoppingLists: {
-    path: '/shoppinglist',
+    path: '/shopping-lists',
     element: <ShoppingLists />,
   },
 };

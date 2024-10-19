@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Syncify.Web.Server.Features.ShoppingListItems;
 

@@ -1,7 +1,7 @@
-﻿using System.Net;
-using System.Text.Json;
-using Serilog;
+﻿using Serilog;
 using Syncify.Common.Constants;
+using System.Net;
+using System.Text.Json;
 
 namespace Syncify.Web.Server.Middlewares;
 
@@ -18,7 +18,7 @@ public class ErrorHandlingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var response = context.Response;
-        
+
         try
         {
             await _next(context);
@@ -28,7 +28,7 @@ public class ErrorHandlingMiddleware
             Log.Error(exception, ErrorMessages.UnknownError);
 
             response.ContentType = ResponseTypes.ApplicationJson;
-            response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var error = new Error { ErrorMessage = ErrorMessages.UnknownError };
             await response.WriteAsync(JsonSerializer.Serialize(error));

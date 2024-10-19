@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.RecipeTags;
-using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
@@ -48,8 +47,8 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasOne(x => x.User)
             .WithMany(x => x.Recipes)
             .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade); 
-        
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(x => x.Tags)
             .WithOne(x => x.Recipe)
             .HasForeignKey(x => x.RecipeId)

@@ -11,9 +11,9 @@ public class SwaggerConfiguration
         {
             options.CustomSchemaIds((type) => type.GetPrettyName() == "Response" ? "EmptyResponse" : type.GetPrettyName());
             options.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : null);
-        
+
             options.SupportNonNullableReferenceTypes();
-            
+
             options.OperationFilter<HideParamsFilter>();
             options.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
             options.SchemaFilter<EnumSchemaFilter>();

@@ -11,7 +11,7 @@ namespace Syncify.Web.Server.Features.ShoppingLists;
 public class RecipeToShoppingListFacade
 {
     private readonly DataContext _dataContext;
-    
+
     public RecipeToShoppingListFacade(DataContext dataContext)
     {
         _dataContext = dataContext;
@@ -36,15 +36,15 @@ public class RecipeToShoppingListFacade
                 }).ToListAsync();
 
             await _dataContext.Set<ShoppingListItem>().AddRangeAsync(items);
-            
+
             await _dataContext.SaveChangesAsync();
             await transaction.CommitAsync();
-            
+
             var list = await _dataContext.Set<ShoppingList>()
                 .Include(x => x.ShoppingListItems)
                 .ProjectTo<ShoppingListGetDto>()
                 .FirstAsync(x => x.Id == shoppingList.Id);
-            
+
             return list.AsResponse();
         }
         catch (Exception ex)
@@ -58,18 +58,18 @@ public class RecipeToShoppingListFacade
     private async Task<ShoppingList> CreateShoppingList(ShoppingListCreateDto dto)
     {
         var shoppingList = dto.MapTo<ShoppingList>();
-        
+
         _dataContext.Set<ShoppingList>().Add(shoppingList);
         await _dataContext.SaveChangesAsync();
 
         return shoppingList;
     }
-    
+
     private IQueryable<RecipeIngredient> GetRecipeIngredients(int recipeId)
         => _dataContext
             .Set<Recipe>()
             .Include(x => x.RecipeIngredients)
             .Where(x => x.Id == recipeId)
             .SelectMany(x => x.RecipeIngredients);
-    
+
 }

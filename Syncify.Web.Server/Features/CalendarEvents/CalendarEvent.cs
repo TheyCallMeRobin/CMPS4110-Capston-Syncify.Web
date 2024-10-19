@@ -35,7 +35,7 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         builder.ToTable("CalendarEvents");
 
         builder.Property(x => x.CalendarEventType).HasDefaultValue(CalendarEventType.Event);
-        
+
         builder
             .Property(x => x.RecurrenceWeekDays)
             .HasMaxLength(-1)
@@ -50,7 +50,7 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
             .Property(x => x.DisplayColor)
             .HasMaxLength(ColorMaxLength)
             .IsRequired(false);
-        
+
         builder
             .Property(x => x.Description)
             .HasMaxLength(DescriptionMaxLength)

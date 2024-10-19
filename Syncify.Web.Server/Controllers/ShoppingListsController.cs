@@ -39,7 +39,6 @@ public class ShoppingListsController : ControllerBase
         return Ok(data);
     }
 
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<ShoppingListGetDto>>> CreateShoppingList([FromBody] ShoppingListCreateDto dto)
@@ -48,17 +47,14 @@ public class ShoppingListsController : ControllerBase
         return Ok(data);
     }
 
-<<<<<<< HEAD
     [HttpPost("recipe")]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<Response<ShoppingListGetDto>>> CreateListFromRecipe(
-        [FromBody] ShoppingListRecipeCreateDto dto)
+    public async Task<ActionResult<Response<ShoppingListGetDto>>> CreateListFromRecipe([FromBody] ShoppingListRecipeCreateDto dto)
     {
         var data = await _shoppingListService.CreateListFromRecipe(dto);
         return Ok(data);
     }
 
-=======
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateShoppingList(int id, [FromBody] ShoppingListUpdateDto dto)
     {
@@ -71,9 +67,7 @@ public class ShoppingListsController : ControllerBase
         var shoppingListToUpdate = new ShoppingListUpdateDto
         (
             dto.Name,
-            dto.Description,
-            dto.Checked,
-            dto.Completed
+            dto.Description
         );
 
         var updateResult = await _shoppingListService.UpdateShoppingList(id, shoppingListToUpdate);
@@ -85,7 +79,6 @@ public class ShoppingListsController : ControllerBase
 
         return Ok(updateResult.Data);
     }
-
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShoppingList(int id)
@@ -99,7 +92,4 @@ public class ShoppingListsController : ControllerBase
         await _shoppingListService.DeleteShoppingList(id);
         return NoContent();
     }
-
-
->>>>>>> 7f79ed95fd4327e88b820bab0a321e0c010734b2
 }

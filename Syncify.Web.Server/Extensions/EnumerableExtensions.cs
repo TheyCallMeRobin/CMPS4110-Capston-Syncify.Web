@@ -7,5 +7,5 @@ public static class EnumerableExtensions
     {
         return list.OrderByDescending(x => x.Length).FirstOrDefault(string.Empty);
     }
-    
+
 }

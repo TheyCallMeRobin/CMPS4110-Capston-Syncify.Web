@@ -30,16 +30,16 @@ public class ShoppingListItemConfiguration : IEntityTypeConfiguration<ShoppingLi
         builder.Property(x => x.Name)
             .HasMaxLength(NameMaxLength)
             .IsRequired();
-        
+
         builder.Property(x => x.Description)
             .HasMaxLength(DescriptionMaxLength)
             .IsRequired(false);
-        
+
         builder.Property(x => x.Unit)
             .HasMaxLength(UnitMaxLength)
             .HasDefaultValue(Units.Count)
             .IsRequired();
-        
+
         builder
             .HasOne(x => x.ShoppingList)
             .WithMany(x => x.ShoppingListItems);
