@@ -1,4 +1,4 @@
-﻿.sidebar-navbar {
+.sidebar-navbar {
     background-color: #0b60b0;
     width: 180px;
     transition: width 0.3s ease;
@@ -72,4 +72,3 @@
     font-weight: bold;
     text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
 }
-
