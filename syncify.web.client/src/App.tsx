@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './api/generated/config';
 import './App.css';
+import logo from './../public/Syncify.png';
 import { useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -11,7 +12,7 @@ import { useAsyncFn } from 'react-use';
 import { AuthenticationService } from "./api/generated/AuthenticationService.ts";
 
 export const App: React.FC = () => {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Sidebar is collapsed by default
     const user = useUser();
     const navigate = useNavigate();
     const location = useLocation();
@@ -32,25 +33,20 @@ export const App: React.FC = () => {
     }, [navigate, user]);
 
     const noNavBarPages = [ROUTES.LoginPage.path, ROUTES.RegisterPage.path];
-
     const shouldHideNavBar = noNavBarPages.includes(location.pathname);
 
     return (
         <div className="d-flex min-vh-100">
             {!shouldHideNavBar && (
-                <nav
-                    className={`sidebar-navbar navbar navbar-expand-lg navbar-dark flex-column vh-100 sidebar ${isSidebarCollapsed ? 'collapsed' : ''
-                        }`}
-                >
+                <nav className={`sidebar-navbar navbar navbar-expand-lg navbar-dark flex-column vh-100 sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
                     <div className="d-flex justify-content-center align-items-center w-100">
-                        <button
-                            className="btn btn-link nav-link text-light toggle-btn"
-                            onClick={toggleSidebar}
-                        >
-                            {isSidebarCollapsed ? <FaAlignJustify size={24} /> : 'Syncify'}
+                        <button className="btn btn-link nav-link text-light toggle-btn" onClick={toggleSidebar}>
+                            {isSidebarCollapsed ? (
+                                <FaAlignJustify size={24} /> 
+                            ) : (<img src={logo} alt="Syncify" className="sidebar-logo" style={{ maxWidth: '120px', height: 'auto' }} />
+                            )}
                         </button>
                     </div>
-
                     <ul className="navbar-nav flex-column w-100 icon-list">
                         <li className="nav-item">
                             <Link

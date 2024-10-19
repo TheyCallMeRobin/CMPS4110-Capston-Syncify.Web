@@ -12,6 +12,15 @@ body {
     font-weight: bold;
 }
 
+.text-dark {
+    color: black;
+}
+
+.description {
+    font-size: 1.25rem;
+    color: #333;
+}
+
 
 .form-control {
     font-size: 1.25rem;
@@ -33,10 +42,37 @@ button.btn-primary {
     font-weight: bold;
 }
 
-    button.btn-primary:hover {
-        background-color: #004080;
-        border-color: #004080;
-    }
+button.btn-primary:hover {
+    background-color: #004080;
+    border-color: #004080;
+}
+
+.icon {
+    color: #FFFFFF;
+}
+
+.icon-button {
+    background: transparent;
+    corder: none;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.toggle-btn:hover {
+    text-decoration: none;
+}
 
 h1 {
     text-align: center;

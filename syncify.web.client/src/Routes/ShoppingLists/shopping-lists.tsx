@@ -104,7 +104,7 @@ const ShoppingLists = () => {
                                         <span
                                             style={{
                                                 flexGrow: 1,
-                                                textAlign: 'center',
+                                                textAlign: 'left',
                                             }}
                                             onDoubleClick={() => {
                                                 setEditingItemId(item.id);
