@@ -11,7 +11,7 @@ public class RecipeIngredient
     public string Unit { get; set; }
     public string? Description { get; set; }
     public int Quantity { get; set; }
-    
+
     public int RecipeId { get; set; }
     public Recipe Recipe { get; set; } = default!;
 }
@@ -24,6 +24,8 @@ public class RecipeIngredientEntityConfiguration : IEntityTypeConfiguration<Reci
         builder.ToTable("RecipeIngredients");
 
         builder.Property(x => x.Name).HasMaxLength(RecipeIngredientNameMaxLength);
-        builder.HasOne(x => x.Recipe).WithMany();
+
+        builder.HasOne(x => x.Recipe)
+            .WithMany(x => x.RecipeIngredients);
     }
 }

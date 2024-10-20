@@ -15,7 +15,7 @@ public class Error
 
     public string ErrorMessage { get; set; } = string.Empty;
     public string? PropertyName { get; set; }
-    
+
     public static Response AsResponse(string errorMessage, string propertyName = "")
     {
         return new Error

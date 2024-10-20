@@ -10,7 +10,7 @@ namespace Syncify.Web.Server.Controllers;
 [Authorize]
 public class CalendarsController : ControllerBase
 {
-    
+
     private readonly ICalendarService _calendarService;
 
     public CalendarsController(ICalendarService calendarService)
@@ -34,7 +34,7 @@ public class CalendarsController : ControllerBase
         var results = await _calendarService.GetAllCalendars();
         return Ok(results);
     }
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Response<CalendarGetDto>>> GetById(int id)
     {
@@ -50,7 +50,7 @@ public class CalendarsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Response<CalendarGetDto>>> Update([FromRoute] int id, 
+    public async Task<ActionResult<Response<CalendarGetDto>>> Update([FromRoute] int id,
         [FromBody] CalendarUpdateDto dto)
     {
         var results = await _calendarService.UpdateCalendar(id, dto);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './RegisterPage.css';
+import './../../index.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CreateUserDto } from '../../api/generated/index.defs.ts';
@@ -62,53 +63,40 @@ export const RegisterPage: React.FC = () => {
       <div className="register-form bg-white p-5 rounded shadow">
         <h2 className="text-center text-highlight mb-4">Create an Account</h2>
         <form onSubmit={handleRegister}>
-          <div className="mb-3">
-            <label htmlFor="firstName" className="form-label text-dark">
-              First Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="firstName"
-              value={newUser.firstName}
-              onChange={(e) =>
-                setNewUser({ ...newUser, firstName: e.target.value })
-              }
-              maxLength={128}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="lastName" className="form-label text-dark">
-              Last Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="lastName"
-              value={newUser.lastName}
-              onChange={(e) =>
-                setNewUser({ ...newUser, lastName: e.target.value })
-              }
-              maxLength={128}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label text-dark">
-              Username
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="username"
-              value={newUser.userName}
-              onChange={(e) =>
-                setNewUser({ ...newUser, userName: e.target.value })
-              }
-              required
-            />
-          </div>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label htmlFor="firstName" className="form-label text-dark">
+               First Name
+              </label>
+                <input
+                type="text"
+                className="form-control"
+                id="firstName"
+                value={newUser.firstName}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, firstName: e.target.value })
+                }
+                maxLength={128}
+                required
+              />
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="lastName" className="form-label text-dark">
+                Last Name
+              </label>
+              <input
+               type="text"
+               className="form-control"
+               id="lastName"
+               value={newUser.lastName}
+               onChange={(e) =>
+                 setNewUser({ ...newUser, lastName: e.target.value })
+               }
+               maxLength={128}
+               required
+               />
+             </div>
+           </div>
           <div className="mb-3">
             <label htmlFor="email" className="form-label text-dark">
               Email address
@@ -140,6 +128,21 @@ export const RegisterPage: React.FC = () => {
               required
             />
           </div>
+            <div className="mb-3">
+                <label htmlFor="username" className="form-label text-dark">
+                    Username
+                </label>
+                <input
+                    type="text"
+                    className="form-control"
+                    id="username"
+                    value={newUser.userName}
+                    onChange={(e) =>
+                        setNewUser({ ...newUser, userName: e.target.value })
+                    }
+                    required
+                />
+            </div>
           <div className="mb-3 position-relative">
             <label htmlFor="password" className="form-label text-dark">
               Password

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Syncify.Common;
-using Syncify.Common.Errors;
-using Syncify.Common.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyShoppingLists;
@@ -14,6 +11,7 @@ public interface IShoppingListService
     Task<Response<ShoppingListGetDto>> GetShoppingListById(int id);
     Task<Response<List<ShoppingListGetDto>>> GetShoppingListsByUserId(int userId);
     Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
+    Task<Response<ShoppingListGetDto>> CreateListFromRecipe(ShoppingListRecipeCreateDto dto);
     Task<Response<ShoppingListGetDto>> UpdateShoppingList(int id, ShoppingListUpdateDto updateDto);
     Task<Response> DeleteShoppingList(int id);
 }
@@ -60,7 +58,6 @@ public class ShoppingListService : IShoppingListService
         return data.AsResponse();
     }
 
-
     public async Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto)
     {
         if (await ShoppingListHasSameName(createDto.Name, createDto.UserId))
@@ -80,19 +77,13 @@ public class ShoppingListService : IShoppingListService
         if (shoppingList == null)
             return Error.AsResponse<ShoppingListGetDto>("Shopping list not found");
 
-        // Update the fields from the DTO
         shoppingList.Name = updateDto.Name;
         shoppingList.Description = updateDto.Description ?? shoppingList.Description;
-        shoppingList.Checked = updateDto.Checked;  // Ensure Checked is updated
-        shoppingList.Completed = updateDto.Completed;  // Ensure Completed is updated
 
-        // Save the changes to the database
         await _dataContext.SaveChangesAsync();
 
-        // Return the updated entity mapped to a DTO
         return shoppingList.MapTo<ShoppingListGetDto>().AsResponse();
     }
-
 
     public async Task<Response> DeleteShoppingList(int id)
     {
@@ -113,6 +104,12 @@ public class ShoppingListService : IShoppingListService
         await transaction.CommitAsync();
         
         return Response.Success();
+    }
+
+    public Task<Response<ShoppingListGetDto>> CreateListFromRecipe(ShoppingListRecipeCreateDto dto)
+    {
+        var facade = new RecipeToShoppingListFacade(_dataContext);
+        return facade.CreateListFromRecipe(dto);
     }
 
     private async Task RemoveShoppingListFromFamily(int shoppingListId)
