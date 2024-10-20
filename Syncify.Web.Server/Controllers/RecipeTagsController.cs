@@ -18,20 +18,13 @@ namespace Syncify.Web.Server.Features.Recipes
         [HttpGet]
         public async Task<ActionResult<Response<List<RecipeTagDto>>>> GetTags()
         {
-            var result = await _recipeTagService.GetTags();
-            return Ok(result);
+            return Ok(await _recipeTagService.GetTags());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Response<RecipeTagDto>>> GetTagById(int id)
         {
-            var result = await _recipeTagService.GetTagById(id);
-            if (result.HasErrors)
-            {
-                return NotFound(result);
-            }
-
-            return Ok(result);
+            return Ok(await _recipeTagService.GetTagById(id));
         }
 
         [HttpPost]
@@ -44,25 +37,13 @@ namespace Syncify.Web.Server.Features.Recipes
         [HttpPut("{id}")]
         public async Task<ActionResult<Response<RecipeTagDto>>> UpdateTag(int id, [FromBody] RecipeTagCreateDto dto)
         {
-            var result = await _recipeTagService.UpdateTag(id, dto);
-            if (result.HasErrors)
-            {
-                return NotFound(result);
-            }
-
-            return Ok(result);
+            return Ok(await _recipeTagService.UpdateTag(id, dto));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Response<bool>>> DeleteTag(int id)
         {
-            var result = await _recipeTagService.DeleteTag(id);
-            if (result.HasErrors)
-            {
-                return NotFound(result);
-            }
-
-            return Ok(result);
+            return Ok(await _recipeTagService.DeleteTag(id));
         }
     }
 }

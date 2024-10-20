@@ -10,6 +10,7 @@ using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Web.Server.Features.RecipeTags;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
@@ -44,12 +45,13 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddMvc();
-    
+
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts => opts.UseSqlServer(connectionString));
-   
-    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 
+
+    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+    builder.Services.AddScoped<RecipeTagService>();
 
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddSingleton<MapperProvider>();
@@ -58,22 +60,22 @@ try
     FluentValidationConfiguration.ConfigureServices(builder.Services);
     SwaggerConfiguration.Configure(builder.Services);
     AuthenticationConfiguration.ConfigureServices(builder.Services);
-    
+
     var app = builder.Build();
-    
+
     app.UseSerilogRequestLogging();
     app.UseMiddleware<ErrorHandlingMiddleware>();
-    
+
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-        
+
         MapperConfiguration.ConfigureMapper(services);
-        
+
         var dataContext = services.GetRequiredService<DataContext>();
         var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<Role>>();
-        
+
         await dataContext.Database.MigrateAsync();
 
         if (app.Environment.IsDevelopment())
@@ -96,7 +98,7 @@ try
 
     app.UseRouting();
     app.UseAuthorization();
-    
+
     app.MapControllers();
 
     app.MapFallbackToFile("/index.html");
