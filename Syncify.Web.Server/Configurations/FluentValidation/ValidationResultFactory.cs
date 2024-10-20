@@ -6,7 +6,7 @@ namespace Syncify.Web.Server.Configurations.FluentValidation;
 
 public class ValidationResultFactory : IFluentValidationAutoValidationResultFactory
 {
-    public IActionResult CreateActionResult(ActionExecutingContext context, 
+    public IActionResult CreateActionResult(ActionExecutingContext context,
         ValidationProblemDetails? validationProblemDetails)
     {
         var errors = CreateErrors(validationProblemDetails).ToList();

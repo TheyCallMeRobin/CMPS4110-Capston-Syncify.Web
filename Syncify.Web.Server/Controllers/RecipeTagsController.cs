@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Syncify.Common;
 using Syncify.Web.Server.Features.RecipeTags;
 
 namespace Syncify.Web.Server.Features.Recipes

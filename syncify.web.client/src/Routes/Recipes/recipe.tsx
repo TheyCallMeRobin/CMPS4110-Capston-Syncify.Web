@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './recipe.css';
+import './../../index.css';
 
-// Define the Recipe type based on the backend DTO
 interface Recipe {
     id: number;
     name: string;
@@ -17,7 +17,6 @@ export const Recipes: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        // Fetch recipes from the backend
         const fetchRecipes = () => {
             fetch('/api/recipes')
                 .then(response => response.json())
@@ -34,18 +33,17 @@ export const Recipes: React.FC = () => {
 
     return (
         <div className="container">
-            <div className="content">
-                {recipes.map((recipe) => (
-                    <div key={recipe.id} className="section">
-                        <p className="recipe-title">{recipe.name}</p>
-                        <p>{recipe.description}</p>
-                        <p><strong>Prep Time:</strong> {recipe.prepTimeInMinutes} minutes</p>
-                        <p><strong>Cook Time:</strong> {recipe.cookTimeInMinutes} minutes</p>
-                        <p><strong>Servings:</strong> {recipe.servings}</p>
-                        <p><strong>Author:</strong> {recipe.userFirstName}</p>
-                    </div>
-                ))}
-            </div>
+            {recipes.map(recipe => (
+                <div className="recipe-item" key={recipe.id}>
+                    <h2 className="text-center text-highlight mb-4">{recipe.name}</h2>
+                    <h4>{recipe.description}</h4>
+                    <h6><strong>Prep Time:</strong> {recipe.prepTimeInMinutes} minutes</h6>
+                    <h6><strong>Cook Time:</strong> {recipe.cookTimeInMinutes} minutes</h6>
+                    <h6><strong>Servings:</strong> {recipe.servings}</h6>
+                    <h6><strong>Author:</strong> {recipe.userFirstName}</h6>
+                </div>
+            ))}
         </div>
+
     );
 };

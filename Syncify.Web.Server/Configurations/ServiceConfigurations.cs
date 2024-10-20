@@ -10,6 +10,7 @@ using Syncify.Web.Server.Features.FamilyShoppingLists;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Configurations;
 
@@ -25,6 +26,7 @@ public static class ServiceConfigurations
         services.AddScoped<ICalendarEventService, CalendarEventService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IShoppingListService, ShoppingListService>();
+        services.AddScoped<IShoppingListItemService, ShoppingListItemService>();
         services.AddScoped<IFamilyService, FamilyService>();
         services.AddScoped<IFamilyCalendarService, FamilyCalendarService>();
         services.AddScoped<IFamilyRecipeService, FamilyRecipeService>();
