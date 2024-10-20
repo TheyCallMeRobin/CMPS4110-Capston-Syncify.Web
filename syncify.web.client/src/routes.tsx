@@ -34,9 +34,14 @@ export const ROUTES = {
     element: <Reminders />,
   },
   ShoppingLists: {
-    path: '/shoppinglist',
+    path: '/shopping-lists',
     element: <ShoppingLists />,
   },
+  /*
+  AccountSettings: {
+    path: '/account-settings',
+    element: <AccountSettings />,
+  }, */
 };
 
 const routes: RouteObject[] = [

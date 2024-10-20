@@ -24,7 +24,7 @@ public class RecipeService : IRecipeService
     {
         var data = await _dataContext
             .Set<Recipe>()
-            .Include(x => x.User) // Include User to get the FirstName
+            .Include(x => x.User)
             .Select(x => x.MapTo<RecipeGetDto>())
             .ToListAsync();
 
@@ -35,7 +35,7 @@ public class RecipeService : IRecipeService
     {
         var data = await _dataContext
             .Set<Recipe>()
-            .Include(x => x.User) // Include User to get the FirstName
+            .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (data is null)

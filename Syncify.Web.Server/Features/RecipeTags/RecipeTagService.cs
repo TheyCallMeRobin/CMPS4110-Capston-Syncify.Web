@@ -15,7 +15,7 @@ namespace Syncify.Web.Server.Features.RecipeTags
         public async Task<Response<List<RecipeTagDto>>> GetTags()
         {
             var tags = await _dataContext
-                .Set<RecipeTag>()  
+                .Set<RecipeTag>()
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .ToListAsync();
 
@@ -25,7 +25,7 @@ namespace Syncify.Web.Server.Features.RecipeTags
         public async Task<Response<RecipeTagDto>> GetTagById(int id)
         {
             var tag = await _dataContext
-                .Set<RecipeTag>() 
+                .Set<RecipeTag>()
                 .Where(tag => tag.Id == id)
                 .Select(tag => new RecipeTagDto(tag.Id, tag.Name, tag.RecipeId))
                 .FirstOrDefaultAsync();
