@@ -463,6 +463,12 @@ export class ShoppingListUpdateDto {
 
   /** */
   'description': string;
+
+  /** */
+  'checked': boolean;
+
+  /** */
+  'completed': boolean;
   
 }
 
@@ -489,8 +495,13 @@ export class ShoppingListGetDto {
   'name': string;
 
   /**  */
-    'description': string;
+  'description': string;
 
+  /** */
+  'checked': boolean;
+
+  /** */
+  'completed': boolean;
   constructor(data: ShoppingListGetDto = {}) {
     Object.assign(this, data);
   }

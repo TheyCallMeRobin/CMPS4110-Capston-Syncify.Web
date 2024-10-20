@@ -24,7 +24,7 @@ public class CalendarEntityConfiruation : IEntityTypeConfiguration<Calendar>
         builder.ToTable("Calendars");
 
         builder.Property(x => x.Name).HasMaxLength(NameMaxLength);
-
+        
         builder.HasOne(x => x.CreatedByUser).WithMany();
     }
 }

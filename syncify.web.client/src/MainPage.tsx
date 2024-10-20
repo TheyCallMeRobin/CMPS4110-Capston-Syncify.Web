@@ -8,7 +8,10 @@ export const MainPage: React.FC = () => {
     return (
         <div>
             <div className="text-center">
-                <h2 className="text-center text-highlight mb-4">This Is The Syncify Landing Page!</h2>
+                <h1>
+                    This is where our landing page will go! 
+                </h1>
+
             </div>
         </div>
     );

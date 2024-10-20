@@ -21,7 +21,7 @@ public class AuthenticationService : IAuthenticationService
         _userManager = userManager;
         _signInManager = signInManager;
     }
-
+    
     public async Task<Response<UserGetDto>> Login(LoginDto dto)
     {
         var error = Error.AsResponse<UserGetDto>("Username or Password is incorrect.");
@@ -43,7 +43,7 @@ public class AuthenticationService : IAuthenticationService
         var user = await _userManager.Users
             .ProjectTo<UserGetDto>()
             .FirstOrDefaultAsync(x => x.UserName.Equals(userName));
-
+        
         if (user is null)
             return Error.AsResponse<UserGetDto>("User not found", nameof(userName));
 

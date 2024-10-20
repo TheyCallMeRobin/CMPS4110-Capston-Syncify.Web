@@ -19,12 +19,4 @@ public static class ValidationExtensions
             .Must(str => str.Count(c => SpecialCharacters.Contains(c)) >= count)
             .WithMessage("{PropertName} must have at least " + count + " special characters.");
     }
-
-    public static IRuleBuilderOptions<T, string> MustBeInList<T>(this IRuleBuilder<T, string> rules,
-        List<string> list)
-    {
-        return rules
-            .Must(list.Contains)
-            .WithMessage($"Invalid '{{PropertyName}}'. Options are: {string.Join(", ", list)}");
-    }
 }

@@ -29,7 +29,7 @@ public class RecipeIngredientService : IRecipeIngredientService
         if (await IngredientAlreadyExists(dto.RecipeId, dto.Name))
             return Error.AsResponse<RecipeIngredientGetDto>("An ingredient with this name already exists for this recipe",
                 nameof(dto.Name));
-
+        
         var ingredient = dto.MapTo<RecipeIngredient>();
 
         _dataContext.Set<RecipeIngredient>().Add(ingredient);
@@ -61,7 +61,7 @@ public class RecipeIngredientService : IRecipeIngredientService
         var ingredient = await _dataContext.Set<RecipeIngredient>().FindAsync(id);
         if (ingredient is null)
             return Error.AsResponse<RecipeIngredientGetDto>(ErrorMessages.NotFoundError, nameof(id));
-
+        
         if (await IngredientAlreadyExists(ingredient.RecipeId, ingredient.Name))
             return Error.AsResponse<RecipeIngredientGetDto>(ErrorMessages.NotFoundError, nameof(id));
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './shoppinglists.css';
-import './../../index.css';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
 import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
 import { useUser } from '../../auth/auth-context.tsx';
@@ -55,6 +54,8 @@ const ShoppingLists = () => {
         const updatedItemObj: ShoppingListUpdateDto = {
             name: editedName,
             description: item.description,
+            checked: item.checked,
+            completed: item.completed,
         };
 
         const response = await ShoppingListsService.updateShoppingList({
@@ -78,16 +79,15 @@ const ShoppingLists = () => {
     return (
         <div className="shopping-list-page">
             <div className="container mt-4">
-                <h2 className="text-highlight mb-4">My Shopping Lists</h2>
+                <h1 className="mb-4">My Shopping Lists</h1>
                 {loading && <p>Loading...</p>}
                 {error && <p>Error loading shopping lists.</p>}
-                <div>
                 <ul className="list-group">
                     {items.length > 0 ? (
                         items.map((item) => (
                             <li
                                 key={item.id}
-                                className="list-group-item d-flex justify-content-between align-items-center"
+                                className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
                             >
                                 <div className="d-flex align-items-center" style={{ width: '100%' }}>
                                     {editingItemId === item.id ? (
@@ -103,8 +103,9 @@ const ShoppingLists = () => {
                                     ) : (
                                         <span
                                             style={{
+                                                textDecoration: item.completed ? 'line-through' : 'none',
                                                 flexGrow: 1,
-                                                textAlign: 'left',
+                                                textAlign: 'center',
                                             }}
                                             onDoubleClick={() => {
                                                 setEditingItemId(item.id);
@@ -119,10 +120,7 @@ const ShoppingLists = () => {
                                         onClick={() => handleDeleteItem(item.id)}
                                         style={{ marginLeft: '10px' }}
                                     >
-                                        <FaTrashAlt
-                                            className="trash-icon"
-                                            style={{ color: 'red', fontSize: '18px' }} // Red and smaller icon
-                                        />
+                                        <FaTrashAlt style={{ color: 'black', fontSize: '24px' }} />
                                     </button>
                                 </div>
                             </li>
@@ -142,7 +140,6 @@ const ShoppingLists = () => {
                         />
                     </li>
                 </ul>
-                </div>
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Text.Json.Serialization;
+using AutoMapper;
 using FluentValidation;
-using System.Text.Json.Serialization;
+using Syncify.Web.Server.Features.Authorization;
 
 namespace Syncify.Web.Server.Features.Calendars;
 

@@ -6,6 +6,6 @@ public class UknownError : Error
 {
     public UknownError() : base(ErrorMessages.UnknownError)
     {
-
+        
     }
 }

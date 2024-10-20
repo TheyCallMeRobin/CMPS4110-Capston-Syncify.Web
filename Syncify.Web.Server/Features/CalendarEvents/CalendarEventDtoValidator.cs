@@ -6,7 +6,7 @@ using Config = CalendarEventEntityConfiguration;
 
 public class CalendarEventDtoValidator : AbstractValidator<CalendarEventDto>
 {
-
+    
     public CalendarEventDtoValidator()
     {
         RuleFor(x => x.Description).MaximumLength(Config.DescriptionMaxLength);

@@ -25,7 +25,7 @@ export class ShoppingListsService {
 
   static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists';
+      let url = basePath + '/api/shoppinglist';
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
@@ -41,7 +41,7 @@ export class ShoppingListsService {
     options: IRequestOptions = {}
   ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists';
+      let url = basePath + '/api/shoppinglist';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -61,7 +61,7 @@ export class ShoppingListsService {
     options: IRequestOptions = {}
   ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/shoppinglist/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -78,7 +78,7 @@ export class ShoppingListsService {
     options: IRequestOptions = {}
   ): Promise<Response<List<ShoppingListGetDto>>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/by-user/{userId}';
+      let url = basePath + '/api/shoppinglist/by-user/{userId}';
       url = url.replace('{userId}', params['userId'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -95,7 +95,7 @@ export class ShoppingListsService {
     options: IRequestOptions = {}
   ): Promise<Response<ShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/shoppinglist/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('patch', 'application/json', url, options);
@@ -113,7 +113,7 @@ export class ShoppingListsService {
     options: IRequestOptions = {}
   ): Promise<Response<null>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/shoppinglist/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
