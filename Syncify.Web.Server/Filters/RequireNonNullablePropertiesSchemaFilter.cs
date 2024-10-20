@@ -10,7 +10,7 @@ public class RequireNonNullablePropertiesSchemaFilter : ISchemaFilter
         var additionalRequiredProps = schema.Properties
             .Where(x => !x.Value.Nullable && !schema.Required.Contains(x.Key))
             .Select(x => x.Key);
-
+        
         foreach (var propKey in additionalRequiredProps)
         {
             schema.Required.Add(propKey);

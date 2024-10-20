@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using AutoMapper;
+using Syncify.Web.Server.Features.Calendars;
 
 namespace Syncify.Web.Server.Features.CalendarEvents;
 
@@ -30,10 +31,10 @@ public record CalendarEventUpdateDto : CalendarEventDto
 public record CalendarEventCreateDto : CalendarEventDto
 {
     public int CalendarId { get; set; }
-
+    
     [JsonIgnore]
     public int CreatedByUserId { get; set; }
-
+    
     public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
 
 }
@@ -46,6 +47,6 @@ public class CalendarEventMappingProfile : Profile
         CreateMap<CalendarEventUpdateDto, CalendarEvent>();
         CreateMap<CalendarEventCreateDto, CalendarEvent>();
         CreateMap<CalendarEvent, CalendarEventGetDto>();
-
+        
     }
 }

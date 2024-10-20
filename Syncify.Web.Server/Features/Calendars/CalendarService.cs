@@ -49,7 +49,7 @@ public class CalendarService : ICalendarService
         return calendar.MapTo<CalendarGetDto>().AsResponse();
     }
 
-    public async Task<Response<List<CalendarGetDto>>> GetAllCalendars()
+    public async  Task<Response<List<CalendarGetDto>>> GetAllCalendars()
     {
         var data = await _dataContext.Set<Calendar>()
             .ProjectTo<CalendarGetDto>()
@@ -63,7 +63,7 @@ public class CalendarService : ICalendarService
         var calendar = await _dataContext.Set<Calendar>().FindAsync(id);
         if (calendar is null)
             return Error.AsResponse<CalendarGetDto>(ErrorMessages.NotFoundError, nameof(id));
-
+        
         if (await CalendarAlreadyExists(calendar.CreatedByUserId, dto.Name))
             return Error.AsResponse<CalendarGetDto>("A calendar with this name already exists for this user",
                 nameof(dto.Name));
@@ -98,6 +98,6 @@ public class CalendarService : ICalendarService
 
     private Task<bool> CalendarAlreadyExists(int userId, string name)
         => _dataContext.Set<Calendar>()
-            .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) &&
+            .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && 
                            x.CreatedByUserId == userId);
 }

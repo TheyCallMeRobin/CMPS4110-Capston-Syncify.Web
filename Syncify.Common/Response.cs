@@ -15,6 +15,6 @@ public record Response
 
     public void AddErrors(params Error[] errors)
         => Errors.AddRange(errors);
-
+    
     public static Response Success() => new Response();
 }
