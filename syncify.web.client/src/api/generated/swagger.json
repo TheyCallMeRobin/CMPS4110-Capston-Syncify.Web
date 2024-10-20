@@ -587,6 +587,46 @@
           "Recipes"
         ],
         "operationId": "GetRecipes",
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Description",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PrepTime",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "CookTime",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Servings",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -635,8 +675,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -692,6 +732,45 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Response<RecipeGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "DeleteRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<Boolean>"
                 }
               }
             }
@@ -1258,6 +1337,110 @@
             }
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "ShoppingLists"
+        ],
+        "operationId": "UpdateShoppingList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShoppingListUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShoppingListUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShoppingListUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ShoppingLists"
+        ],
+        "operationId": "DeleteShoppingList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/shoppinglist/by-user/{userId}": {
+      "get": {
+        "tags": [
+          "ShoppingLists"
+        ],
+        "operationId": "GetShoppingListsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<ShoppingListGetDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<ShoppingListGetDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<ShoppingListGetDto>>"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/users/api/createusers": {
@@ -1680,9 +1863,11 @@
         "required": [
           "cookTimeInMinutes",
           "description",
+          "ingredients",
           "name",
           "prepTimeInMinutes",
           "servings",
+          "tags",
           "userId"
         ],
         "type": "object",
@@ -1708,6 +1893,18 @@
           "userId": {
             "type": "integer",
             "format": "int32"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientDto"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeTagDto"
+            }
           }
         },
         "additionalProperties": false
@@ -1717,10 +1914,13 @@
           "cookTimeInMinutes",
           "description",
           "id",
+          "ingredients",
           "name",
           "prepTimeInMinutes",
           "servings",
-          "userFirstName"
+          "tags",
+          "userFirstName",
+          "userId"
         ],
         "type": "object",
         "properties": {
@@ -1748,6 +1948,22 @@
           },
           "userFirstName": {
             "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientDto"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeTagDto"
+            }
           }
         },
         "additionalProperties": false
@@ -1776,6 +1992,36 @@
             "type": "string"
           },
           "recipeId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeIngredientDto": {
+        "required": [
+          "id",
+          "name",
+          "quantity",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
             "type": "integer",
             "format": "int32"
           }
@@ -2268,6 +2514,8 @@
       },
       "ShoppingListGetDto": {
         "required": [
+          "checked",
+          "completed",
           "description",
           "id",
           "name"
@@ -2283,6 +2531,36 @@
           },
           "description": {
             "type": "string"
+          },
+          "checked": {
+            "type": "boolean"
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShoppingListUpdateDto": {
+        "required": [
+          "checked",
+          "completed",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "checked": {
+            "type": "boolean"
+          },
+          "completed": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

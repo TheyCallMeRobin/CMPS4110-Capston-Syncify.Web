@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.Recipes;
 using System.Security.Claims;
@@ -14,22 +15,11 @@ public class RecipesController : ControllerBase
         _recipeService = recipeService;
     }
 
-
-    private int GetUserId()
-    {
-        return int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-    }
-
     [HttpGet]
-    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes(
-        [FromQuery] string? name = null,
-        [FromQuery] string? description = null,
-        [FromQuery] int? prepTime = null,
-        [FromQuery] int? cookTime = null,
-        [FromQuery] int? servings = null)
+    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes([FromQuery] RecipeQueryParams queryParams)
     {
-        var userId = GetUserId();
-        var data = await _recipeService.GetFilteredRecipes(userId, name, description, prepTime, cookTime, servings);
+        var userId = HttpContext.User.GetCurrentUserId() ?? 0;
+        var data = await _recipeService.GetFilteredRecipes(userId, queryParams.Name, queryParams.Description, queryParams.PrepTime ?? 0, queryParams.CookTime ?? 0, queryParams.Servings ?? 0);
         return Ok(data);
     }
 
@@ -37,30 +27,53 @@ public class RecipesController : ControllerBase
     public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeById(int id)
     {
         var data = await _recipeService.GetRecipeById(id);
-        if (data.Data.UserId != GetUserId())
+        var userId = HttpContext.User.GetCurrentUserId() ?? 0;
+
+        if (data.Data.UserId != userId)
         {
-            return Forbid();
+            return Unauthorized(new { message = "You are not authorized to view this recipe." });
         }
         return Ok(data);
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
-        var userId = GetUserId();
+        // Get the current user's ID from the request context
+        var userId = HttpContext.User.GetCurrentUserId() ?? 0;
+
+        // Call the recipe service to create the recipe
         var data = await _recipeService.CreateRecipe(dto, userId);
-        return CreatedAtAction(nameof(GetRecipeById), new { id = data.Data.Id }, data);
+
+        // Return a simple 'Ok' response with the created recipe data
+        return Ok(data);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteRecipe(int id)
+    public async Task<ActionResult<Response<bool>>> DeleteRecipe(int id)
     {
         var recipe = await _recipeService.GetRecipeById(id);
-        if (recipe.Data.UserId != GetUserId()) // Ensure the logged-in user owns the recipe
+        var userId = HttpContext.User.GetCurrentUserId() ?? 0;
+
+        if (recipe.Data.UserId != userId)
         {
-            return Forbid();
+            return Unauthorized(new { message = "You are not authorized to delete this recipe." });
         }
+
         await _recipeService.DeleteRecipe(id);
-        return NoContent();
+
+        // Return a success message with a true/false response indicating the deletion
+        return Ok(new { success = true, message = "Recipe successfully deleted." });
+    }
+
+
+    public class RecipeQueryParams
+    {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public int? PrepTime { get; set; }
+        public int? CookTime { get; set; }
+        public int? Servings { get; set; }
     }
 }

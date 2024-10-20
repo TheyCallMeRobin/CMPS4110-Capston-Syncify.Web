@@ -19,7 +19,6 @@ namespace Syncify.Web.Server.Features.Recipes
         Task DeleteRecipe(int id);
     }
 
-
     public class RecipeService : IRecipeService
     {
         private readonly DataContext _dataContext;
@@ -30,18 +29,19 @@ namespace Syncify.Web.Server.Features.Recipes
         }
 
         public async Task<Response<List<RecipeGetDto>>> GetFilteredRecipes(
-     int userId,
-     string? name = null,
-     string? description = null,
-     int? prepTime = null,
-     int? cookTime = null,
-     int? servings = null)
+            int userId,
+            string? name = null,
+            string? description = null,
+            int? prepTime = null,
+            int? cookTime = null,
+            int? servings = null)
         {
             var query = _dataContext.Set<Recipe>()
                 .Include(x => x.Tags)
                 .Include(x => x.Ingredients)
                 .Include(x => x.User)
                 .Where(x => x.UserId == userId)
+                .AsSplitQuery() // Split query applied here
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(description))
@@ -59,9 +59,6 @@ namespace Syncify.Web.Server.Features.Recipes
             return data.AsResponse();
         }
 
-
-
-
         public async Task<Response<List<RecipeGetDto>>> GetRecipesByUser(int userId)
         {
             var data = await _dataContext.Set<Recipe>()
@@ -69,6 +66,7 @@ namespace Syncify.Web.Server.Features.Recipes
                 .Include(x => x.Tags)
                 .Include(x => x.Ingredients)
                 .Include(x => x.User)
+                .AsSplitQuery() // Split query applied here
                 .Select(x => x.MapTo<RecipeGetDto>())
                 .ToListAsync();
 
@@ -81,6 +79,7 @@ namespace Syncify.Web.Server.Features.Recipes
                 .Include(x => x.Tags)
                 .Include(x => x.Ingredients)
                 .Include(x => x.User)
+                .AsSplitQuery() // Split query applied here
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (data == null)
@@ -137,6 +136,7 @@ namespace Syncify.Web.Server.Features.Recipes
             var recipe = await _dataContext.Set<Recipe>()
                 .Include(r => r.Ingredients)
                 .Include(r => r.Tags)
+                .AsSplitQuery() // Split query applied here
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (recipe == null)
@@ -182,7 +182,6 @@ namespace Syncify.Web.Server.Features.Recipes
 
             return recipe.MapTo<RecipeGetDto>().AsResponse();
         }
-
 
         private Task<bool> RecipeHasSameName(string name)
         {

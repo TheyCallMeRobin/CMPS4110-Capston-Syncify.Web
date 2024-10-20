@@ -335,6 +335,12 @@ export class RecipeCreateDto {
   /**  */
   'userId': number;
 
+  /**  */
+  'ingredients': RecipeIngredientDto[];
+
+  /**  */
+  'tags': RecipeTagDto[];
+
   constructor(data: RecipeCreateDto = {}) {
     Object.assign(this, data);
   }
@@ -362,6 +368,15 @@ export class RecipeGetDto {
   /**  */
   'userFirstName': string;
 
+  /**  */
+  'userId': number;
+
+  /**  */
+  'ingredients': RecipeIngredientDto[];
+
+  /**  */
+  'tags': RecipeTagDto[];
+
   constructor(data: RecipeGetDto = {}) {
     Object.assign(this, data);
   }
@@ -384,6 +399,27 @@ export class RecipeIngredientCreateDto {
   'recipeId': number;
 
   constructor(data: RecipeIngredientCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class RecipeIngredientDto {
+  /**  */
+  'id': number;
+
+  /**  */
+  'name': string;
+
+  /**  */
+  'unit': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'quantity': number;
+
+  constructor(data: RecipeIngredientDto = {}) {
     Object.assign(this, data);
   }
 }
@@ -482,12 +518,31 @@ export class ShoppingListGetDto {
   /**  */
   'description': string;
 
-  /** */
+  /**  */
   'checked': boolean;
 
-  /** */
+  /**  */
   'completed': boolean;
+
   constructor(data: ShoppingListGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListUpdateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'checked': boolean;
+
+  /**  */
+  'completed': boolean;
+
+  constructor(data: ShoppingListUpdateDto = {}) {
     Object.assign(this, data);
   }
 }
