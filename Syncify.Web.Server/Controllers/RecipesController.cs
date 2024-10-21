@@ -19,42 +19,51 @@ public class RecipesController : ControllerBase
     public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes([FromQuery] RecipeQueryParams queryParams)
     {
         var userId = HttpContext.User.GetCurrentUserId() ?? 0;
-        var data = await _recipeService.GetFilteredRecipes(userId, queryParams.Name, queryParams.Description, queryParams.PrepTime ?? 0, queryParams.CookTime ?? 0, queryParams.Servings ?? 0);
+        var data = await _recipeService.GetFilteredRecipes(userId, queryParams);
         return Ok(data);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeById(int id)
     {
-        var data = await _recipeService.GetRecipeById(id);
+        var recipeResponse = await _recipeService.GetRecipeById(id);
         var userId = HttpContext.User.GetCurrentUserId() ?? 0;
 
-        if (data.Data.UserId != userId)
+        if (recipeResponse.Data == null)  // Check if recipe is null
+        {
+            return NotFound(new { message = "Recipe not found." });
+        }
+
+        // Check the UserId from the entity before it gets mapped to DTO
+        if (recipeResponse.Data.UserId != userId)
         {
             return Unauthorized(new { message = "You are not authorized to view this recipe." });
         }
-        return Ok(data);
+
+        return Ok(recipeResponse);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
-
         var userId = HttpContext.User.GetCurrentUserId() ?? 0;
-
         var data = await _recipeService.CreateRecipe(dto, userId);
-
         return Ok(data);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response<bool>>> DeleteRecipe(int id)
     {
-        var recipe = await _recipeService.GetRecipeById(id);
+        var recipeResponse = await _recipeService.GetRecipeById(id);
         var userId = HttpContext.User.GetCurrentUserId() ?? 0;
 
-        if (recipe.Data.UserId != userId)
+        if (recipeResponse.Data == null) // Check if recipe is null
+        {
+            return NotFound(new { message = "Recipe not found." });
+        }
+
+        if (recipeResponse.Data.UserId != userId)
         {
             return Unauthorized(new { message = "You are not authorized to delete this recipe." });
         }
@@ -62,15 +71,5 @@ public class RecipesController : ControllerBase
         await _recipeService.DeleteRecipe(id);
 
         return Ok(new { success = true, message = "Recipe successfully deleted." });
-    }
-
-
-    public class RecipeQueryParams
-    {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public int? PrepTime { get; set; }
-        public int? CookTime { get; set; }
-        public int? Servings { get; set; }
     }
 }

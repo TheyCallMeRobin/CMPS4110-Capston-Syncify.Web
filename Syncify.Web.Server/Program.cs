@@ -9,8 +9,6 @@ using Syncify.Web.Server.Configurations.FluentValidation;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.ShoppingLists;
-using Syncify.Web.Server.Features.RecipeTags;
 using Syncify.Web.Server.Middlewares;
 using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
@@ -49,14 +47,11 @@ try
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(opts => opts.UseSqlServer(connectionString));
 
-
-    builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
-    builder.Services.AddScoped<RecipeTagService>();
-
+  
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddSingleton<MapperProvider>();
 
-    ServiceConfigurations.ConfigureServices(builder.Services);
+    ServiceConfigurations.ConfigureServices(builder.Services);  
     FluentValidationConfiguration.ConfigureServices(builder.Services);
     SwaggerConfiguration.Configure(builder.Services);
     AuthenticationConfiguration.ConfigureServices(builder.Services);
@@ -95,12 +90,10 @@ try
     }
 
     app.UseHttpsRedirection();
-
     app.UseRouting();
     app.UseAuthorization();
 
     app.MapControllers();
-
     app.MapFallbackToFile("/index.html");
 
     app.Run();

@@ -10,7 +10,6 @@ namespace Syncify.Web.Server.Configurations;
 
 public static class ServiceConfigurations
 {
-
     public static void ConfigureServices(IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
@@ -19,9 +18,7 @@ public static class ServiceConfigurations
         services.AddScoped<IRecipeIngredientService, RecipeIngredientService>();
         services.AddScoped<ICalendarEventService, CalendarEventService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<IShoppingListService, ShoppingListService>();
-        services.AddScoped<IRecipeTagService, RecipeTagService>();
-
+        services.AddScoped<IShoppingListService, ShoppingListService>();  // Moved from Program.cs
+        services.AddScoped<IRecipeTagService, RecipeTagService>();        // Moved from Program.cs
     }
-
 }

@@ -8,11 +8,11 @@ namespace Syncify.Web.Server.Features.Recipes
     [Route("api/recipetags")]
     public class RecipeTagsController : ControllerBase
     {
-        private readonly RecipeTagService _recipeTagService;
+        private readonly IRecipeTagService _recipeTagService;  // Use IRecipeTagService
 
-        public RecipeTagsController(RecipeTagService recipeTagService)
+        public RecipeTagsController(IRecipeTagService recipeTagService)  // Use IRecipeTagService here
         {
-            _recipeTagService = recipeTagService;
+            _recipeTagService = recipeTagService ?? throw new ArgumentNullException(nameof(recipeTagService));
         }
 
         [HttpGet]
