@@ -1,28 +1,14 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
-public record ShoppingListDto
-{
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
-}
-
-public record ShoppingListGetDto : ShoppingListDto
-{
-    public int Id { get; set; }
-    public List<ShoppingListItemGetDto> ShoppingListItems { get; set; } = [];
-}
-
+public record ShoppingListGetDto(int Id, string Name, string Description, bool Checked, bool Completed);
 public record ShoppingListCreateDto(string Name, string Description, int UserId);
-public record ShoppingListUpdateDto(string Name, string? Description);
+public record ShoppingListUpdateDto(string Name, string? Description, bool Checked, bool Completed);
 
 
 
-public record ShoppingListRecipeCreateDto(string Name, string Description, int UserId, int RecipeId)
-    : ShoppingListCreateDto(Name, Description, UserId);
 public class ShoppingListMappingProfile : Profile
 {
     public ShoppingListMappingProfile()

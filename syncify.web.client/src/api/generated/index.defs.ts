@@ -493,15 +493,6 @@ export class RecipeTagDto {
   }
 }
 
-export class ShoppingListUpdateDto {
-  /** */
-  'name': string;
-
-  /** */
-  'description': string;
-  
-}
-
 export class ShoppingListCreateDto {
   /**  */
   'name': string;
@@ -526,6 +517,12 @@ export class ShoppingListGetDto {
 
   /**  */
   'description': string;
+
+  /**  */
+  'checked': boolean;
+
+  /**  */
+  'completed': boolean;
 
   constructor(data: ShoppingListGetDto = {}) {
     Object.assign(this, data);

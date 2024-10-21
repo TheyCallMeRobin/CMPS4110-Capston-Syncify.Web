@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Transactions;
+using Microsoft.AspNetCore.Identity;
 using Syncify.Common.Constants;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
-using System.Transactions;
 
 namespace Syncify.Web.Server.Features.Authorization;
 

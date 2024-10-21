@@ -1,4 +1,5 @@
-using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,7 @@ using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Middlewares;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using MapperConfiguration = Syncify.Web.Server.Configurations.MapperConfiguration;
 
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -38,7 +38,6 @@ try
         options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.SerializerOptions.WriteIndented = true;
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        options.SerializerOptions.IncludeFields = true;
     });
 
     builder.Services.AddControllers();

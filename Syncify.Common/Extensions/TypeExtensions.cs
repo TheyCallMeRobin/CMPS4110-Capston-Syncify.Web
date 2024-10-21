@@ -8,6 +8,7 @@ public static class TypeExtensions
     
     private static readonly ConcurrentDictionary<Type, string> TypeNameCache = new();
 
+    
     public static string GetPrettyName(this Type type)
     {
         if (TypeNameCache.TryGetValue(type, out var name))

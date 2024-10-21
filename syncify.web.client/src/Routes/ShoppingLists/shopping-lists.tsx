@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './shoppinglists.css';
-import './../../index.css';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
 import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
 import { useUser } from '../../auth/auth-context.tsx';
@@ -55,6 +54,8 @@ const ShoppingLists = () => {
         const updatedItemObj: ShoppingListUpdateDto = {
             name: editedName,
             description: item.description,
+            checked: item.checked,
+            completed: item.completed,
         };
 
         const response = await ShoppingListsService.updateShoppingList({
@@ -78,71 +79,67 @@ const ShoppingLists = () => {
     return (
         <div className="shopping-list-page">
             <div className="container mt-4">
-                <h2 className="text-highlight mb-4">My Shopping Lists</h2>
+                <h1 className="mb-4">My Shopping Lists</h1>
                 {loading && <p>Loading...</p>}
                 {error && <p>Error loading shopping lists.</p>}
-                <div>
-                    <ul className="list-group">
-                        {items.length > 0 ? (
-                            items.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className="list-group-item d-flex justify-content-between align-items-center"
-                                >
-                                    <div className="d-flex align-items-center" style={{ width: '100%' }}>
-                                        {editingItemId === item.id ? (
-                                            <input
-                                                type="text"
-                                                value={editedName}
-                                                onChange={(e) => setEditedName(e.target.value)}
-                                                onBlur={() => handleBlur(item.id)}
-                                                className="form-control"
-                                                style={{ flexGrow: 1, marginRight: '10px' }}
-                                                autoFocus
-                                            />
-                                        ) : (
-                                            <span
-                                                style={{
-                                                    flexGrow: 1,
-                                                    textAlign: 'left',
-                                                }}
-                                                onDoubleClick={() => {
-                                                    setEditingItemId(item.id);
-                                                    setEditedName(item.name);
-                                                }}
-                                            >
-                                                {item.name}
-                                            </span>
-                                        )}
-                                        <button
-                                            className="btn"
-                                            onClick={() => handleDeleteItem(item.id)}
-                                            style={{ marginLeft: '10px' }}
+                <ul className="list-group">
+                    {items.length > 0 ? (
+                        items.map((item) => (
+                            <li
+                                key={item.id}
+                                className={`list-group-item d-flex justify-content-between align-items-center ${item.completed ? 'completed' : ''}`}
+                            >
+                                <div className="d-flex align-items-center" style={{ width: '100%' }}>
+                                    {editingItemId === item.id ? (
+                                        <input
+                                            type="text"
+                                            value={editedName}
+                                            onChange={(e) => setEditedName(e.target.value)}
+                                            onBlur={() => handleBlur(item.id)}
+                                            className="form-control"
+                                            style={{ flexGrow: 1, marginRight: '10px' }}
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <span
+                                            style={{
+                                                textDecoration: item.completed ? 'line-through' : 'none',
+                                                flexGrow: 1,
+                                                textAlign: 'center',
+                                            }}
+                                            onDoubleClick={() => {
+                                                setEditingItemId(item.id);
+                                                setEditedName(item.name);
+                                            }}
                                         >
-                                            <FaTrashAlt
-                                                className="trash-icon"
-                                                style={{ color: 'red', fontSize: '18px' }} // Red and smaller icon
-                                            />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="list-group-item">No items found.</li>
-                        )}
-                        <li className="list-group-item d-flex align-items-center">
-                            <input
-                                type="text"
-                                value={newItem}
-                                onChange={(e) => setNewItem(e.target.value)}
-                                onKeyDown={handleAddItem}
-                                className="form-control"
-                                placeholder="Add a new list..."
-                                style={{ width: '100%' }}
-                            />
-                        </li>
-                    </ul>
-                </div>
+                                            {item.name}
+                                        </span>
+                                    )}
+                                    <button
+                                        className="btn"
+                                        onClick={() => handleDeleteItem(item.id)}
+                                        style={{ marginLeft: '10px' }}
+                                    >
+                                        <FaTrashAlt style={{ color: 'black', fontSize: '24px' }} />
+                                    </button>
+                                </div>
+                            </li>
+                        ))
+                    ) : (
+                        <li className="list-group-item">No items found.</li>
+                    )}
+                    <li className="list-group-item d-flex align-items-center">
+                        <input
+                            type="text"
+                            value={newItem}
+                            onChange={(e) => setNewItem(e.target.value)}
+                            onKeyDown={handleAddItem}
+                            className="form-control"
+                            placeholder="Add a new list..."
+                            style={{ width: '100%' }}
+                        />
+                    </li>
+                </ul>
             </div>
         </div>
     );

@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using AutoMapper;
+using Syncify.Web.Server.Features.Calendars;
 
 namespace Syncify.Web.Server.Features.CalendarEvents;
 

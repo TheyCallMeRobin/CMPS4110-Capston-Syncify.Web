@@ -49,7 +49,7 @@ public class CalendarService : ICalendarService
         return calendar.MapTo<CalendarGetDto>().AsResponse();
     }
 
-    public async Task<Response<List<CalendarGetDto>>> GetAllCalendars()
+    public async  Task<Response<List<CalendarGetDto>>> GetAllCalendars()
     {
         var data = await _dataContext.Set<Calendar>()
             .ProjectTo<CalendarGetDto>()

@@ -23,7 +23,7 @@ public class CalendarsController : ControllerBase
     {
         var result = await _calendarService.CreateCalendar(dto with
         {
-            CreatedByUserId = HttpContext.User.GetCurrentUserId()
+            CreatedByUserId = HttpContext.User.GetCurrentUserId() ?? 0
         });
         return Ok(result);
     }
