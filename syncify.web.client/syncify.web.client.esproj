@@ -14,6 +14,7 @@
     <Folder Include="src\ErrorPage\" />
     <Folder Include="src\Routes\Authorization\" />
     <Folder Include="src\Routes\Calendars\" />
+    <Folder Include="src\Routes\AccountSettings\" />
     <Folder Include="src\Routes\Reminders\" />
     <Folder Include="src\Routes\Recipes\" />
   </ItemGroup>

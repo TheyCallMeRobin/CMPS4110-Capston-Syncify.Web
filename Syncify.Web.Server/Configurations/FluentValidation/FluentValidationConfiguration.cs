@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using FluentValidation;
+﻿using FluentValidation;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using System.Reflection;
 
 namespace Syncify.Web.Server.Configurations.FluentValidation;
 

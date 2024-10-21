@@ -21,7 +21,7 @@ public class CalendarEventController : ControllerBase
     {
         var data = await _calendarEventService.CreateCalendarEventAsync(dto with
         {
-            CreatedByUserId = HttpContext.User.GetCurrentUserId() ?? 0
+            CreatedByUserId = HttpContext.User.GetCurrentUserId()
         });
         return Ok(data);
     }

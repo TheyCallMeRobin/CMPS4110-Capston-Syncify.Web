@@ -23,7 +23,7 @@ public class RecipieIngredientController : ControllerBase
 
     
     [HttpGet("recipe/{recipeId}")]
-    public async Task<ActionResult<Response<List<RecipeIngredientGetDto>>>>GetAll(int recipeId)
+    public async Task<ActionResult<Response<List<RecipeIngredientGetDto>>>> GetAll(int recipeId)
     {
         var data = await _ingredientService.GetAllIngredients(recipeId);
         return Ok(data);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
 
@@ -9,10 +10,9 @@ public class ShoppingList
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public bool Checked { get; set; } = false;
-    public bool Completed { get; set; } = false;
     public int UserId { get; set; }
     public User User { get; set; } = default!;
+    public List<ShoppingListItem> ShoppingListItems { get; set; } = [];
 }
 
 public class ShoppingListEntityConfiguration : IEntityTypeConfiguration<ShoppingList>

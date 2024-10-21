@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Syncify.Web.Server.Features.Authorization;
-using Syncify.Web.Server.Features.ShoppingLists;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.RecipeTags;
+using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Data
 {
@@ -14,6 +14,13 @@ namespace Syncify.Web.Server.Data
         private readonly RoleManager<Role> _roleManager;
 
         private const string BasicPassword = "SuperPassword1!";
+    public async Task SeedData()
+    {
+        await CreateRoles();
+        await CreateUsers();
+        await CreateShoppingLists();
+        await CreateRecipes();
+    }
 
         public DataSeeder(DataContext dataContext, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
@@ -22,15 +29,44 @@ namespace Syncify.Web.Server.Data
             _roleManager = roleManager;
         }
 
-        public async Task SeedData()
-        {
-            await CreateRoles();
-            await CreateUsers();
-            await CreateShoppingLists();
-            await CreateRecipes();
-        }
+        await _dataContext.SaveChangesAsync();
+    }
 
-        private async Task CreateRoles()
+    private async Task CreateShoppingLists()
+    {
+        if (_dataContext.ShoppingLists.Any())
+            return;
+
+        var john = await _userManager.FindByNameAsync("johnjohnson");
+        var jane = await _userManager.FindByNameAsync("janeadams");
+
+        if (john == null || jane == null)
+            return;
+
+        var shoppingLists = new[]
+        {
+            new ShoppingList { Name = "Weekly Groceries", UserId = john.Id },
+            new ShoppingList { Name = "Office Supplies", UserId = john.Id },
+            new ShoppingList { Name = "Workout Gear", UserId = jane.Id },
+            new ShoppingList { Name = "Books to Read", UserId = jane.Id },
+        };
+
+        _dataContext.ShoppingLists.AddRange(shoppingLists);
+        await _dataContext.SaveChangesAsync();
+    }
+
+    private async Task CreateRecipes()
+    {
+        if (_dataContext.Set<Recipe>().Any())
+            return;
+
+        var john = await _userManager.FindByNameAsync("johnjohnson");
+        var jane = await _userManager.FindByNameAsync("janeadams");
+
+        if (john == null || jane == null)
+            return;
+
+        var recipes = new[]
         {
             if (_dataContext.Roles.Any())
                 return;
@@ -162,5 +198,7 @@ namespace Syncify.Web.Server.Data
             _dataContext.Set<Recipe>().AddRange(recipes);
             await _dataContext.SaveChangesAsync();
         }
+        _dataContext.Set<Recipe>().AddRange(recipes);
+        await _dataContext.SaveChangesAsync();
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using Serilog;
+using System.Net;
 using System.Text.Json;
-using Serilog;
 using Syncify.Common.Constants;
 
 namespace Syncify.Web.Server.Middlewares;

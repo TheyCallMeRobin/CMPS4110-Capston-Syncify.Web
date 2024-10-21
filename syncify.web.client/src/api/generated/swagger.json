@@ -1221,7 +1221,7 @@
         }
       }
     },
-    "/api/shoppinglist": {
+    "/api/shopping-lists": {
       "get": {
         "tags": [
           "ShoppingLists"
@@ -1298,7 +1298,7 @@
         }
       }
     },
-    "/api/shoppinglist/{id}": {
+    "/api/shopping-lists/{id}": {
       "get": {
         "tags": [
           "ShoppingLists"

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.RecipeTags;
-using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
