@@ -76,4 +76,35 @@ export class RecipesService {
       axios(configs, resolve, reject);
     });
   }
+  /**
+   *
+   */
+  static getRecipesByUserId(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<RecipeGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/recipes/user/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getRecipeOfTheDay(options: IRequestOptions = {}): Promise<Response<RecipeGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/recipes/recipe-of-the-day';
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
 }
