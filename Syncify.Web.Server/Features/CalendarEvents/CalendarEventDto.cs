@@ -8,7 +8,8 @@ public record CalendarEventDto
     public string Title { get; set; } = string.Empty;
     public string? DisplayColor { get; set; }
     public string? Description { get; set; }
-    public DateOnly StartDate { get; set; }
+    public bool IsCompleted { get; set; }
+    public DateOnly? StartDate { get; set; }
     public TimeOnly? StartTime { get; set; }
     public TimeOnly? EndTime { get; set; }
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
@@ -35,8 +36,9 @@ public record CalendarEventCreateDto : CalendarEventDto
     public int CreatedByUserId { get; set; }
     
     public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
-
 }
+
+public record ChangeCalendarEventStatusDto([property: JsonIgnore] int Id, bool IsCompleted);
 
 public class CalendarEventMappingProfile : Profile
 {

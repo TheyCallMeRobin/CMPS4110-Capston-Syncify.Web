@@ -7,6 +7,7 @@ using Syncify.Web.Server.Features.FamilyInvites;
 using Syncify.Web.Server.Features.FamilyMembers;
 using Syncify.Web.Server.Features.FamilyRecipes;
 using Syncify.Web.Server.Features.FamilyShoppingLists;
+using Syncify.Web.Server.Features.Quotes;
 using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
@@ -33,5 +34,6 @@ public static class ServiceConfigurations
         services.AddScoped<IFamilyShoppingListService, FamilyShoppingListService>();
         services.AddScoped<IFamilyMemberService, FamilyMemberService>();
         services.AddScoped<IFamilyInviteService, FamilyInviteService>();
+        services.AddScoped<IQuoteService, QuoteService>();
     }
 }

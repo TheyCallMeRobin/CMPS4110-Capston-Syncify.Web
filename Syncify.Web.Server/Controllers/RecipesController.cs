@@ -29,6 +29,20 @@ public class RecipesController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipesByUserId(int userId)
+    {
+        var data = await _recipeService.GetRecipesByUserId(userId);
+        return Ok(data);
+    }
+
+    [HttpGet("recipe-of-the-day/")]
+    public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeOfTheDay()
+    {
+        var data = await _recipeService.GetRecipeOfTheDay();
+        return Ok(data);
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
