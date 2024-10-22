@@ -5,7 +5,9 @@
 body {
     background-color: #f8f9fa;
 }
-
+.header-text {
+    
+}
 
 .text-highlight {
     color: #228B22;
@@ -53,7 +55,7 @@ button.btn-primary {
 
 .icon-button {
     background: transparent;
-    corder: none;
+    border: none;
 }
 
 .toggle-btn {
@@ -70,11 +72,35 @@ button.btn-primary {
     font-weight: 500;
 }
 
-    .toggle-btn:hover {
-        text-decoration: none;
-    }
+.toggle-btn:hover {
+    text-decoration: none;
+}
 
 h1 {
     text-align: center;
     font-size: 2.5rem;
+}
+
+.table th {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+.table tr > td {
+    position: relative !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.primary-bg {
+    background-color: #003366 !important;
+}
+
+tr.strikethrough td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid #111;
+    width: 100%;
+    z-index: 999;
 }

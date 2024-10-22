@@ -4,63 +4,63 @@
     transition: width 0.3s ease;
 }
 
-    .sidebar-navbar.collapsed {
-        width: 50px;
-    }
+.sidebar-navbar.collapsed {
+    width: 50px;
+}
 
-    .sidebar-navbar .nav-link {
-        justify-content: center;
-        font-size: 1rem;
-        color: #FFFFFF;
-        display: flex;
-        align-items: center;
-    }
+.sidebar-navbar .nav-link {
+    justify-content: center;
+    font-size: 1rem;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+}
 
-        .sidebar-navbar .nav-link svg {
-            margin-right: 8px;
-        }
+.sidebar-navbar .nav-link svg {
+    margin-right: 8px;
+}
 
-        .sidebar-navbar .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
+.sidebar-navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
 
-    .sidebar-navbar .bottom-links {
-        padding-bottom: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.sidebar-navbar .bottom-links {
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-        .sidebar-navbar .bottom-links .nav-item {
-            margin-bottom: 10px;
-        }
+.sidebar-navbar .bottom-links .nav-item {
+    margin-bottom: 10px;
+}
 
 .sidebar-logo {
     cursor: pointer;
 }
 
-    .sidebar-logo:hover {
-        filter: none !important;
-    }
+.sidebar-logo:hover {
+    filter: none !important;
+}
 
 .header-navbar {
     background-color: #109648 !important;
     border-bottom: 1px solid black;
 }
 
-    .header-navbar .nav-link {
-        color: #FFFFFF;
-    }
+.header-navbar .nav-link {
+    color: #FFFFFF;
+}
 
-    .header-navbar .dropdown-menu {
-        border: 1px solid black;
-    }
+.header-navbar .dropdown-menu {
+    border: 1px solid black;
+}
 
-    .header-navbar .dropdown-item {
-        color: black;
-    }
+.header-navbar .dropdown-item {
+    color: black;
+}
 
-        .header-navbar .dropdown-item:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
+.header-navbar .dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
 
 .header-separator {
     height: 4px;
@@ -71,4 +71,9 @@
     font-size: 3rem;
     font-weight: bold;
     text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+}
+
+.icon-list .nav-link {
+    justify-content: left !important;
+    padding: 10px 0 10px 10px;
 }

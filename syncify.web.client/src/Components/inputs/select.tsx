@@ -1,13 +1,18 @@
-﻿import { OptionDto } from '../api/generated/index.defs.ts';
-import React, { CSSProperties, useCallback, useId, useState } from 'react';
+﻿import { OptionDto } from '../../api/generated/index.defs.ts';
+import React, { CSSProperties, useId, useState } from 'react';
+
+import './select.css';
 
 type DataItem = OptionDto | string | number;
 
-type SelectProps = {
-  onSelect?: (value: string | number) => void;
-  style?: CSSProperties;
-  data?: DataItem[];
-  className?: string;
+type SelectProps = Omit<Partial<HTMLSelectElement>, 'style'> & {
+  onSelect?: {
+    (value: string): Promise<any> | any;
+    (value: number): Promise<any> | any;
+    (value: string | number): Promise<any> | any;
+  };
+  style?: CSSProperties | (CSSStyleDeclaration & CSSProperties);
+  data: DataItem[] | undefined;
   defaultValue?: string | number;
 };
 
@@ -33,24 +38,18 @@ const Option: React.FC<OptionProps> = ({ value, label }) => {
   );
 };
 
-const OptionItems: React.FC<OptionItemsProps> = ({ items, selectedItem }) => {
-  const filterItems = useCallback(
-    (item: DataItem): boolean => {
-      if (selectedItem) return true;
-
-      if (itemIsStringOrNumber(item)) return item === selectedItem;
-
-      return item.value === selectedItem;
-    },
-    [selectedItem]
-  );
-
-  return items?.filter(filterItems).map((item) => {
+const OptionItems: React.FC<OptionItemsProps> = ({ items }) => {
+  return items?.map((item) => {
     if (itemIsStringOrNumber(item)) {
-      return <Option value={item} label={item} />;
+      return <Option value={item} label={item} key={item} />;
     }
-
-    return <Option value={item.value} label={item.label} />;
+    return (
+      <Option
+        value={item.value}
+        label={item.label}
+        key={`${item.value}-${item.label}`}
+      />
+    );
   });
 };
 
@@ -70,9 +69,13 @@ export const Select: React.FC<SelectProps> = (props) => {
     if (onSelect) onSelect(parsedValue);
   };
 
+  const classNames = className
+    ? `select-component ${className}`
+    : 'select-component';
+
   return (
     <select
-      className={className}
+      className={classNames}
       style={style}
       onSelect={_onSelect}
       defaultValue={defaultValue}
