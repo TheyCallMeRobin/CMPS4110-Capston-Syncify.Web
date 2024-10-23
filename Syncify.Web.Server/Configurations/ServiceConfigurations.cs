@@ -11,7 +11,7 @@ using Syncify.Web.Server.Features.RecipeIngredients;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
 using Syncify.Web.Server.Features.ShoppingListItems;
-
+using Syncify.Web.Server.Features.RecipeTags;
 namespace Syncify.Web.Server.Configurations;
 
 public static class ServiceConfigurations
@@ -33,5 +33,6 @@ public static class ServiceConfigurations
         services.AddScoped<IFamilyShoppingListService, FamilyShoppingListService>();
         services.AddScoped<IFamilyMemberService, FamilyMemberService>();
         services.AddScoped<IFamilyInviteService, FamilyInviteService>();
+        services.AddScoped<IRecipeTagService, RecipeTagService>();
     }
 }

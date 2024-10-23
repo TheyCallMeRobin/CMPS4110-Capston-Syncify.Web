@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.ShoppingLists;
-
+using Syncify.Web.Server.Features.RecipeTags;
 namespace Syncify.Web.Server.Data;
 
 public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
 {
     public DbSet<ShoppingList> ShoppingLists { get; set; }
-
+    public DbSet<RecipeTag> RecipeTags { get; set; }
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }

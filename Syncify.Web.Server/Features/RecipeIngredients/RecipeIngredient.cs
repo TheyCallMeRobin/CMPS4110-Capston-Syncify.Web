@@ -23,9 +23,13 @@ public class RecipeIngredientEntityConfiguration : IEntityTypeConfiguration<Reci
     {
         builder.ToTable("RecipeIngredients");
 
-        builder.Property(x => x.Name).HasMaxLength(RecipeIngredientNameMaxLength);
+        builder.Property(x => x.Name)
+               .HasMaxLength(RecipeIngredientNameMaxLength);
+
 
         builder.HasOne(x => x.Recipe)
-            .WithMany(x => x.RecipeIngredients);
+               .WithMany(r => r.RecipeIngredients)
+               .HasForeignKey(x => x.RecipeId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

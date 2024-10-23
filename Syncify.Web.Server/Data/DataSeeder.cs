@@ -2,6 +2,8 @@
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.Recipes;
 using Syncify.Web.Server.Features.ShoppingLists;
+using Syncify.Web.Server.Features.RecipeIngredients;
+using Syncify.Web.Server.Features.RecipeTags;
 
 namespace Syncify.Web.Server.Data;
 
@@ -112,26 +114,48 @@ public class DataSeeder
             return;
 
         var recipes = new[]
-        {
-            new Recipe
-            {
-                Name = "John's Pancake Recipe",
-                Description = "A simple and delicious pancake recipe.",
-                PrepTimeInMinutes = 10,
-                CookTimeInMinutes = 20,
-                Servings = 4,
-                UserId = john.Id
-            },
-            new Recipe
-            {
-                Name = "Jane's Salad Recipe",
-                Description = "A fresh and healthy salad recipe.",
-                PrepTimeInMinutes = 15,
-                CookTimeInMinutes = 0,
-                Servings = 2,
-                UserId = jane.Id
-            }
-        };
+              {
+                new Recipe
+                {
+                    Name = "John's Pancake Recipe",
+                    Description = "A simple and delicious pancake recipe.",
+                    PrepTimeInMinutes = 10,
+                    CookTimeInMinutes = 20,
+                    Servings = 4,
+                    UserId = john.Id,
+                    RecipeIngredients = new List<RecipeIngredient>
+                    {
+                        new RecipeIngredient { Name = "Flour", Unit = "grams", Quantity = 200 },
+                        new RecipeIngredient { Name = "Milk", Unit = "ml", Quantity = 300 },
+                        new RecipeIngredient { Name = "Egg", Unit = "piece", Quantity = 2 }
+                    },
+                    Tags = new List<RecipeTag>
+                    {
+                        new RecipeTag { Name = "Breakfast" },
+                        new RecipeTag { Name = "Pancake" }
+                    }
+                },
+                new Recipe
+                {
+                    Name = "Jane's Salad Recipe",
+                    Description = "A fresh and healthy salad recipe.",
+                    PrepTimeInMinutes = 15,
+                    CookTimeInMinutes = 0,
+                    Servings = 2,
+                    UserId = jane.Id,
+                    RecipeIngredients = new List<RecipeIngredient>
+                    {
+                        new RecipeIngredient { Name = "Lettuce", Unit = "grams", Quantity = 100 },
+                        new RecipeIngredient { Name = "Tomato", Unit = "piece", Quantity = 2 },
+                        new RecipeIngredient { Name = "Olive Oil", Unit = "ml", Quantity = 20 }
+                    },
+                    Tags = new List<RecipeTag>
+                    {
+                        new RecipeTag { Name = "Healthy" },
+                        new RecipeTag { Name = "Salad" }
+                    }
+                }
+            };
 
         _dataContext.Set<Recipe>().AddRange(recipes);
         await _dataContext.SaveChangesAsync();

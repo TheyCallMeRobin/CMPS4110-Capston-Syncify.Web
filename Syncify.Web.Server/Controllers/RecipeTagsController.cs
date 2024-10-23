@@ -7,9 +7,9 @@ namespace Syncify.Web.Server.Features.Recipes
     [Route("api/recipetags")]
     public class RecipeTagsController : ControllerBase
     {
-        private readonly RecipeTagService _recipeTagService;
+        private readonly IRecipeTagService _recipeTagService;
 
-        public RecipeTagsController(RecipeTagService recipeTagService)
+        public RecipeTagsController(IRecipeTagService recipeTagService)
         {
             _recipeTagService = recipeTagService;
         }

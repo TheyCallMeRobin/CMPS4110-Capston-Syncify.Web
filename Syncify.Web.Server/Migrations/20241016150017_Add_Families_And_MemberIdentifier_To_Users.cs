@@ -58,6 +58,7 @@ namespace Syncify.Web.Server.Migrations
                 name: "IX_Families_Identifier",
                 table: "Families",
                 column: "Token");
+
         }
 
         /// <inheritdoc />

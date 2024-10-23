@@ -1,8 +1,8 @@
 import {
-  RecipeGetDto,
-  RecipeIngredientDto,
-  RecipeTagDto,
-  RecipeCreateDto,
+  FamilyShoppingListCreateDto,
+  FamilyShoppingListGetDto,
+  EmptyResponse,
+  Error,
   IList,
   List,
   IListResult,
@@ -12,7 +12,6 @@ import {
   Dictionary,
   IDictionary,
   Response,
-  Error,
   IRequestOptions,
   IRequestConfig,
   getConfigs,
@@ -20,7 +19,7 @@ import {
   basePath
 } from './index.defs';
 
-export class RecipesService {
+export class FamilyShoppingListService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
@@ -28,48 +27,15 @@ export class RecipesService {
   /**
    *
    */
-  static getRecipes(
-    params: {
-      /**  */
-      name?: string;
-      /**  */
-      description?: string;
-      /**  */
-      prepTime?: number;
-      /**  */
-      cookTime?: number;
-      /**  */
-      servings?: number;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<Response<List<RecipeGetDto>>> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + '/api/recipes';
-
-      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-      configs.params = {
-        Name: params['name'],
-        Description: params['description'],
-        PrepTime: params['prepTime'],
-        CookTime: params['cookTime'],
-        Servings: params['servings']
-      };
-
-      axios(configs, resolve, reject);
-    });
-  }
-  /**
-   *
-   */
-  static createRecipe(
+  static createFamilyShoppingList(
     params: {
       /** requestBody */
-      body?: RecipeCreateDto;
+      body?: FamilyShoppingListCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<RecipeGetDto>> {
+  ): Promise<Response<FamilyShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/recipes';
+      let url = basePath + '/api/family-shopping-lists';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -83,15 +49,34 @@ export class RecipesService {
   /**
    *
    */
-  static getRecipeById(
+  static getFamilyShoppingLists(
+    params: {
+      /**  */
+      familyId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<FamilyShoppingListGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/family-shopping-lists/family/{familyId}';
+      url = url.replace('{familyId}', params['familyId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getFamilyShoppingListById(
     params: {
       /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<RecipeGetDto>> {
+  ): Promise<Response<FamilyShoppingListGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/recipes/{id}';
+      let url = basePath + '/api/family-shopping-lists/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -102,15 +87,15 @@ export class RecipesService {
   /**
    *
    */
-  static deleteRecipe(
+  static removeShoppingListFromFamily(
     params: {
       /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<boolean>> {
+  ): Promise<EmptyResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/recipes/{id}';
+      let url = basePath + '/api/family-shopping-lists/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);

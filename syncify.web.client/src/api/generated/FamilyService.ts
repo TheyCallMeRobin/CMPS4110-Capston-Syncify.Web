@@ -1,9 +1,9 @@
 import {
-  ShoppingListGetDto,
-  ShoppingListItemGetDto,
-  ShoppingListCreateDto,
-  ShoppingListUpdateDto,
-  ShoppingListRecipeCreateDto,
+  FamilyCreateDto,
+  FamilyGetDto,
+  FamilyUpdateDto,
+  EmptyResponse,
+  Error,
   IList,
   List,
   IListResult,
@@ -13,7 +13,6 @@ import {
   Dictionary,
   IDictionary,
   Response,
-  Error,
   IRequestOptions,
   IRequestConfig,
   getConfigs,
@@ -21,7 +20,7 @@ import {
   basePath
 } from './index.defs';
 
-export class ShoppingListsService {
+export class FamilyService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
@@ -29,27 +28,15 @@ export class ShoppingListsService {
   /**
    *
    */
-  static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists';
-
-      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-
-      axios(configs, resolve, reject);
-    });
-  }
-  /**
-   *
-   */
-  static createShoppingList(
+  static createFamily(
     params: {
       /** requestBody */
-      body?: ShoppingListCreateDto;
+      body?: FamilyCreateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
+  ): Promise<Response<FamilyGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists';
+      let url = basePath + '/api/families';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -63,15 +50,27 @@ export class ShoppingListsService {
   /**
    *
    */
-  static getShoppingListById(
+  static getAllFamilies(options: IRequestOptions = {}): Promise<Response<FamilyGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/families';
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getFamilyById(
     params: {
       /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
+  ): Promise<Response<FamilyGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/families/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
@@ -82,24 +81,20 @@ export class ShoppingListsService {
   /**
    *
    */
-  static updateShoppingList(
+  static updateFamily(
     params: {
       /**  */
       id: number;
       /** requestBody */
-      body?: ShoppingListUpdateDto;
+      body?: FamilyUpdateDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<any> {
+  ): Promise<Response<FamilyGetDto>> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/families/{id}';
       url = url.replace('{id}', params['id'] + '');
 
-      const configs: IRequestConfig = getConfigs('patch', 'application/json', url, options);
-
-      /** 适配移动开发（iOS13 等版本），只有 POST、PUT 等请求允许带body */
-
-      console.warn('适配移动开发（iOS13 等版本），只有 POST、PUT 等请求允许带body');
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
 
       let data = params.body;
 
@@ -111,15 +106,15 @@ export class ShoppingListsService {
   /**
    *
    */
-  static deleteShoppingList(
+  static deleteFamily(
     params: {
       /**  */
       id: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<any> {
+  ): Promise<EmptyResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/{id}';
+      let url = basePath + '/api/families/{id}';
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
@@ -130,40 +125,18 @@ export class ShoppingListsService {
   /**
    *
    */
-  static getShoppingListsByUserId(
+  static getFamiliesByUserId(
     params: {
       /**  */
       userId: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<List<ShoppingListGetDto>>> {
+  ): Promise<FamilyGetDto[]> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/by-user/{userId}';
+      let url = basePath + '/api/families/user/{userId}';
       url = url.replace('{userId}', params['userId'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
-
-      axios(configs, resolve, reject);
-    });
-  }
-  /**
-   *
-   */
-  static createListFromRecipe(
-    params: {
-      /** requestBody */
-      body?: ShoppingListRecipeCreateDto;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<Response<ShoppingListGetDto>> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + '/api/shopping-lists/recipe';
-
-      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
-
-      let data = params.body;
-
-      configs.data = data;
 
       axios(configs, resolve, reject);
     });
