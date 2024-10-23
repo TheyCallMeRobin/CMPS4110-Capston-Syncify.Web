@@ -4,6 +4,11 @@ import {
   CalendarUpdateDto,
   EmptyResponse,
   Error,
+  CalendarWithEventsDto,
+  CalendarEventGetDto,
+  CalendarEventType,
+  RecurrenceType,
+  DayOfWeek,
   IList,
   List,
   IListResult,
@@ -118,6 +123,25 @@ export class CalendarsService {
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getCalendarsWithEventsByUserId(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarWithEventsDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendars/events/user/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });

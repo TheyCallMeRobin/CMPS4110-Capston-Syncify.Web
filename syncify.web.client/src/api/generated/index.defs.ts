@@ -132,7 +132,10 @@ export class CalendarEventCreateDto {
   'description'?: string;
 
   /**  */
-  'startDate': Date;
+  'isCompleted': boolean;
+
+  /**  */
+  'startDate'?: Date;
 
   /**  */
   'startTime'?: string;
@@ -168,7 +171,10 @@ export class CalendarEventGetDto {
   'description'?: string;
 
   /**  */
-  'startDate': Date;
+  'isCompleted': boolean;
+
+  /**  */
+  'startDate'?: Date;
 
   /**  */
   'startTime'?: string;
@@ -207,7 +213,10 @@ export class CalendarEventUpdateDto {
   'description'?: string;
 
   /**  */
-  'startDate': Date;
+  'isCompleted': boolean;
+
+  /**  */
+  'startDate'?: Date;
 
   /**  */
   'startTime'?: string;
@@ -249,6 +258,45 @@ export class CalendarUpdateDto {
   'name': string;
 
   constructor(data: CalendarUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class CalendarWithEventsDto {
+  /**  */
+  'id': number;
+
+  /**  */
+  'name': string;
+
+  /**  */
+  'createdByUserId': number;
+
+  /**  */
+  'calendarEvents': CalendarEventGetDto[];
+
+  constructor(data: CalendarWithEventsDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ChangeCalendarEventStatusDto {
+  /**  */
+  'isCompleted': boolean;
+
+  constructor(data: ChangeCalendarEventStatusDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ChangeInviteStatusDto {
+  /**  */
+  'id': number;
+
+  /**  */
+  'status': InviteStatus;
+
+  constructor(data: ChangeInviteStatusDto = {}) {
     Object.assign(this, data);
   }
 }
@@ -304,6 +352,195 @@ export class Error {
   }
 }
 
+export class FamilyCalendarCreateDto {
+  /**  */
+  'calendarId': number;
+
+  /**  */
+  'familyId': number;
+
+  constructor(data: FamilyCalendarCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyCalendarGetDto {
+  /**  */
+  'calendarId': number;
+
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'calendarName': string;
+
+  constructor(data: FamilyCalendarGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyCreateDto {
+  /**  */
+  'name': string;
+
+  constructor(data: FamilyCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyGetDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'identifier': string;
+
+  /**  */
+  'createdByUserId': number;
+
+  constructor(data: FamilyGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyInviteCreateDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'expiresOn'?: Date;
+
+  constructor(data: FamilyInviteCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyInviteGetDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'expiresOn'?: Date;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'sentByUserId': number;
+
+  /**  */
+  'userId': number;
+
+  /**  */
+  'sentByUserFirstName': string;
+
+  /**  */
+  'sentByUserLastName': string;
+
+  /**  */
+  'familyName': string;
+
+  /**  */
+  'userFirstName': string;
+
+  /**  */
+  'userLastName': string;
+
+  /**  */
+  'status': InviteStatus;
+
+  constructor(data: FamilyInviteGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyMemberGetDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'userId': number;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'userFirstName': string;
+
+  /**  */
+  'userLastName': string;
+
+  constructor(data: FamilyMemberGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyRecipeCreateDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'recipeId': number;
+
+  constructor(data: FamilyRecipeCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyRecipeGetDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'recipeId': number;
+
+  /**  */
+  'createdByUserId': number;
+
+  constructor(data: FamilyRecipeGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyShoppingListCreateDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'shoppingListId': number;
+
+  constructor(data: FamilyShoppingListCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyShoppingListGetDto {
+  /**  */
+  'familyId': number;
+
+  /**  */
+  'shoppingListId': number;
+
+  /**  */
+  'createdByUserId': number;
+
+  constructor(data: FamilyShoppingListGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class FamilyUpdateDto {
+  /**  */
+  'name': string;
+
+  constructor(data: FamilyUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class LoginDto {
   /**  */
   'username': string;
@@ -312,6 +549,30 @@ export class LoginDto {
   'password': string;
 
   constructor(data: LoginDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class OptionDto {
+  /**  */
+  'label': string;
+
+  /**  */
+  'value': number;
+
+  constructor(data: OptionDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class QuoteGetDto {
+  /**  */
+  'q': string;
+
+  /**  */
+  'a': string;
+
+  constructor(data: QuoteGetDto = {}) {
     Object.assign(this, data);
   }
 }
@@ -457,15 +718,6 @@ export class RecipeTagDto {
   }
 }
 
-export class ShoppingListUpdateDto {
-  /** */
-  'name': string;
-
-  /** */
-  'description': string;
-  
-}
-
 export class ShoppingListCreateDto {
   /**  */
   'name': string;
@@ -483,15 +735,120 @@ export class ShoppingListCreateDto {
 
 export class ShoppingListGetDto {
   /**  */
+  'name': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
   'id': number;
 
+  /**  */
+  'shoppingListItems': ShoppingListItemGetDto[];
+
+  constructor(data: ShoppingListGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListItemCreateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'unit': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'quantity': number;
+
+  /**  */
+  'isChecked': boolean;
+
+  /**  */
+  'shoppingListId': number;
+
+  constructor(data: ShoppingListItemCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListItemGetDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'unit': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'quantity': number;
+
+  /**  */
+  'isChecked': boolean;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'shoppingListId': number;
+
+  constructor(data: ShoppingListItemGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListItemUpdateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'unit': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'quantity': number;
+
+  /**  */
+  'isChecked': boolean;
+
+  constructor(data: ShoppingListItemUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListRecipeCreateDto {
   /**  */
   'name': string;
 
   /**  */
   'description': string;
 
-  constructor(data: ShoppingListGetDto = {}) {
+  /**  */
+  'userId': number;
+
+  /**  */
+  'recipeId': number;
+
+  constructor(data: ShoppingListRecipeCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ShoppingListUpdateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'description'?: string;
+
+  constructor(data: ShoppingListUpdateDto = {}) {
     Object.assign(this, data);
   }
 }
@@ -521,6 +878,9 @@ export class UserGetDto {
   /**  */
   'profileColor': string;
 
+  /**  */
+  'memberIdentifier': string;
+
   constructor(data: UserGetDto = {}) {
     Object.assign(this, data);
   }
@@ -539,6 +899,13 @@ export enum DayOfWeek {
   'Thursday' = 'Thursday',
   'Friday' = 'Friday',
   'Satuday' = 'Satuday'
+}
+
+export enum InviteStatus {
+  'Pending' = 'Pending',
+  'Accepted' = 'Accepted',
+  'Declined' = 'Declined',
+  'Expired' = 'Expired'
 }
 
 export enum RecurrenceType {

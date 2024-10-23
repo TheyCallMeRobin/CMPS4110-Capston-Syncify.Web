@@ -7,6 +7,7 @@ import {
   CalendarEventUpdateDto,
   EmptyResponse,
   Error,
+  ChangeCalendarEventStatusDto,
   IList,
   List,
   IListResult,
@@ -128,6 +129,69 @@ export class CalendarEventService {
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getUpcomingEventsByUserId(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarEventGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendar-events/upcoming-events/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getTodaysTodosByUserId(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarEventGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendar-events/todays-todos/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static updateTaskStatus(
+    params: {
+      /**  */
+      id: number;
+      /** requestBody */
+      body?: ChangeCalendarEventStatusDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<EmptyResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendar-events/status/{id}';
+      url = url.replace('{id}', params['id'] + '');
+
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
+
+      let data = params.body;
+
+      configs.data = data;
 
       axios(configs, resolve, reject);
     });

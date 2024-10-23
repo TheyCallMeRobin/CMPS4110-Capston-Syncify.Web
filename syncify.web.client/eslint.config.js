@@ -20,7 +20,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
-        'warn',
+        'off',
         { allowConstantExport: true },
       ],
       'react-hooks/exhaustive-deps': [
@@ -29,19 +29,20 @@ export default tseslint.config(
           additionalHooks: 'useAsync|useAsyncRetry',
         },
       ],
-      "no-implicit-any": 'off',
-      "react-hooks/rules-of-hooks": "error",
-      "@typescript-eslint/ban-ts-comment": 'off',
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": 'warn',
-      "@typescript-eslint/no-explicit-any": 'off',
-      "no-restricted-syntax": [
-        "error",
+      'no-implicit-any': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-restricted-syntax': [
+        'error',
         {
-          "selector": "CallExpression[callee.object.name='console']",
-          "message": "Use of console prohibited. Use a logger instead. (See logger.ts)"
-        }
+          selector: "CallExpression[callee.object.name='console']",
+          message:
+            'Use of console prohibited. Use a logger instead. (See logger.ts)',
+        },
       ],
     },
-  },
-)
+  }
+);

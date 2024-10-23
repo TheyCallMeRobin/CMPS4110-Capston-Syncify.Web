@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.CalendarEvents;
+using Syncify.Web.Server.Features.FamilyCalendars;
 
 namespace Syncify.Web.Server.Features.Calendars;
 
@@ -13,6 +14,7 @@ public class Calendar
     public int CreatedByUserId { get; set; }
     public User CreatedByUser { get; set; } = default!;
     public ICollection<CalendarEvent> CalendarEvents { get; set; } = new List<CalendarEvent>();
+    public List<FamilyCalendar> FamilyCalendars { get; set; } = [];
 
 }
 

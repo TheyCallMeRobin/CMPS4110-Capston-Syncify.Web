@@ -1,0 +1,8 @@
+﻿
+.select-component {
+    cursor: pointer;
+}
+
+.select-component:focus-visible {
+    outline: none;
+}

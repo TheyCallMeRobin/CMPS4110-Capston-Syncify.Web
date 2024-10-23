@@ -1,125 +1,171 @@
 import {
-    ShoppingListGetDto,
-    ShoppingListCreateDto,
-    IList,
-    List,
-    IListResult,
-    ListResultDto,
-    IPagedResult,
-    PagedResultDto,
-    Dictionary,
-    IDictionary,
-    Response,
-    Error,
-    IRequestOptions,
-    IRequestConfig,
-    getConfigs,
-    axios,
-    basePath
+  ShoppingListGetDto,
+  ShoppingListItemGetDto,
+  ShoppingListCreateDto,
+  ShoppingListUpdateDto,
+  ShoppingListRecipeCreateDto,
+  IList,
+  List,
+  IListResult,
+  ListResultDto,
+  IPagedResult,
+  PagedResultDto,
+  Dictionary,
+  IDictionary,
+  Response,
+  Error,
+  IRequestOptions,
+  IRequestConfig,
+  getConfigs,
+  axios,
+  basePath
 } from './index.defs';
 
 export class ShoppingListsService {
-    /** Generate by swagger-axios-codegen */
-    // @ts-nocheck
-    /* eslint-disable */
+  /** Generate by swagger-axios-codegen */
+  // @ts-nocheck
+  /* eslint-disable */
 
-    static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists';
+  /**
+   *
+   */
+  static getShoppingLists(options: IRequestOptions = {}): Promise<Response<List<ShoppingListGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists';
 
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
-            axios(configs, resolve, reject);
-        });
-    }
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static createShoppingList(
+    params: {
+      /** requestBody */
+      body?: ShoppingListCreateDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<ShoppingListGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists';
 
-    static createShoppingList(
-        params: {
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
-            body?: ShoppingListCreateDto;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<Response<ShoppingListGetDto>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists';
+      let data = params.body;
 
-            const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+      configs.data = data;
 
-            let data = params.body;
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getShoppingListById(
+    params: {
+      /**  */
+      id: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<ShoppingListGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/{id}';
+      url = url.replace('{id}', params['id'] + '');
 
-            configs.data = data;
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
-            axios(configs, resolve, reject);
-        });
-    }
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static updateShoppingList(
+    params: {
+      /**  */
+      id: number;
+      /** requestBody */
+      body?: ShoppingListUpdateDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/{id}';
+      url = url.replace('{id}', params['id'] + '');
 
-    static getShoppingListById(
-        params: {
+      const configs: IRequestConfig = getConfigs('patch', 'application/json', url, options);
 
-            id: number;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<Response<ShoppingListGetDto>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists/{id}';
-            url = url.replace('{id}', params['id'] + '');
+      /** 适配移动开发（iOS13 等版本），只有 POST、PUT 等请求允许带body */
 
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      console.warn('适配移动开发（iOS13 等版本），只有 POST、PUT 等请求允许带body');
 
-            axios(configs, resolve, reject);
-        });
-    }
+      let data = params.body;
 
-    static getShoppingListsByUserId(
-        params: {
+      configs.data = data;
 
-            userId: number;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<Response<List<ShoppingListGetDto>>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists/by-user/{userId}';
-            url = url.replace('{userId}', params['userId'] + '');
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static deleteShoppingList(
+    params: {
+      /**  */
+      id: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/{id}';
+      url = url.replace('{id}', params['id'] + '');
 
-            const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
 
-            axios(configs, resolve, reject);
-        });
-    }
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getShoppingListsByUserId(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<ShoppingListGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/by-user/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
 
-    static updateShoppingList(
-        params: {
-            id: number;
-            body: Partial<ShoppingListGetDto>;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<Response<ShoppingListGetDto>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists/{id}';
-            url = url.replace('{id}', params['id'] + '');
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
-            const configs: IRequestConfig = getConfigs('patch', 'application/json', url, options);
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static createListFromRecipe(
+    params: {
+      /** requestBody */
+      body?: ShoppingListRecipeCreateDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<ShoppingListGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/recipe';
 
-            configs.data = params.body;
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
-            axios(configs, resolve, reject);
-        });
-    }
+      let data = params.body;
 
-    static deleteShoppingList(
-        params: {
-            id: number;
-        } = {} as any,
-        options: IRequestOptions = {}
-    ): Promise<Response<null>> {
-        return new Promise((resolve, reject) => {
-            let url = basePath + '/api/shopping-lists/{id}';
-            url = url.replace('{id}', params['id'] + '');
+      configs.data = data;
 
-            const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
-
-            axios(configs, resolve, reject);
-        });
-    }
-
+      axios(configs, resolve, reject);
+    });
+  }
 }
