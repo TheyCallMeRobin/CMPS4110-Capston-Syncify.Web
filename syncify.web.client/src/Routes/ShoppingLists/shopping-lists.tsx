@@ -76,73 +76,73 @@ const ShoppingLists = () => {
     };
 
     return (
-        <div className="shopping-list-page">
-            <div className="container mt-4">
-                <h2 className="text-highlight mb-4">My Shopping Lists</h2>
-                {loading && <p>Loading...</p>}
-                {error && <p>Error loading shopping lists.</p>}
+        <div className="page-content">
+          <h2 className="text-center text-highlight mb-4">My Shopping Lists</h2>
+            <div className="shopping-list-page container mt-4">
+              {loading && <p>Loading...</p>}
+              {error && <p>Error loading shopping lists.</p>}
                 <div>
-                    <ul className="list-group">
-                        {items.length > 0 ? (
-                            items.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className="list-group-item d-flex justify-content-between align-items-center"
-                                >
-                                    <div className="d-flex align-items-center" style={{ width: '100%' }}>
-                                        {editingItemId === item.id ? (
-                                            <input
-                                                type="text"
-                                                value={editedName}
-                                                onChange={(e) => setEditedName(e.target.value)}
-                                                onBlur={() => handleBlur(item.id)}
-                                                className="form-control"
-                                                style={{ flexGrow: 1, marginRight: '10px' }}
-                                                autoFocus
-                                            />
-                                        ) : (
-                                            <span
-                                                style={{
-                                                    flexGrow: 1,
-                                                    textAlign: 'left',
-                                                }}
-                                                onDoubleClick={() => {
-                                                    setEditingItemId(item.id);
-                                                    setEditedName(item.name);
-                                                }}
-                                            >
-                                                {item.name}
-                                            </span>
-                                        )}
-                                        <button
-                                            className="btn"
-                                            onClick={() => handleDeleteItem(item.id)}
-                                            style={{ marginLeft: '10px' }}
-                                        >
-                                            <FaTrashAlt
-                                                className="trash-icon"
-                                                style={{ color: 'red', fontSize: '18px' }} // Red and smaller icon
-                                            />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="list-group-item">No items found.</li>
-                        )}
-                        <li className="list-group-item d-flex align-items-center">
+                  <ul className="list-group">
+                    {items.length > 0 ? (
+                      items.map((item) => (
+                        <li
+                          key={item.id}
+                          className="list-group-item d-flex justify-content-between align-items-center"
+                        >
+                        <div className="d-flex align-items-center" style={{ width: '100%' }}>
+                          {editingItemId === item.id ? (
                             <input
-                                type="text"
-                                value={newItem}
-                                onChange={(e) => setNewItem(e.target.value)}
-                                onKeyDown={handleAddItem}
-                                className="form-control"
-                                placeholder="Add a new list..."
-                                style={{ width: '100%' }}
+                              type="text"
+                              value={editedName}
+                              onChange={(e) => setEditedName(e.target.value)}
+                              onBlur={() => handleBlur(item.id)}
+                              className="form-control"
+                              style={{ flexGrow: 1, marginRight: '10px' }}
+                              autoFocus
                             />
-                        </li>
-                    </ul>
-                </div>
+                          ) : (
+                            <span
+                              style={{
+                                flexGrow: 1,
+                                textAlign: 'left',
+                              }}
+                              onDoubleClick={() => {
+                                setEditingItemId(item.id);
+                                setEditedName(item.name);
+                              }}
+                            >
+                              {item.name}
+                            </span>
+                          )}
+                          <button
+                            className="btn"
+                            onClick={() => handleDeleteItem(item.id)}
+                            style={{ marginLeft: '10px' }}
+                          >
+                          <FaTrashAlt
+                            className="trash-icon"
+                            style={{ color: 'red', fontSize: '18px' }}
+                          />
+                          </button>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="list-group-item">No items found.</li>
+                  )}
+                  <li className="list-group-item d-flex align-items-center">
+                    <input
+                      type="text"
+                      value={newItem}
+                      onChange={(e) => setNewItem(e.target.value)}
+                      onKeyDown={handleAddItem}
+                      className="form-control"
+                      placeholder="Add a new list..."
+                      style={{ width: '100%' }}
+                    />
+                  </li>
+                </ul>
+              </div>
             </div>
         </div>
     );

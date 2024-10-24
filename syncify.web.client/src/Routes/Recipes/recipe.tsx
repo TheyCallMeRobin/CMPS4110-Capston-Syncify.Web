@@ -32,17 +32,20 @@ export const Recipes: React.FC = () => {
     }
 
     return (
-        <div className="container">
-            {recipes.map(recipe => (
-                <div className="recipe-item" key={recipe.id}>
-                    <h2 className="text-center text-highlight mb-4">{recipe.name}</h2>
-                    <h4>{recipe.description}</h4>
-                    <h6><strong>Prep Time:</strong> {recipe.prepTimeInMinutes} minutes</h6>
-                    <h6><strong>Cook Time:</strong> {recipe.cookTimeInMinutes} minutes</h6>
-                    <h6><strong>Servings:</strong> {recipe.servings}</h6>
-                    <h6><strong>Author:</strong> {recipe.userFirstName}</h6>
-                </div>
-            ))}
+        <div className="page-content">
+            <h2 className="text-center text-highlight mb-4">My Recipes</h2>
+            <div className="container">
+                {recipes.map(recipe => (
+                    <div className="recipe-item" key={recipe.id}>
+                        <h2 className="text-center text-highlight mb-4">{recipe.name}</h2>
+                        <h4>{recipe.description}</h4>
+                        <h6><strong>Prep Time:</strong> {recipe.prepTimeInMinutes} minutes</h6>
+                        <h6><strong>Cook Time:</strong> {recipe.cookTimeInMinutes} minutes</h6>
+                        <h6><strong>Servings:</strong> {recipe.servings}</h6>
+                        <h6><strong>Author:</strong> {recipe.userFirstName}</h6>
+                    </div>
+                ))}
+            </div>
         </div>
 
     );
