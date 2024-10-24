@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './api/generated/config';
 import './App.css';
 import logo from './assets/Syncify.png';
 import { useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { FaUser, FaCalendarAlt, FaBell, FaCog, FaUserPlus, FaBook, FaShoppingCart, FaHome, FaAlignJustify, } from 'react-icons/fa';
+import {
+  FaAlignJustify,
+  FaBell,
+  FaBook,
+  FaCalendarAlt,
+  FaCog,
+  FaHome,
+  FaShoppingCart,
+  FaUser,
+  FaUserPlus,
+} from 'react-icons/fa';
 import { useAsyncFn } from 'react-use';
-import { AuthenticationService } from "./api/generated/AuthenticationService.ts";
+import { AuthenticationService } from './api/generated/AuthenticationService.ts';
 
 export const App: React.FC = () => {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-    const user = useUser();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const user = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const toggleSidebar = () => {
-        setIsSidebarCollapsed(!isSidebarCollapsed);
-    };
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
 
-    const [{ loading: signingOut, error }, handleSignOut] = useAsyncFn(async () => {
-        await AuthenticationService.logout();  
-        navigate('/login');
-    }, []);
+  const [{ loading: signingOut, error }, handleSignOut] =
+    useAsyncFn(async () => {
+      await AuthenticationService.logout();
+      navigate('/login');
+    }, [navigate]);
 
-    useEffect(() => {
-        if (!user) {
-            navigate(ROUTES.LoginPage.path);
-        }
-    }, [navigate, user]);
+  useEffect(() => {
+    if (!user) {
+      navigate(ROUTES.LoginPage.path);
+    }
+  }, [navigate, user]);
 
-    const noNavBarPages = [ROUTES.LoginPage.path, ROUTES.RegisterPage.path];
-    const shouldHideNavBar = noNavBarPages.includes(location.pathname);
+  const noNavBarPages = [ROUTES.LoginPage.path, ROUTES.RegisterPage.path];
+  const shouldHideNavBar = noNavBarPages.includes(location.pathname);
 
     return (
         <div className="d-flex min-vh-100">

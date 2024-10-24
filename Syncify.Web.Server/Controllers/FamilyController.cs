@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Families;
 
@@ -47,9 +48,16 @@ public class FamilyController : Controller
     }
 
     [HttpGet("user/{userId}")]
-    public async Task<ActionResult<List<FamilyGetDto>>> GetFamiliesByUserId(int userId)
+    public async Task<ActionResult<Response<List<FamilyGetDto>>>> GetFamiliesByUserId(int userId)
     {
         var data = await _familyService.GetFamiliesByUserId(userId);
+        return Ok(data);
+    }
+
+    [HttpGet("options/{userId}")]
+    public async Task<ActionResult<Response<List<OptionDto>>>> GetFamilyOptionsForUser(int userId)
+    {
+        var data = await _familyService.GetFamilyOptionsForUser(userId);
         return Ok(data);
     }
     

@@ -10,6 +10,7 @@ public interface ICalendarService
     Task<Response<CalendarGetDto>> GetCalendarById(int id);
     Task<Response<CalendarGetDto>> CreateCalendar(CalendarCreateDto dto);
     Task<Response<List<CalendarGetDto>>> GetAllCalendars();
+    Task<Response<List<CalendarWithEventsDto>>> GetCalendarsByUserId(int userId);
     Task<Response<CalendarGetDto>> UpdateCalendar(int id, CalendarUpdateDto dto);
     Task<Response<List<CalendarGetDto>>> GetByUserId(int userId);
     Task<Response> DeleteCalendar(int id);
@@ -53,6 +54,19 @@ public class CalendarService : ICalendarService
     {
         var data = await _dataContext.Set<Calendar>()
             .ProjectTo<CalendarGetDto>()
+            .ToListAsync();
+
+        return data.AsResponse();
+    }
+
+    public async Task<Response<List<CalendarWithEventsDto>>> GetCalendarsByUserId(int userId)
+    {
+        var data = await _dataContext
+            .Set<Calendar>()
+            .Include(x => x.CalendarEvents)
+            .Where(x => x.CreatedByUserId == userId)
+            .OrderBy(x => x.CalendarEvents.Max(y => y.StartDate))
+            .ProjectTo<CalendarWithEventsDto>()
             .ToListAsync();
 
         return data.AsResponse();

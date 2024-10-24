@@ -33,7 +33,7 @@ public class FamilyCalendarEntityConfiguration : IEntityTypeConfiguration<Family
 
         builder
             .HasOne(x => x.Calendar)
-            .WithMany()
+            .WithMany(x => x.FamilyCalendars)
             .HasForeignKey(x => x.CalendarId)
             .OnDelete(DeleteBehavior.Restrict);
         

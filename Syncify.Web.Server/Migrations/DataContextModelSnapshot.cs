@@ -271,7 +271,6 @@ namespace Syncify.Web.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(2056)
                         .HasColumnType("nvarchar(2056)");
 
@@ -281,6 +280,9 @@ namespace Syncify.Web.Server.Migrations
 
                     b.Property<TimeOnly?>("EndTime")
                         .HasColumnType("time");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateOnly?>("RecurrenceEndDate")
                         .HasColumnType("date");
@@ -293,7 +295,7 @@ namespace Syncify.Web.Server.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
-                    b.Property<DateOnly>("StartDate")
+                    b.Property<DateOnly?>("StartDate")
                         .HasColumnType("date");
 
                     b.Property<TimeOnly?>("StartTime")

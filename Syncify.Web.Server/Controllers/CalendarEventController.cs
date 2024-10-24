@@ -40,6 +40,20 @@ public class CalendarEventController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet("upcoming-events/{userId}")]
+    public async Task<ActionResult<Response<List<CalendarEventGetDto>>>> GetUpcomingEventsByUserId(int userId)
+    {
+        var data = await _calendarEventService.GetUpcomingEventsByUserId(userId);
+        return Ok(data);
+    }
+
+    [HttpGet("todays-todos/{userId}")]
+    public async Task<ActionResult<Response<List<CalendarEventGetDto>>>> GetTodaysTodosByUserId(int userId)
+    {
+        var data = await _calendarEventService.GetTodaysTodosByUserId(userId);
+        return Ok(data);
+    }
+    
     [HttpPut("{id}")]
     public async Task<ActionResult<Response<CalendarEventGetDto>>> UpdateCalendarEvent(
         [FromRoute] int id, [FromBody] CalendarEventUpdateDto dto)
@@ -48,6 +62,13 @@ public class CalendarEventController : ControllerBase
         return Ok(data);
     }
 
+    [HttpPut("status/{id}")]
+    public async Task<ActionResult<Response>> UpdateTaskStatus(int id, ChangeCalendarEventStatusDto dto)
+    {
+        var data = await _calendarEventService.UpdateTaskStatus(dto with { Id = id });
+        return Ok(data);
+    }
+    
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> DeleteCalendarEvent(int id)
     {

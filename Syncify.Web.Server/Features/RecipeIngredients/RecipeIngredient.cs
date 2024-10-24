@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Syncify.Web.Server.Common;
 using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Features.RecipeIngredients;
@@ -8,7 +9,7 @@ public class RecipeIngredient
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string Unit { get; set; }
+    public string Unit { get; set; } = Units.Count;
     public string? Description { get; set; }
     public int Quantity { get; set; }
     

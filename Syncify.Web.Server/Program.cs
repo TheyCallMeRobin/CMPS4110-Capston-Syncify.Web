@@ -32,7 +32,9 @@ try
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
-        .WriteTo.Console());
+        .WriteTo.Console()
+        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Information)
+        .WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose));
 
     builder.Services.Configure<JsonOptions>(options =>
     {
@@ -51,7 +53,9 @@ try
    
     builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 
-
+    builder.Services.AddMemoryCache();
+    builder.Services.AddHttpClient();
+    
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddSingleton<MapperProvider>();
 

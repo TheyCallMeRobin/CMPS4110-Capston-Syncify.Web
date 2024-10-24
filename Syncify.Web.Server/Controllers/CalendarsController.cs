@@ -42,6 +42,13 @@ public class CalendarsController : ControllerBase
         return Ok(results);
     }
 
+    [HttpGet("events/user/{userId}")]
+    public async Task<ActionResult<Response<List<CalendarWithEventsDto>>>> GetCalendarsWithEventsByUserId(int userId)
+    {
+        var data = await _calendarService.GetCalendarsByUserId(userId);
+        return Ok(data);
+    }
+    
     [HttpGet("user/{userId}")]
     public async Task<ActionResult<Response<List<CalendarGetDto>>>> GetByUserId(int userId)
     {
