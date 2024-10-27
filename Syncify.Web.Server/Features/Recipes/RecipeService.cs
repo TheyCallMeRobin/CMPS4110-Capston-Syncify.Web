@@ -121,9 +121,16 @@ public class RecipeService : IRecipeService
         return MappingExtensions.MapTo<RecipeGetDto>(recipe).AsResponse();
     }
 
-    public Task<Response> DeleteRecipe(int id)
+    public async Task<Response> DeleteRecipe(int id)
     {
-        throw new NotImplementedException();
+        var recipe = await _dataContext.Set<Recipe>().FirstOrDefaultAsync(x => x.Id == id);
+        if (recipe is null)
+            return Error.AsResponse<RecipeGetDto>("Unable to find recipe.", nameof(id));
+
+        _dataContext.Set<Recipe>().Remove(recipe);
+        await _dataContext.SaveChangesAsync();
+
+        return Response.Success();
     }
 
     private Task<bool> RecipeHasSameName(string name)
