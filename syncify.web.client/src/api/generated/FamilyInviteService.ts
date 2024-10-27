@@ -68,12 +68,6 @@ export class FamilyInviteService {
    */
   static createInvite(
     params: {
-      /**  */
-      email?: string;
-      /**  */
-      memberIdentifier?: string;
-      /**  */
-      phoneNumber?: string;
       /** requestBody */
       body?: FamilyInviteCreateDto;
     } = {} as any,
@@ -83,11 +77,6 @@ export class FamilyInviteService {
       let url = basePath + '/api/family-invites';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
-      configs.params = {
-        Email: params['email'],
-        MemberIdentifier: params['memberIdentifier'],
-        PhoneNumber: params['phoneNumber']
-      };
 
       let data = params.body;
 
