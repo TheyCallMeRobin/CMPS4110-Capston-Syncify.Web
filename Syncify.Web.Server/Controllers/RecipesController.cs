@@ -55,4 +55,22 @@ public class RecipesController : ControllerBase
         });
         return Ok(data);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Response<RecipeGetDto>>> UpdateRecipe([FromRoute] int id,
+        [FromBody] RecipeUpdateDto dto)
+    {
+        var data = await _recipeService.UpdateRecipe(dto with
+        {
+            Id = id
+        });
+        return Ok(data);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Response>> DeleteRecipe(int id)
+    {
+        var data = await _recipeService.DeleteRecipe(id);
+        return Ok(data);
+    }
 }

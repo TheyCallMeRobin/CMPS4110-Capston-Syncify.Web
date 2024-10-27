@@ -17,7 +17,7 @@ public record RecipeDto
 public record RecipeGetDto(int Id, string CreatedByUserFullName) : RecipeDto;
 public record RecipeCreateDto([property: JsonIgnore] int CreatedByUserId) : RecipeDto;
 
-public record RecipeUpdateDto : RecipeDto;
+public record RecipeUpdateDto([property: JsonIgnore] int Id) : RecipeDto;
 
 public record RecipeQuery
 {
@@ -51,5 +51,13 @@ public class RecipeCreateDtoValidator : AbstractValidator<RecipeCreateDto>
         RuleFor(x => x.Description)
             .MaximumLength(RecipeEntityConfiguration.DescriptionMaxLength)
             .When(x => !string.IsNullOrWhiteSpace(x.Description));
+
+        RuleFor(x => x.CookTimeInSeconds)
+            .GreaterThan(-1)
+            .When(x => x.CookTimeInSeconds.HasValue);
+        
+        RuleFor(x => x.PrepTimeInSeconds)
+            .GreaterThan(-1)
+            .When(x => x.PrepTimeInSeconds.HasValue);
     }
 }
