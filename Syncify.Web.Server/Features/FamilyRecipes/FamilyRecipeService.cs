@@ -35,7 +35,7 @@ public class FamilyRecipeService : IFamilyRecipeService
     {
         var recipes = await _dataContext
             .Set<FamilyRecipe>()
-            .Where(x => x.FamiyId == familyId)
+            .Where(x => x.FamilyId == familyId)
             .ProjectTo<FamilyRecipeGetDto>()
             .ToListAsync();
 
@@ -50,7 +50,7 @@ public class FamilyRecipeService : IFamilyRecipeService
         
         var existingRecipe = await _dataContext
             .Set<FamilyRecipe>()
-            .FirstOrDefaultAsync(x => x.FamiyId == createDto.FamilyId && x.RecipeId == createDto.RecipeId);
+            .FirstOrDefaultAsync(x => x.FamilyId == createDto.FamilyId && x.RecipeId == createDto.RecipeId);
 
         if (existingRecipe is not null)
             return Error.AsResponse<FamilyRecipeGetDto>("This recipe already exists for this family", 

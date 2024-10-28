@@ -1890,6 +1890,66 @@
           "Recipes"
         ],
         "operationId": "GetRecipes",
+        "parameters": [
+          {
+            "name": "CreatedByUserId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "CookTimeLowerBound",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "CookTimeUpperBound",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PrepTimeLowerBound",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PrepTimeUpperBound",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TagIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -3805,12 +3865,7 @@
       },
       "RecipeCreateDto": {
         "required": [
-          "cookTimeInMinutes",
-          "description",
-          "name",
-          "prepTimeInMinutes",
-          "servings",
-          "userId"
+          "name"
         ],
         "type": "object",
         "properties": {
@@ -3818,62 +3873,72 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
-          "prepTimeInMinutes": {
+          "prepTimeInSeconds": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "cookTimeInMinutes": {
+          "cookTimeInSeconds": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "servings": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "userId": {
+          "feeds": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "RecipeGetDto": {
         "required": [
-          "cookTimeInMinutes",
-          "description",
+          "createdByUserFullName",
           "id",
-          "name",
-          "prepTimeInMinutes",
-          "servings",
-          "userFirstName"
+          "name"
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "name": {
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
-          "prepTimeInMinutes": {
+          "prepTimeInSeconds": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "cookTimeInMinutes": {
+          "cookTimeInSeconds": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "servings": {
             "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "feeds": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "id": {
+            "type": "integer",
             "format": "int32"
           },
-          "userFirstName": {
+          "createdByUserFullName": {
             "type": "string"
           }
         },
