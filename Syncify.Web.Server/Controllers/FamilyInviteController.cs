@@ -32,13 +32,12 @@ public class FamilyInviteController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Response<FamilyInviteGetDto>>> CreateInvite([FromBody] FamilyInviteCreateDto dto,
-        [FromQuery] CreateFamilyInviteQuery query)
+    public async Task<ActionResult<Response<FamilyInviteGetDto>>> CreateInvite([FromBody] FamilyInviteCreateDto dto)
     {
         var data = await _familyInviteService.CreateInviteAsync(dto with
         {
-            SentByUserId = HttpContext.User.GetCurrentUserId()
-        }, query);
+            SentByUserId = User.GetCurrentUserId()
+        });
         return Ok(data);
     }
 

@@ -9,7 +9,7 @@ namespace Syncify.Web.Server.Features.FamilyInvites;
 
 public interface IFamilyInviteService
 {
-    Task<Response<FamilyInviteGetDto>> CreateInviteAsync(FamilyInviteCreateDto dto, CreateFamilyInviteQuery query);
+    Task<Response<FamilyInviteGetDto>> CreateInviteAsync(FamilyInviteCreateDto dto);
     Task<Response<FamilyInviteGetDto>> ChangeInviteStatusAsync(ChangeInviteStatusDto dto);
     Task<Response<List<FamilyInviteGetDto>>> GetInvitesByUserId(int userId);
     Task<Response<List<FamilyInviteGetDto>>> GetInvitesByFamilyId(int familyId);
@@ -24,26 +24,33 @@ public class FamilyInviteService : IFamilyInviteService
         _dataContext = dataContext;
     }
 
-    public async Task<Response<FamilyInviteGetDto>> CreateInviteAsync(FamilyInviteCreateDto dto, CreateFamilyInviteQuery query)
+    public async Task<Response<FamilyInviteGetDto>> CreateInviteAsync(FamilyInviteCreateDto dto)
     {
         var family = await _dataContext.Set<Family>().FindAsync(dto.FamilyId);
         if (family is null)
-            return Error.AsResponse<FamilyInviteGetDto>("The family could not be found.", nameof(query));
+            return Error.AsResponse<FamilyInviteGetDto>("The family could not be found.", nameof(dto.FamilyId));
 
-        
-        var userToInvite = await FindUserFromQuery(query);
-        if (userToInvite is null)
-            return Error.AsResponse<FamilyInviteGetDto>("The user to invite could not be found.", nameof(query));
+        var user = await _dataContext
+            .Set<User>()
+            .FirstOrDefaultAsync(x => x.Email.Equals(dto.InviteQuery)
+                                      || x.PhoneNumber.Equals(dto.InviteQuery)
+                                      || x.MemberIdentifier.ToString().Equals(dto.InviteQuery));
 
-        var invite = dto.MapTo<FamilyInvite>();
+        if (user is null)
+            return Error.AsResponse<FamilyInviteGetDto>("User not found", nameof(dto.InviteQuery));
 
-        invite.UserId = userToInvite.Id;
-        invite.CreatedOn = DateTime.UtcNow;
+        var familyInvite = new FamilyInvite
+        {
+            SentByUserId = dto.SentByUserId,
+            FamilyId = dto.FamilyId,
+            ExpiresOn = dto.ExpiresOn,
+            UserId = user.Id,
+        };
 
-        _dataContext.Set<FamilyInvite>().Add(invite);
+        _dataContext.Set<FamilyInvite>().Add(familyInvite);
         await _dataContext.SaveChangesAsync();
 
-        return invite.MapTo<FamilyInviteGetDto>().AsResponse();
+        return familyInvite.MapTo<FamilyInviteGetDto>().AsResponse();
     }
     
     public async Task<Response<FamilyInviteGetDto>> ChangeInviteStatusAsync(ChangeInviteStatusDto dto)
@@ -95,17 +102,5 @@ public class FamilyInviteService : IFamilyInviteService
             .ToListAsync();
 
         return invites.AsResponse();
-    }
-
-    private Task<User?> FindUserFromQuery(CreateFamilyInviteQuery query)
-    {
-       return _dataContext
-            .Set<User>()
-            .FirstOrDefaultAsync(x => string.IsNullOrWhiteSpace(query.MemberIdentifier) ||
-                                    x.MemberIdentifier.ToString().Equals(query.MemberIdentifier) &&
-                                    string.IsNullOrWhiteSpace(query.Email) ||
-                                    x.Email.Equals(query.Email) &&
-                                    string.IsNullOrWhiteSpace(query.PhoneNumber) ||
-                                    x.PhoneNumber.Equals(query.PhoneNumber));
     }
 }

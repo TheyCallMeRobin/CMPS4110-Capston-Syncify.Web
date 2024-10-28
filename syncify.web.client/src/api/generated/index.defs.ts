@@ -413,6 +413,9 @@ export class FamilyInviteCreateDto {
   /**  */
   'expiresOn'?: Date;
 
+  /**  */
+  'inviteQuery': string;
+
   constructor(data: FamilyInviteCreateDto = {}) {
     Object.assign(this, data);
   }
@@ -435,19 +438,13 @@ export class FamilyInviteGetDto {
   'userId': number;
 
   /**  */
-  'sentByUserFirstName': string;
-
-  /**  */
-  'sentByUserLastName': string;
-
-  /**  */
   'familyName': string;
 
   /**  */
-  'userFirstName': string;
+  'sentByUserFullName': string;
 
   /**  */
-  'userLastName': string;
+  'userFullName': string;
 
   /**  */
   'status': InviteStatus;
@@ -908,7 +905,8 @@ export enum InviteStatus {
   'Pending' = 'Pending',
   'Accepted' = 'Accepted',
   'Declined' = 'Declined',
-  'Expired' = 'Expired'
+  'Expired' = 'Expired',
+  'Cancelled' = 'Cancelled'
 }
 
 export enum RecurrenceType {

@@ -1319,29 +1319,6 @@
           "FamilyInvite"
         ],
         "operationId": "CreateInvite",
-        "parameters": [
-          {
-            "name": "Email",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "MemberIdentifier",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "PhoneNumber",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -3605,7 +3582,8 @@
       },
       "FamilyInviteCreateDto": {
         "required": [
-          "familyId"
+          "familyId",
+          "inviteQuery"
         ],
         "type": "object",
         "properties": {
@@ -3617,6 +3595,9 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "inviteQuery": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -3626,13 +3607,11 @@
           "familyId",
           "familyName",
           "id",
-          "sentByUserFirstName",
+          "sentByUserFullName",
           "sentByUserId",
-          "sentByUserLastName",
           "status",
-          "userFirstName",
-          "userId",
-          "userLastName"
+          "userFullName",
+          "userId"
         ],
         "type": "object",
         "properties": {
@@ -3657,19 +3636,13 @@
             "type": "integer",
             "format": "int32"
           },
-          "sentByUserFirstName": {
-            "type": "string"
-          },
-          "sentByUserLastName": {
-            "type": "string"
-          },
           "familyName": {
             "type": "string"
           },
-          "userFirstName": {
+          "sentByUserFullName": {
             "type": "string"
           },
-          "userLastName": {
+          "userFullName": {
             "type": "string"
           },
           "status": {
@@ -3808,7 +3781,8 @@
           "Pending",
           "Accepted",
           "Declined",
-          "Expired"
+          "Expired",
+          "Cancelled"
         ],
         "type": "string"
       },
