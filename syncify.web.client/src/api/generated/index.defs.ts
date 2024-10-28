@@ -579,19 +579,19 @@ export class RecipeCreateDto {
   'name': string;
 
   /**  */
-  'description': string;
+  'description'?: string;
 
   /**  */
-  'prepTimeInMinutes': number;
+  'prepTimeInSeconds'?: number;
 
   /**  */
-  'cookTimeInMinutes': number;
+  'cookTimeInSeconds'?: number;
 
   /**  */
-  'servings': number;
+  'servings'?: number;
 
   /**  */
-  'userId': number;
+  'feeds'?: number;
 
   constructor(data: RecipeCreateDto = {}) {
     Object.assign(this, data);
@@ -600,25 +600,28 @@ export class RecipeCreateDto {
 
 export class RecipeGetDto {
   /**  */
-  'id': number;
-
-  /**  */
   'name': string;
 
   /**  */
-  'description': string;
+  'description'?: string;
 
   /**  */
-  'prepTimeInMinutes': number;
+  'prepTimeInSeconds'?: number;
 
   /**  */
-  'cookTimeInMinutes': number;
+  'cookTimeInSeconds'?: number;
 
   /**  */
-  'servings': number;
+  'servings'?: number;
 
   /**  */
-  'userFirstName': string;
+  'feeds'?: number;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'createdByUserFullName': string;
 
   constructor(data: RecipeGetDto = {}) {
     Object.assign(this, data);

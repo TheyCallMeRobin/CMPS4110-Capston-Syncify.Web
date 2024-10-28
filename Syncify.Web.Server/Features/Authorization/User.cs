@@ -11,6 +11,7 @@ public class User : IdentityUser<int>
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+    public string FullName { get; set; } = string.Empty;
     public new string Email { get; set; } = string.Empty;
     public new string PhoneNumber { get; set; } = string.Empty;
     public Guid MemberIdentifier { get; init; } = Guid.NewGuid();
@@ -22,13 +23,17 @@ public class User : IdentityUser<int>
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
-    public const int FirstNameMaxLength = 128;
-    public const int LastNameMaxLength = 128;
+    internal const int FirstNameMaxLength = 128;
+    internal const int LastNameMaxLength = 128;
     
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.Property(x => x.FirstName).HasMaxLength(FirstNameMaxLength);
         builder.Property(x => x.LastName).HasMaxLength(LastNameMaxLength);
+
+        builder
+            .Property(x => x.FullName)
+            .HasComputedColumnSql("[FirstName] + ' ' + [LastName]");
         
         builder
             .Property(x => x.MemberIdentifier)
@@ -38,7 +43,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.UserName).IsRequired();
         
         builder.HasIndex(x => x.MemberIdentifier);
-        
+        builder.HasIndex(x => x.FullName);
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.PhoneNumber).IsUnique();
         
