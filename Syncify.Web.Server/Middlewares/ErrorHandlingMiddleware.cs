@@ -31,7 +31,11 @@ public class ErrorHandlingMiddleware
             response.StatusCode = (int) HttpStatusCode.InternalServerError;
 
             var error = new Error { ErrorMessage = ErrorMessages.UnknownError };
-            await response.WriteAsync(JsonSerializer.Serialize(error));
+            
+            var responseResult = new Response();
+            responseResult.AddErrors(error);
+            
+            await response.WriteAsync(JsonSerializer.Serialize(responseResult));
         }
     }
 }
