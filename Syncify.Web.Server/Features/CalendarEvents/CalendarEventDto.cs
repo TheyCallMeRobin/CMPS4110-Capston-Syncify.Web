@@ -1,19 +1,20 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using System.Text.Json.Serialization;
+using Syncify.Web.Server.Extensions;
 
 namespace Syncify.Web.Server.Features.CalendarEvents;
 
 public record CalendarEventDto
 {
     public string Title { get; set; } = string.Empty;
-    public string? DisplayColor { get; set; }
     public string? Description { get; set; }
     public bool IsCompleted { get; set; }
-    public DateOnly? StartDate { get; set; }
-    public TimeOnly? StartTime { get; set; }
-    public TimeOnly? EndTime { get; set; }
+    public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset? EndsOn { get; set; }
+
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
-    public RecurrenceType? RecurrenceType { get; set; }
+    public EventRecurrenceType? RecurrenceType { get; set; } = EventRecurrenceType.None;
 }
 
 public record CalendarEventGetDto : CalendarEventDto
@@ -21,6 +22,9 @@ public record CalendarEventGetDto : CalendarEventDto
     public int Id { get; set; }
     public int CalendarId { get; set; }
     public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
+
+    public bool IsAllDay => (StartsOn.HasValue && !EndsOn.HasValue) ||
+                            (StartsOn.HasValue && EndsOn == DateTimeOffset.Now.EndOfDay());
 }
 
 public record CalendarEventUpdateDto : CalendarEventDto
@@ -46,8 +50,18 @@ public class CalendarEventMappingProfile : Profile
     {
         CreateMap<CalendarEvent, CalendarEventDto>();
         CreateMap<CalendarEventUpdateDto, CalendarEvent>();
-        CreateMap<CalendarEventCreateDto, CalendarEvent>();
+        CreateMap<CalendarEventCreateDto, CalendarEvent>()
+            .ForMember(x => x.EndsOn, opts => opts.MapFrom(x => MapEndsOn(x)));
         CreateMap<CalendarEvent, CalendarEventGetDto>();
-        
+    }
+    
+    private static DateTimeOffset? MapEndsOn(CalendarEventCreateDto dto)
+    {
+        if (!dto.EndsOn.HasValue)
+        {
+            return dto.StartsOn?.EndOfDay() ?? DateTimeOffset.Now.EndOfDay();
+        }
+
+        return dto.EndsOn;
     }
 }
