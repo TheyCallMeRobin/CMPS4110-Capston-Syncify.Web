@@ -13,8 +13,8 @@ public class CalendarEventDtoValidator : AbstractValidator<CalendarEventDto>
         RuleFor(x => x.Title).MaximumLength(Config.TitleMaxLength);
         RuleFor(x => x.DisplayColor).MaximumLength(Config.ColorMaxLength);
         
-        RuleFor(x => x.StartsOn)
-            .LessThan(x => x.EndsOn)
+        RuleFor(x => x.EndsOn)
+            .LessThan(x => x.StartsOn)
             .When(x => x is { StartsOn: not null, EndsOn: not null });
     }
 }
