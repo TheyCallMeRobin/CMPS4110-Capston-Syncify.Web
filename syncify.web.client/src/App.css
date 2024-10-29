@@ -1,4 +1,17 @@
-﻿
+﻿@import "../node_modules/@syncfusion/ej2-base/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-buttons/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-calendars/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-inputs/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-lists/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-navigations/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-popups/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-splitbuttons/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-react-schedule/styles/bootstrap5.3.css";
+@import "../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-calendars/styles/material.css";
+
 .sidebar-navbar {
     background-color: #0b60b0;
     width: 180px;
@@ -99,4 +112,15 @@
     font-size: 3rem;
     font-weight: bold;
     text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+}
+
+/*
+Overriden Styles
+*/
+.e-popup .e-checkbox-wrapper .e-frame.e-check, .e-popup .e-checkbox-wrapper:hover .e-frame.e-check {
+    background-color: dodgerblue;
+    color: white;
+}
+.e-multiselect .e-delim-values {
+    padding: 7px;
 }

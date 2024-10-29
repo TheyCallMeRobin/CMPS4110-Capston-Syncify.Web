@@ -1,12 +1,12 @@
 ﻿import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { MainPage } from './main-page/MainPage.tsx';
-import { Calendars } from './Routes/Calendars/calenders.tsx';
 import { Recipes } from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { RegisterPage } from './Routes/RegisterPage/RegisterPage.tsx';
 import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
 import { App } from './App.tsx';
+import { CalendarPage } from './calendar/calendar-page.tsx';
 
 export const ROUTES = {
   LoginPage: {
@@ -23,7 +23,7 @@ export const ROUTES = {
   },
   Calendars: {
     path: '/calendars',
-    element: <Calendars />,
+    element: <CalendarPage />,
   },
   Recipes: {
     path: '/recipes',
@@ -37,11 +37,6 @@ export const ROUTES = {
     path: '/shopping-lists',
     element: <ShoppingLists />,
   },
-  /*
-  AccountSettings: {
-    path: '/account-settings',
-    element: <AccountSettings />,
-  }, */
 };
 
 const routes: RouteObject[] = [
