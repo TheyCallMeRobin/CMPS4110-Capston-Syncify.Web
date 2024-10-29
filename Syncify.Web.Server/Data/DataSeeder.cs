@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.CalendarEvents;
 using Syncify.Web.Server.Features.Calendars;
@@ -181,9 +182,8 @@ public class DataSeeder
         if (_dataContext.Set<Calendar>().Any())
             return;
 
-        var john = await _userManager.FindByNameAsync("johnjohnson");
-        var jane = await _userManager.FindByNameAsync("janeadams");
-
+        var (john, jane) = await GetSeededUsers();
+        
         if (john is null || jane is null)
             return;
 
@@ -201,14 +201,14 @@ public class DataSeeder
         _dataContext.Set<Calendar>().AddRange(johnsCalendar, janesCalendar);
         await _dataContext.SaveChangesAsync();
 
-        CalendarEvent[] johnsEvents =
-        [
+       var johnsEvents = new List<CalendarEventCreateDto>
+        {
             new()
             {
                 CalendarId = johnsCalendar.Id,
                 Title = "Go to Timmy's Basketball game",
                 CreatedByUserId = john.Id,
-                StartDate = GetRandomDateOnly(),
+                StartsOn = GetRandomDate(),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -216,7 +216,7 @@ public class DataSeeder
                 CalendarId = johnsCalendar.Id,
                 Title = "Do the dishes",
                 CreatedByUserId = john.Id,
-                StartDate = GetRandomDateOnly(),
+                StartsOn = GetRandomDate(),
                 CalendarEventType = CalendarEventType.Task
             },
             new()
@@ -226,16 +226,16 @@ public class DataSeeder
                 CreatedByUserId = john.Id,
                 CalendarEventType = CalendarEventType.Task
             }
-        ];
+        }.ProjectTo<CalendarEvent>();
 
-        CalendarEvent[] janesEvents =
-        [
+        var janesEvents = new List<CalendarEventCreateDto>
+        {
             new()
             {
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Go grocery shopping.",
-                StartDate = GetRandomDateOnly(),
+                StartsOn = GetRandomDate(),
                 CalendarEventType = CalendarEventType.Task
             },
             new()
@@ -243,7 +243,7 @@ public class DataSeeder
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Dentist Appointment",
-                StartDate = GetRandomDateOnly(),
+                StartsOn = GetRandomDate(),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -251,15 +251,15 @@ public class DataSeeder
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Take Albert to Soccer practice",
-                StartDate = GetRandomDateOnly(),
+                StartsOn = GetRandomDate(),
                 CalendarEventType = CalendarEventType.Task
             }
-        ];
+        }.ProjectTo<CalendarEvent>();
         
         _dataContext.Set<CalendarEvent>().AddRange([..johnsEvents, ..janesEvents]);
         await _dataContext.SaveChangesAsync();
     }
-
+    
     private async Task SeedFamilies()
     {
         if (await _dataContext.Set<Family>().AnyAsync())
@@ -285,8 +285,8 @@ public class DataSeeder
         await _dataContext.SaveChangesAsync();
     }
     
-    private DateOnly GetRandomDateOnly()
-        => DateOnly.FromDateTime(DateTime.Now.AddDays(Random.Shared.Next(1, 5)));
+    private DateTimeOffset GetRandomDate()
+        => DateTimeOffset.Now.AddDays(Random.Shared.Next(1, 5));
 
     private async Task<(User? john, User? jane)> GetSeededUsers()
     {
