@@ -4,8 +4,9 @@ namespace Syncify.Web.Server.Features.CalendarEvents;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 
-public enum RecurrenceType
+public enum EventRecurrenceType
 {
+    None,
     Daily,
     Weekly,
     BiWeekly,
