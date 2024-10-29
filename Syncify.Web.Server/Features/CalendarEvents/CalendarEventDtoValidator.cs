@@ -12,6 +12,10 @@ public class CalendarEventDtoValidator : AbstractValidator<CalendarEventDto>
         RuleFor(x => x.Description).MaximumLength(Config.DescriptionMaxLength);
         RuleFor(x => x.Title).MaximumLength(Config.TitleMaxLength);
         RuleFor(x => x.DisplayColor).MaximumLength(Config.ColorMaxLength);
+        
+        RuleFor(x => x.StartsOn)
+            .LessThan(x => x.EndsOn)
+            .When(x => x is { StartsOn: not null, EndsOn: not null });
     }
 }
 
@@ -27,6 +31,6 @@ public class CalendarEventUpdateDtoValidator : AbstractValidator<CalendarEventUp
 {
     public CalendarEventUpdateDtoValidator()
     {
-        RuleFor(x => x.RecurrenceWeekDays).Must(x => x?.Count <= 10);
+        Include(new CalendarEventDtoValidator());
     }
 }

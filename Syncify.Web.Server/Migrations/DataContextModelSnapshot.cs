@@ -278,8 +278,8 @@ namespace Syncify.Web.Server.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<TimeOnly?>("EndTime")
-                        .HasColumnType("time");
+                    b.Property<DateTimeOffset?>("EndsOn")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -295,11 +295,8 @@ namespace Syncify.Web.Server.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
-                    b.Property<DateOnly?>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly?>("StartTime")
-                        .HasColumnType("time");
+                    b.Property<DateTimeOffset?>("StartsOn")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -793,7 +790,7 @@ namespace Syncify.Web.Server.Migrations
             modelBuilder.Entity("Syncify.Web.Server.Features.FamilyCalendars.FamilyCalendar", b =>
                 {
                     b.HasOne("Syncify.Web.Server.Features.Calendars.Calendar", "Calendar")
-                        .WithMany()
+                        .WithMany("FamilyCalendars")
                         .HasForeignKey("CalendarId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -991,6 +988,8 @@ namespace Syncify.Web.Server.Migrations
             modelBuilder.Entity("Syncify.Web.Server.Features.Calendars.Calendar", b =>
                 {
                     b.Navigation("CalendarEvents");
+
+                    b.Navigation("FamilyCalendars");
                 });
 
             modelBuilder.Entity("Syncify.Web.Server.Features.Families.Family", b =>
