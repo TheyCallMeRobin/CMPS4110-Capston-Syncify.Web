@@ -7,8 +7,7 @@ import {
   CalendarWithEventsDto,
   CalendarEventGetDto,
   CalendarEventType,
-  RecurrenceType,
-  DayOfWeek,
+  OptionDto,
   IList,
   List,
   IListResult,
@@ -158,6 +157,44 @@ export class CalendarsService {
   ): Promise<Response<List<CalendarGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/calendars/user/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getByUserWithFamilies(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendars/with-families/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getCalendarOptions(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<OptionDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendars/options/{userId}';
       url = url.replace('{userId}', params['userId'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);

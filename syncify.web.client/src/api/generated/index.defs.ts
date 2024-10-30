@@ -116,6 +116,9 @@ export class CalendarCreateDto {
   /**  */
   'name': string;
 
+  /**  */
+  'displayColor'?: string;
+
   constructor(data: CalendarCreateDto = {}) {
     Object.assign(this, data);
   }
@@ -126,34 +129,25 @@ export class CalendarEventCreateDto {
   'title': string;
 
   /**  */
-  'displayColor'?: string;
+  'description'?: string;
 
   /**  */
-  'description'?: string;
+  'recurrenceRule'?: string;
 
   /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startDate'?: Date;
+  'startsOn'?: Date;
 
   /**  */
-  'startTime'?: string;
-
-  /**  */
-  'endTime'?: string;
+  'endsOn'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
 
   /**  */
-  'recurrenceType': RecurrenceType;
-
-  /**  */
   'calendarId': number;
-
-  /**  */
-  'recurrenceWeekDays'?: DayOfWeek[];
 
   constructor(data: CalendarEventCreateDto = {}) {
     Object.assign(this, data);
@@ -165,28 +159,22 @@ export class CalendarEventGetDto {
   'title': string;
 
   /**  */
-  'displayColor'?: string;
+  'description'?: string;
 
   /**  */
-  'description'?: string;
+  'recurrenceRule'?: string;
 
   /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startDate'?: Date;
+  'startsOn'?: Date;
 
   /**  */
-  'startTime'?: string;
-
-  /**  */
-  'endTime'?: string;
+  'endsOn'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
-
-  /**  */
-  'recurrenceType': RecurrenceType;
 
   /**  */
   'id': number;
@@ -195,7 +183,10 @@ export class CalendarEventGetDto {
   'calendarId': number;
 
   /**  */
-  'recurrenceWeekDays'?: DayOfWeek[];
+  'calendarDisplayColor'?: string;
+
+  /**  */
+  'isAllDay': boolean;
 
   constructor(data: CalendarEventGetDto = {}) {
     Object.assign(this, data);
@@ -207,31 +198,22 @@ export class CalendarEventUpdateDto {
   'title': string;
 
   /**  */
-  'displayColor'?: string;
+  'description'?: string;
 
   /**  */
-  'description'?: string;
+  'recurrenceRule'?: string;
 
   /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startDate'?: Date;
+  'startsOn'?: Date;
 
   /**  */
-  'startTime'?: string;
-
-  /**  */
-  'endTime'?: string;
+  'endsOn'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
-
-  /**  */
-  'recurrenceType': RecurrenceType;
-
-  /**  */
-  'recurrenceWeekDays'?: DayOfWeek[];
 
   constructor(data: CalendarEventUpdateDto = {}) {
     Object.assign(this, data);
@@ -240,10 +222,13 @@ export class CalendarEventUpdateDto {
 
 export class CalendarGetDto {
   /**  */
-  'id': number;
+  'name': string;
 
   /**  */
-  'name': string;
+  'displayColor'?: string;
+
+  /**  */
+  'id': number;
 
   /**  */
   'createdByUserId': number;
@@ -257,6 +242,9 @@ export class CalendarUpdateDto {
   /**  */
   'name': string;
 
+  /**  */
+  'displayColor'?: string;
+
   constructor(data: CalendarUpdateDto = {}) {
     Object.assign(this, data);
   }
@@ -264,10 +252,13 @@ export class CalendarUpdateDto {
 
 export class CalendarWithEventsDto {
   /**  */
-  'id': number;
+  'name': string;
 
   /**  */
-  'name': string;
+  'displayColor'?: string;
+
+  /**  */
+  'id': number;
 
   /**  */
   'createdByUserId': number;
@@ -891,27 +882,9 @@ export enum CalendarEventType {
   'Task' = 'Task'
 }
 
-export enum DayOfWeek {
-  'Sunday' = 'Sunday',
-  'Monday' = 'Monday',
-  'Tuesday' = 'Tuesday',
-  'Wednesday' = 'Wednesday',
-  'Thursday' = 'Thursday',
-  'Friday' = 'Friday',
-  'Satuday' = 'Satuday'
-}
-
 export enum InviteStatus {
   'Pending' = 'Pending',
   'Accepted' = 'Accepted',
   'Declined' = 'Declined',
   'Expired' = 'Expired'
-}
-
-export enum RecurrenceType {
-  'Daily' = 'Daily',
-  'Weekly' = 'Weekly',
-  'BiWeekly' = 'BiWeekly',
-  'Monthly' = 'Monthly',
-  'Custom' = 'Custom'
 }
