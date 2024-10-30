@@ -41,8 +41,8 @@ export const UpcomingEventsCard: React.FC = () => {
         </thead>
         <tbody>
           {fetchUpcomingEvents.value?.map((event) => {
-            const date = event.startDate ? (
-              new Date(event.startDate).toLocaleDateString()
+            const date = event.startsOn ? (
+              new Date(event.startsOn).toLocaleDateString()
             ) : (
               <span>&ndash;&ndash;</span>
             );
