@@ -9,28 +9,23 @@ public record CalendarEventDto
 {
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string? RecurrenceRule { get; set; }
     public bool IsCompleted { get; set; }
     public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset? EndsOn { get; set; }
-
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
-    public EventRecurrenceType? RecurrenceType { get; set; } = EventRecurrenceType.None;
 }
 
 public record CalendarEventGetDto : CalendarEventDto
 {
     public int Id { get; set; }
     public int CalendarId { get; set; }
-    public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
+    public string? CalendarDisplayColor { get; set; }
 
-    public bool IsAllDay => (StartsOn.HasValue && !EndsOn.HasValue) ||
-                            (StartsOn.HasValue && EndsOn == DateTimeOffset.Now.EndOfDay());
+    public bool IsAllDay { get; set; }
 }
 
-public record CalendarEventUpdateDto : CalendarEventDto
-{
-    public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
-}
+public record CalendarEventUpdateDto : CalendarEventDto;
 
 public record CalendarEventCreateDto : CalendarEventDto
 {
@@ -38,8 +33,6 @@ public record CalendarEventCreateDto : CalendarEventDto
     
     [JsonIgnore]
     public int CreatedByUserId { get; set; }
-    
-    public List<DayOfWeek>? RecurrenceWeekDays { get; set; } = [];
 }
 
 public record ChangeCalendarEventStatusDto([property: JsonIgnore] int Id, bool IsCompleted);

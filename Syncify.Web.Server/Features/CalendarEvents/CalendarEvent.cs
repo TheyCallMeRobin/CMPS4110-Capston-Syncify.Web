@@ -16,14 +16,12 @@ public class CalendarEvent
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;
     public string? DisplayColor { get; set; } = string.Empty;
+    public string? RecurrenceRule { get; set; } = string.Empty;
     public bool IsCompleted { get; set; }
+    public bool IsAllDay { get; set; }
     public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset? EndsOn { get; set; }
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
-    public EventRecurrenceType? RecurrenceType { get; set; }
-    public DateOnly? RecurrenceEndDate { get; set; }
-    public List<DayOfWeek>? RecurrenceWeekDays { get; set; }
-    
     public Calendar Calendar { get; set; } = default!;
     public User CreatedByUser { get; set; } = default!;
     
@@ -41,7 +39,7 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         builder.Property(x => x.CalendarEventType).HasDefaultValue(CalendarEventType.Event);
         
         builder
-            .Property(x => x.RecurrenceWeekDays)
+            .Property(x => x.RecurrenceRule)
             .HasMaxLength(-1)
             .IsUnicode(false);
 

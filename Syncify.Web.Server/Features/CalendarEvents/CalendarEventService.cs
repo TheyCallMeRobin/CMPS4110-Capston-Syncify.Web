@@ -97,6 +97,11 @@ public class CalendarEventService : ICalendarEventService
     {
         var calendarEvent = MappingExtensions.MapTo<CalendarEvent>(dto);
 
+        if (dto.CalendarEventType == CalendarEventType.Task)
+        {
+            calendarEvent.IsAllDay = true;
+        }
+        
         _dataContext.Set<CalendarEvent>().Add(calendarEvent);
         await _dataContext.SaveChangesAsync();
 
@@ -110,6 +115,12 @@ public class CalendarEventService : ICalendarEventService
             return Error.AsResponse<CalendarEventGetDto>(ErrorMessages.NotFoundError);
 
         _mapper.Map(dto, calendarEvent);
+
+        if (dto.CalendarEventType == CalendarEventType.Task)
+        {
+            calendarEvent.IsAllDay = true;
+        }
+        
         await _dataContext.SaveChangesAsync();
 
         return MappingExtensions.MapTo<CalendarEventGetDto>(calendarEvent).AsResponse();
