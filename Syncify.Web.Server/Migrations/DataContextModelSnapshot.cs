@@ -281,16 +281,13 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<DateTimeOffset?>("EndsOn")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<bool>("IsAllDay")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateOnly?>("RecurrenceEndDate")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("RecurrenceType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RecurrenceWeekDays")
+                    b.Property<string>("RecurrenceRule")
                         .HasMaxLength(-1)
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
@@ -322,6 +319,11 @@ namespace Syncify.Web.Server.Migrations
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("DisplayColor")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Name")
                         .IsRequired()
