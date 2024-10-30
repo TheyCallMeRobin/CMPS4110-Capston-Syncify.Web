@@ -13,6 +13,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@syncfusion/ej2": "^27.1.56",
+    "@syncfusion/ej2-react-buttons": "^27.1.53",
     "@syncfusion/ej2-react-calendars": "^27.1.55",
     "@syncfusion/ej2-react-dropdowns": "^27.1.55",
     "@syncfusion/ej2-react-schedule": "^27.1.56",
@@ -22,6 +23,7 @@
     "qs": "^6.13.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
+    "react-color-palette": "^7.3.0",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",
