@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './api/generated/config';
 import './App.css';
+import './syncfusion-styles.css';
 import logo from './assets/Syncify.png';
 import { useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
