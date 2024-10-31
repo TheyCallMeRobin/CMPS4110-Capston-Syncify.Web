@@ -157,19 +157,20 @@ public class DataSeeder
             {
                 Name = "John's Pancake Recipe",
                 Description = "A simple and delicious pancake recipe.",
-                PrepTimeInMinutes = 10,
-                CookTimeInMinutes = 20,
+                PrepTimeInSeconds = 10 * GeneralConstants.OneMinuteInSeconds,
+                CookTimeInSeconds = 20 * GeneralConstants.OneMinuteInSeconds,
                 Servings = 4,
-                UserId = john.Id
+                Feeds = 2,
+                CreatedByUserId = john.Id
             },
             new Recipe
             {
                 Name = "Jane's Salad Recipe",
                 Description = "A fresh and healthy salad recipe.",
-                PrepTimeInMinutes = 15,
-                CookTimeInMinutes = 0,
+                PrepTimeInSeconds = 15 * GeneralConstants.OneMinuteInSeconds,
                 Servings = 2,
-                UserId = jane.Id
+                Feeds = 1,
+                CreatedByUserId = jane.Id
             }
         };
 

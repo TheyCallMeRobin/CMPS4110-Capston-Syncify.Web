@@ -9,10 +9,9 @@ namespace Syncify.Web.Server.Features.FamilyRecipes;
 public class FamilyRecipe
 {
     public int Id { get; set; }
-    public int FamiyId { get; set; }
+    public int FamilyId { get; set; }
     public int RecipeId { get; set; }
     public int CreatedByUserId { get; set; }
-
     public Family Family { get; set; } = default!;
     public Recipe Recipe { get; set; } = default!;
     public User CreatedByUser { get; set; } = default!;
@@ -26,7 +25,8 @@ public class FamilyRecipeEntityConfiguration : IEntityTypeConfiguration<FamilyRe
 
         builder
             .HasOne(x => x.Family)
-            .WithMany()
+            .WithMany(x => x.FamilyRecipes)
+            .HasForeignKey(x => x.FamilyId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
@@ -37,7 +37,7 @@ public class FamilyRecipeEntityConfiguration : IEntityTypeConfiguration<FamilyRe
         
         builder
             .HasOne(x => x.Recipe)
-            .WithMany()
+            .WithMany(x => x.FamilyRecipes)
             .HasForeignKey(x => x.RecipeId)
             .OnDelete(DeleteBehavior.Restrict);
 

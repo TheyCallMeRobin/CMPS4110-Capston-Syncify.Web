@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Syncify.Common;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/recipes")]
 public class RecipesController : ControllerBase
 {
@@ -16,9 +18,9 @@ public class RecipesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes()
+    public async Task<ActionResult<Response<List<RecipeGetDto>>>> GetRecipes([FromQuery] RecipeQuery? query)
     {
-        var data = await _recipeService.GetRecipes();
+        var data = await _recipeService.GetRecipes(query);
         return Ok(data);
     }
 
@@ -36,7 +38,7 @@ public class RecipesController : ControllerBase
         return Ok(data);
     }
 
-    [HttpGet("recipe-of-the-day/")]
+    [HttpGet("recipe-of-the-day")]
     public async Task<ActionResult<Response<RecipeGetDto>>> GetRecipeOfTheDay()
     {
         var data = await _recipeService.GetRecipeOfTheDay();
@@ -47,7 +49,28 @@ public class RecipesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Response<RecipeGetDto>>> CreateRecipe([FromBody] RecipeCreateDto dto)
     {
-        var data = await _recipeService.CreateRecipe(dto);
-        return CreatedAtAction(nameof(GetRecipeById), new { id = data.Data.Id }, data); // Updated to return 201 Created
+        var data = await _recipeService.CreateRecipe(dto with
+        {
+            CreatedByUserId = User.GetCurrentUserId()
+        });
+        return Ok(data);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Response<RecipeGetDto>>> UpdateRecipe([FromRoute] int id,
+        [FromBody] RecipeUpdateDto dto)
+    {
+        var data = await _recipeService.UpdateRecipe(dto with
+        {
+            Id = id
+        });
+        return Ok(data);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Response>> DeleteRecipe(int id)
+    {
+        var data = await _recipeService.DeleteRecipe(id);
+        return Ok(data);
     }
 }
