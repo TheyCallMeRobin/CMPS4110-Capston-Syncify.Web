@@ -53,6 +53,14 @@ public class CalendarEventController : ControllerBase
         var data = await _calendarEventService.GetTodaysTodosByUserId(userId);
         return Ok(data);
     }
+
+    [HttpGet("calendars")]
+    public async Task<ActionResult<Response<List<CalendarEventGetDto>>>> GetCalendarEventsFromCalendars(
+        [FromQuery] List<int> calendarsIds)
+    {
+        var data = await _calendarEventService.GetCalendarEventsFromCalendars(calendarsIds);
+        return Ok(data);
+    }
     
     [HttpPut("{id}")]
     public async Task<ActionResult<Response<CalendarEventGetDto>>> UpdateCalendarEvent(

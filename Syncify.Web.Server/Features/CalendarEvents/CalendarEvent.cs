@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ical.Net.CalendarComponents;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.Calendars;
 using Syncify.Web.Server.Features.FamilyCalendars;
@@ -14,18 +16,15 @@ public class CalendarEvent
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;
     public string? DisplayColor { get; set; } = string.Empty;
+    public string? RecurrenceRule { get; set; } = string.Empty;
     public bool IsCompleted { get; set; }
-    public DateOnly? StartDate { get; set; }
-    public TimeOnly? StartTime { get; set; }
-    public TimeOnly? EndTime { get; set; }
+    public bool IsAllDay { get; set; }
+    public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset? EndsOn { get; set; }
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
-    public RecurrenceType? RecurrenceType { get; set; }
-    public DateOnly? RecurrenceEndDate { get; set; }
-    public List<DayOfWeek>? RecurrenceWeekDays { get; set; }
-
     public Calendar Calendar { get; set; } = default!;
     public User CreatedByUser { get; set; } = default!;
-
+    
 }
 
 public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<CalendarEvent>
@@ -40,7 +39,7 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         builder.Property(x => x.CalendarEventType).HasDefaultValue(CalendarEventType.Event);
         
         builder
-            .Property(x => x.RecurrenceWeekDays)
+            .Property(x => x.RecurrenceRule)
             .HasMaxLength(-1)
             .IsUnicode(false);
 
@@ -62,9 +61,6 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         builder
             .Property(x => x.Description)
             .IsRequired(false);
-
-        builder
-            .Property(x => x.StartDate)
-            .IsRequired(false);
+        
     }
 }

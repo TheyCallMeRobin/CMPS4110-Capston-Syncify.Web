@@ -407,6 +407,49 @@
         }
       }
     },
+    "/api/calendar-events/calendars": {
+      "get": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "GetCalendarEventsFromCalendars",
+        "parameters": [
+          {
+            "name": "calendarsIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarEventGetDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/calendar-events/status/{id}": {
       "put": {
         "tags": [
@@ -757,6 +800,88 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Response<List<CalendarGetDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calendars/with-families/{userId}": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "operationId": "GetByUserWithFamilies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarGetDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarGetDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<CalendarGetDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calendars/options/{userId}": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "operationId": "GetCalendarOptions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
                 }
               }
             }
@@ -3135,6 +3260,10 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3144,7 +3273,6 @@
           "calendarEventType",
           "calendarId",
           "isCompleted",
-          "recurrenceType",
           "title"
         ],
         "type": "object",
@@ -3152,48 +3280,33 @@
           "title": {
             "type": "string"
           },
-          "displayColor": {
+          "description": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "recurrenceRule": {
             "type": "string",
             "nullable": true
           },
           "isCompleted": {
             "type": "boolean"
           },
-          "startDate": {
+          "startsOn": {
             "type": "string",
-            "format": "date",
+            "format": "date-time",
             "nullable": true
           },
-          "startTime": {
+          "endsOn": {
             "type": "string",
-            "format": "time",
-            "nullable": true
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time",
+            "format": "date-time",
             "nullable": true
           },
           "calendarEventType": {
             "$ref": "#/components/schemas/CalendarEventType"
           },
-          "recurrenceType": {
-            "$ref": "#/components/schemas/RecurrenceType"
-          },
           "calendarId": {
             "type": "integer",
             "format": "int32"
-          },
-          "recurrenceWeekDays": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DayOfWeek"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3203,8 +3316,8 @@
           "calendarEventType",
           "calendarId",
           "id",
+          "isAllDay",
           "isCompleted",
-          "recurrenceType",
           "title"
         ],
         "type": "object",
@@ -3212,37 +3325,29 @@
           "title": {
             "type": "string"
           },
-          "displayColor": {
+          "description": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "recurrenceRule": {
             "type": "string",
             "nullable": true
           },
           "isCompleted": {
             "type": "boolean"
           },
-          "startDate": {
+          "startsOn": {
             "type": "string",
-            "format": "date",
+            "format": "date-time",
             "nullable": true
           },
-          "startTime": {
+          "endsOn": {
             "type": "string",
-            "format": "time",
-            "nullable": true
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time",
+            "format": "date-time",
             "nullable": true
           },
           "calendarEventType": {
             "$ref": "#/components/schemas/CalendarEventType"
-          },
-          "recurrenceType": {
-            "$ref": "#/components/schemas/RecurrenceType"
           },
           "id": {
             "type": "integer",
@@ -3252,12 +3357,12 @@
             "type": "integer",
             "format": "int32"
           },
-          "recurrenceWeekDays": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DayOfWeek"
-            },
+          "calendarDisplayColor": {
+            "type": "string",
             "nullable": true
+          },
+          "isAllDay": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -3273,7 +3378,6 @@
         "required": [
           "calendarEventType",
           "isCompleted",
-          "recurrenceType",
           "title"
         ],
         "type": "object",
@@ -3281,44 +3385,29 @@
           "title": {
             "type": "string"
           },
-          "displayColor": {
+          "description": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "recurrenceRule": {
             "type": "string",
             "nullable": true
           },
           "isCompleted": {
             "type": "boolean"
           },
-          "startDate": {
+          "startsOn": {
             "type": "string",
-            "format": "date",
+            "format": "date-time",
             "nullable": true
           },
-          "startTime": {
+          "endsOn": {
             "type": "string",
-            "format": "time",
-            "nullable": true
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time",
+            "format": "date-time",
             "nullable": true
           },
           "calendarEventType": {
             "$ref": "#/components/schemas/CalendarEventType"
-          },
-          "recurrenceType": {
-            "$ref": "#/components/schemas/RecurrenceType"
-          },
-          "recurrenceWeekDays": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DayOfWeek"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3331,12 +3420,16 @@
         ],
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "integer",
             "format": "int32"
-          },
-          "name": {
-            "type": "string"
           },
           "createdByUserId": {
             "type": "integer",
@@ -3353,6 +3446,10 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3366,12 +3463,16 @@
         ],
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string"
+          },
+          "displayColor": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "integer",
             "format": "int32"
-          },
-          "name": {
-            "type": "string"
           },
           "createdByUserId": {
             "type": "integer",
@@ -3453,18 +3554,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "DayOfWeek": {
-        "enum": [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Satuday"
-        ],
-        "type": "string"
       },
       "EmptyResponse": {
         "required": [
@@ -4046,16 +4135,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "RecurrenceType": {
-        "enum": [
-          "Daily",
-          "Weekly",
-          "BiWeekly",
-          "Monthly",
-          "Custom"
-        ],
-        "type": "string"
       },
       "Response<Boolean>": {
         "required": [

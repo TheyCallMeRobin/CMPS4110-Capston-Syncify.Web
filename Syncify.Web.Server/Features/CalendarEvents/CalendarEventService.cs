@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Syncify.Common.Constants;
 using Syncify.Web.Server.Data;
@@ -10,6 +9,7 @@ namespace Syncify.Web.Server.Features.CalendarEvents;
 public interface ICalendarEventService
 {
     Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsAsync(int calendarId);
+    Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(IEnumerable<int> calendarsIds);
     Task<Response<CalendarEventGetDto>> GetCalendarEventByIdAsync(int id);
     Task<Response<List<CalendarEventGetDto>>> GetUpcomingEventsByUserId(int userId);
     Task<Response<List<CalendarEventGetDto>>> GetTodaysTodosByUserId(int userId);
@@ -41,6 +41,17 @@ public class CalendarEventService : ICalendarEventService
         return data.AsResponse();
     }
 
+    public async Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(IEnumerable<int> calendarsIds)
+    {
+        var data = await _dataContext
+            .Set<CalendarEvent>()
+            .Where(x => calendarsIds.Contains(x.CalendarId))
+            .ProjectTo<CalendarEventGetDto>()
+            .ToListAsync();
+
+        return data.AsResponse();
+    }
+
     public async Task<Response<CalendarEventGetDto>> GetCalendarEventByIdAsync(int id)
     {
         var calendarEvent = await _dataContext.Set<CalendarEvent>().FindAsync(id);
@@ -56,7 +67,7 @@ public class CalendarEventService : ICalendarEventService
             .Include(x => x.Calendar)
             .Where(x => x.Calendar.CreatedByUserId == userId)
             .Take(3)
-            .OrderByDescending(x => x.StartDate)
+            .OrderByDescending(x => x.StartsOn)
             .ProjectTo<CalendarEventGetDto>()
             .ToListAsync();
 
@@ -71,7 +82,7 @@ public class CalendarEventService : ICalendarEventService
             .ThenInclude(x => x.FamilyCalendars)
             .ThenInclude(x => x.Family)
             .ThenInclude(x => x.FamilyMembers)
-            .Where(x => (x.StartDate == null || x.StartDate.Value == DateOnly.FromDateTime(DateTime.Today)) &&
+            .Where(x => (x.StartsOn == null || x.StartsOn.Value == DateTime.Today) &&
                         x.Calendar.CreatedByUserId == userId || 
                         x.Calendar.FamilyCalendars.Any(fc => fc.Family.FamilyMembers
                             .Any(fm => fm.UserId == userId)))
@@ -86,6 +97,11 @@ public class CalendarEventService : ICalendarEventService
     {
         var calendarEvent = MappingExtensions.MapTo<CalendarEvent>(dto);
 
+        if (dto.CalendarEventType == CalendarEventType.Task)
+        {
+            calendarEvent.IsAllDay = true;
+        }
+        
         _dataContext.Set<CalendarEvent>().Add(calendarEvent);
         await _dataContext.SaveChangesAsync();
 
@@ -99,6 +115,12 @@ public class CalendarEventService : ICalendarEventService
             return Error.AsResponse<CalendarEventGetDto>(ErrorMessages.NotFoundError);
 
         _mapper.Map(dto, calendarEvent);
+
+        if (dto.CalendarEventType == CalendarEventType.Task)
+        {
+            calendarEvent.IsAllDay = true;
+        }
+        
         await _dataContext.SaveChangesAsync();
 
         return MappingExtensions.MapTo<CalendarEventGetDto>(calendarEvent).AsResponse();

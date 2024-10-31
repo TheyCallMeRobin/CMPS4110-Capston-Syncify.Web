@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -56,5 +57,8 @@ public static class MappingExtensions
     public static IQueryable<TDestination> ProjectTo<TDestination>(
         this IQueryable source,
         params Expression<Func<TDestination, object>>[] membersToExpand
-    ) => source.ProjectTo(MappingExtensions.Mapper.ConfigurationProvider, null, membersToExpand);
+    ) => source.ProjectTo(Mapper.ConfigurationProvider, null, membersToExpand);
+
+    public static IEnumerable<TDestination> ProjectTo<TDestination>(this IEnumerable source) 
+        => Mapper.Map<IEnumerable<TDestination>>(source);
 }

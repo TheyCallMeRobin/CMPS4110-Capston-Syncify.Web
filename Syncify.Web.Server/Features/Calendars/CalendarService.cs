@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Common.Constants;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 
@@ -13,6 +14,8 @@ public interface ICalendarService
     Task<Response<List<CalendarWithEventsDto>>> GetCalendarsByUserId(int userId);
     Task<Response<CalendarGetDto>> UpdateCalendar(int id, CalendarUpdateDto dto);
     Task<Response<List<CalendarGetDto>>> GetByUserId(int userId);
+    Task<Response<List<CalendarGetDto>>> GetByUserWithFamilies(int userId);
+    Task<Response<List<OptionDto>>> GetCalendarOptions(int userId);
     Task<Response> DeleteCalendar(int id);
 }
 
@@ -65,7 +68,7 @@ public class CalendarService : ICalendarService
             .Set<Calendar>()
             .Include(x => x.CalendarEvents)
             .Where(x => x.CreatedByUserId == userId)
-            .OrderBy(x => x.CalendarEvents.Max(y => y.StartDate))
+            .OrderBy(x => x.CalendarEvents.Max(y => y.StartsOn))
             .ProjectTo<CalendarWithEventsDto>()
             .ToListAsync();
 
@@ -96,6 +99,30 @@ public class CalendarService : ICalendarService
             .ToListAsync();
 
         return results.AsResponse();
+    }
+
+    public async Task<Response<List<CalendarGetDto>>> GetByUserWithFamilies(int userId)
+    {
+        var data = await _dataContext
+            .Set<Calendar>()
+            .Where(x => x.CreatedByUserId == userId ||
+                        x.FamilyCalendars.Any(fc => fc.Family.FamilyMembers.Any(fm => fm.UserId == userId)))
+            .ProjectTo<CalendarGetDto>()
+            .ToListAsync();
+
+        return data.AsResponse();
+    }
+
+    public async Task<Response<List<OptionDto>>> GetCalendarOptions(int userId)
+    {
+        var data = await _dataContext
+            .Set<Calendar>()
+            .Where(x => x.CreatedByUserId == userId ||
+                        x.FamilyCalendars.Any(fc => fc.Family.FamilyMembers.Any(fm => fm.UserId == userId)))
+            .Select(x => new OptionDto(x.Name, x.Id))
+            .ToListAsync();
+
+        return data.AsResponse();
     }
 
     public async Task<Response> DeleteCalendar(int id)

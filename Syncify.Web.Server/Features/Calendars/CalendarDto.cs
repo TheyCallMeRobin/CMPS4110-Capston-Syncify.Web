@@ -2,14 +2,21 @@
 using FluentValidation;
 using System.Text.Json.Serialization;
 using Syncify.Web.Server.Features.CalendarEvents;
+using Syncify.Web.Server.Helpers;
 
 namespace Syncify.Web.Server.Features.Calendars;
 
-public record CalendarGetDto(int Id, string Name, int CreatedByUserId);
-public record CalendarCreateDto(string Name, [property: JsonIgnore] int CreatedByUserId);
-public record CalendarUpdateDto(string Name);
+public record CalendarDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string? DisplayColor { get; set; } = ColorHelpers.GenerateRandomColor();
+}
 
-public record CalendarWithEventsDto(int Id, string Name, int CreatedByUserId, List<CalendarEventGetDto> CalendarEvents);
+public record CalendarGetDto(int Id, int CreatedByUserId) : CalendarDto;
+public record CalendarCreateDto([property: JsonIgnore] int CreatedByUserId) : CalendarDto;
+public record CalendarUpdateDto : CalendarDto;
+
+public record CalendarWithEventsDto(int Id, int CreatedByUserId, List<CalendarEventGetDto> CalendarEvents) : CalendarDto;
 public class CalendarMappingProfile : Profile
 {
     public CalendarMappingProfile()
@@ -25,6 +32,11 @@ public class CalendarCreateDtoValidator : AbstractValidator<CalendarCreateDto>
 {
     public CalendarCreateDtoValidator()
     {
-        RuleFor(x => x.Name).MaximumLength(CalendarEntityConfiruation.NameMaxLength).NotEmpty();
+        RuleFor(x => x.Name)
+            .MaximumLength(CalendarEntityConfiruation.NameMaxLength)
+            .NotEmpty();
+
+        RuleFor(x => x.DisplayColor)
+            .MaximumLength(CalendarEntityConfiruation.DisplayColorMaxLength);
     }
 }

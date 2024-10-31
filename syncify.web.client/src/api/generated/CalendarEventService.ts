@@ -1,8 +1,6 @@
 import {
   CalendarEventCreateDto,
   CalendarEventType,
-  RecurrenceType,
-  DayOfWeek,
   CalendarEventGetDto,
   CalendarEventUpdateDto,
   EmptyResponse,
@@ -167,6 +165,25 @@ export class CalendarEventService {
       url = url.replace('{userId}', params['userId'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getCalendarEventsFromCalendars(
+    params: {
+      /**  */
+      calendarsIds?: any | null[];
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<CalendarEventGetDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendar-events/calendars';
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = { calendarsIds: params['calendarsIds'] };
 
       axios(configs, resolve, reject);
     });
