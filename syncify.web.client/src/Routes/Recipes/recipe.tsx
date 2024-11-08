@@ -32,9 +32,9 @@ export const Recipes: React.FC = () => {
     }
 
     return (
-        <div className="page-content">
+        <div className="recipes-page-content">
             <h2 className="text-center text-highlight mb-4">My Recipes</h2>
-            <div className="container">
+            <div className="recipe-container">
                 {recipes.map(recipe => (
                     <div className="recipe-item" key={recipe.id}>
                         <h2 className="text-center text-highlight mb-4">{recipe.name}</h2>

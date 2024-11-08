@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Syncify.Web.Server",
-    "version": "1.0"
+    "title": "Syncify API",
+    "version": "v1"
   },
   "paths": {
     "/api/authentication/me": {
@@ -2037,6 +2037,103 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "UpdateRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "DeleteRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/recipes/user/{userId}": {
@@ -2576,17 +2673,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<IEnumerable<ShoppingListItemGetDto>>"
+                  "$ref": "#/components/schemas/Response<List<ShoppingListItemGetDto>>"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<IEnumerable<ShoppingListItemGetDto>>"
+                  "$ref": "#/components/schemas/Response<List<ShoppingListItemGetDto>>"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<IEnumerable<ShoppingListItemGetDto>>"
+                  "$ref": "#/components/schemas/Response<List<ShoppingListItemGetDto>>"
                 }
               }
             }
@@ -3031,6 +3128,19 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Units/list": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "operationId": "GetUnits",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -4047,6 +4157,42 @@
         },
         "additionalProperties": false
       },
+      "RecipeUpdateDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "prepTimeInSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cookTimeInSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "servings": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "feeds": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RecurrenceType": {
         "enum": [
           "Daily",
@@ -4245,33 +4391,6 @@
           },
           "data": {
             "$ref": "#/components/schemas/FamilyShoppingListGetDto"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Response<IEnumerable<ShoppingListItemGetDto>>": {
-        "required": [
-          "errors",
-          "hasErrors"
-        ],
-        "type": "object",
-        "properties": {
-          "hasErrors": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Error"
-            }
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ShoppingListItemGetDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4621,6 +4740,33 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ShoppingListGetDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Response<List<ShoppingListItemGetDto>>": {
+        "required": [
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShoppingListItemGetDto"
             },
             "nullable": true
           }

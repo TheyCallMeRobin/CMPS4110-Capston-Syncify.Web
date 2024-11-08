@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './shoppinglists.css';
 import './../../index.css';
-import { ShoppingListsService } from '../../api/generated/ShoppingListsService.ts';
-import { ShoppingListGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs.ts';
-import { useUser } from '../../auth/auth-context.tsx';
+import { ShoppingListsService } from '../../api/generated/ShoppingListsService';
+import { ShoppingListItemService } from '../../api/generated/ShoppingListItemService';
+import { ShoppingListGetDto, ShoppingListItemGetDto, ShoppingListUpdateDto } from '../../api/generated/index.defs';
+import { useUser } from '../../auth/auth-context';
 import { useAsync } from 'react-use';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaTrashAlt, FaEllipsisV, FaPen, FaEye, FaPlusSquare } from 'react-icons/fa';
+import { Dropdown } from 'react-bootstrap';
 
-const ShoppingLists = () => {
+const ShoppingLists: React.FC = () => {
     const [items, setItems] = useState<ShoppingListGetDto[]>([]);
-    const [newItem, setNewItem] = useState<string>('');
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
     const [editedName, setEditedName] = useState<string>('');
+    const [previewItems, setPreviewItems] = useState<Record<number, (ShoppingListItemGetDto | string)[]>>({});
     const user = useUser();
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const navigate = useNavigate();
 
     const { loading, error } = useAsync(async () => {
         if (!user?.id) return;
@@ -21,25 +26,44 @@ const ShoppingLists = () => {
             userId: user!.id,
         });
 
-        setItems(response.data || []);
+        const lists = response.data || [];
+        setItems(lists);
+
+        const previews: Record<number, (ShoppingListItemGetDto | string)[]> = {};
+        await Promise.all(
+            lists.map(async (list) => {
+                const itemsResponse = await ShoppingListItemService.getShoppingListItems({
+                    shoppingListId: list.id,
+                });
+                const items = itemsResponse.data || [];
+
+                if (items.length > 3) {
+                    previews[list.id] = [...items.slice(0, 3), ". . ."];
+                } else {
+                    previews[list.id] = items;
+                }
+            })
+        );
+        setPreviewItems(previews);
     }, [user]);
 
-    const handleAddItem = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && newItem.trim() !== '') {
-            const newItemObj = {
-                name: newItem,
-                description: '',
-                userId: user!.id,
-            };
+    const handleAddItem = async () => {
+        if (!user?.id) return;
 
-            const response = await ShoppingListsService.createShoppingList({
-                body: newItemObj,
-            });
+        const newItemObj = {
+            name: "Enter List Name",
+            description: '',
+            userId: user.id,
+        };
 
-            if (response.data) {
-                setItems([...items, response.data]);
-                setNewItem('');
-            }
+        const response = await ShoppingListsService.createShoppingList({
+            body: newItemObj,
+        });
+
+        if (response.data) {
+            setItems([...items, response.data]);
+            setEditingItemId(response.data.id);
+            setEditedName("");
         }
     };
 
@@ -57,92 +81,93 @@ const ShoppingLists = () => {
             description: item.description,
         };
 
-        const response = await ShoppingListsService.updateShoppingList({
+        await ShoppingListsService.updateShoppingList({
             id,
             body: updatedItemObj,
         });
-
-        if (response.errors) {
-            return;
-        }
 
         setItems(items.map((i) => (i.id === id ? { ...i, ...updatedItemObj } : i)));
         setEditingItemId(null);
     };
 
-    const handleBlur = (id: number) => {
-        handleSaveItem(id);
-        setEditingItemId(null);
+    const handleEditItem = (id: number, name: string) => {
+        setEditingItemId(id);
+        setEditedName(name);
     };
 
+    useEffect(() => {
+        if (editingItemId && inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.select();
+        }
+    }, [editingItemId]);
+
     return (
-        <div className="page-content">
-          <h2 className="text-center text-highlight mb-4">My Shopping Lists</h2>
-            <div className="shopping-list-page container mt-4">
-              {loading && <p>Loading...</p>}
-              {error && <p>Error loading shopping lists.</p>}
-                <div>
-                  <ul className="list-group">
-                    {items.length > 0 ? (
-                      items.map((item) => (
-                        <li
-                          key={item.id}
-                          className="list-group-item d-flex justify-content-between align-items-center"
-                        >
-                        <div className="d-flex align-items-center" style={{ width: '100%' }}>
-                          {editingItemId === item.id ? (
+        <div className="shopping-list-page">
+            <h2 className="text-center text-highlight mb-4">My Shopping Lists</h2>
+            <div className="shopping-list-container">
+                {loading && <p>Loading...</p>}
+                {error && <p>Error loading shopping lists.</p>}
+                {items.map((item) => (
+                    <div key={item.id} className="shopping-list-item">
+                        <Dropdown className="shopping-list-menu-dropdown">
+                            <Dropdown.Toggle as="div" className="shopping-list-menu-icon">
+                                <FaEllipsisV />
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => navigate(`/shopping-list-items/${item.id}`)}>
+                                    <FaEye style={{ marginRight: '10px', color: 'blue' }} />
+                                    View
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleEditItem(item.id, item.name)}>
+                                    <FaPen style={{ marginRight: '10px', color: 'green' }} />
+                                    Edit
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleDeleteItem(item.id)}>
+                                    <FaTrashAlt style={{ marginRight: '10px', color: 'red' }} />
+                                    Delete
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        {editingItemId === item.id ? (
                             <input
-                              type="text"
-                              value={editedName}
-                              onChange={(e) => setEditedName(e.target.value)}
-                              onBlur={() => handleBlur(item.id)}
-                              className="form-control"
-                              style={{ flexGrow: 1, marginRight: '10px' }}
-                              autoFocus
+                                type="text"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                onBlur={() => handleSaveItem(item.id)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSaveItem(item.id)}
+                                className="form-control"
+                                autoFocus
+                                ref={inputRef}
                             />
-                          ) : (
-                            <span
-                              style={{
-                                flexGrow: 1,
-                                textAlign: 'left',
-                              }}
-                              onDoubleClick={() => {
-                                setEditingItemId(item.id);
-                                setEditedName(item.name);
-                              }}
-                            >
-                              {item.name}
-                            </span>
-                          )}
-                          <button
-                            className="btn"
-                            onClick={() => handleDeleteItem(item.id)}
-                            style={{ marginLeft: '10px' }}
-                          >
-                          <FaTrashAlt
-                            className="trash-icon"
-                            style={{ color: 'red', fontSize: '18px' }}
-                          />
-                          </button>
-                        </div>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="list-group-item">No items found.</li>
-                  )}
-                  <li className="list-group-item d-flex align-items-center">
-                    <input
-                      type="text"
-                      value={newItem}
-                      onChange={(e) => setNewItem(e.target.value)}
-                      onKeyDown={handleAddItem}
-                      className="form-control"
-                      placeholder="Add a new list..."
-                      style={{ width: '100%' }}
-                    />
-                  </li>
-                </ul>
-              </div>
+                        ) : (
+                            <div className="shopping-list-title-container">
+                                <h2 className="shopping-list-title">{item.name}</h2>
+                                <div
+                                    className="shopping-list-preview-container"
+                                    onClick={() => navigate(`/shopping-list-items/${item.id}`)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <ul className="shopping-list-preview">
+                                        {previewItems[item.id]?.map((previewItem, index) =>
+                                            typeof previewItem === "string" ? (
+                                                <li key={index} className="preview-item">. . .</li>
+                                            ) : (
+                                                <li key={previewItem.id} className="preview-item">
+                                                    {previewItem.name}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+                <div className="shopping-list-add" onClick={handleAddItem}>
+                    <FaPlusSquare className="add-icon" />
+                </div>
             </div>
         </div>
     );
