@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Calendars;
 
@@ -56,6 +57,13 @@ public class CalendarsController : ControllerBase
         return Ok(results);
     }
 
+    [HttpGet("with-families/{userId}")]
+    public async Task<ActionResult<Response<List<CalendarGetDto>>>> GetByUserWithFamilies(int userId)
+    {
+        var data = await _calendarService.GetByUserWithFamilies(userId);
+        return Ok(data);
+    }
+    
     [HttpPut("{id}")]
     public async Task<ActionResult<Response<CalendarGetDto>>> Update([FromRoute] int id, 
         [FromBody] CalendarUpdateDto dto)
@@ -64,6 +72,13 @@ public class CalendarsController : ControllerBase
         return Ok(results);
     }
 
+    [HttpGet("options/{userId}")]
+    public async Task<ActionResult<Response<List<OptionDto>>>> GetCalendarOptions(int userId)
+    {
+        var data = await _calendarService.GetCalendarOptions(userId);
+        return Ok(data);
+    }
+    
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> Delete([FromRoute] int id)
     {

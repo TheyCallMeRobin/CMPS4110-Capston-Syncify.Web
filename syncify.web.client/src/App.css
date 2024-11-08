@@ -100,3 +100,23 @@
     font-weight: bold;
     text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
 }
+
+/*
+Overriden Styles
+*/
+.e-popup .e-checkbox-wrapper .e-frame.e-check, .e-popup .e-checkbox-wrapper:hover .e-frame.e-check {
+    background-color: dodgerblue !important;;
+    color: white !important;;
+}
+.e-multiselect .e-delim-values {
+    padding: 7px;
+}
+
+.e-frame.e-check {
+    background-color: dodgerblue !important;
+    color: white !important;;
+}
+.e-icons .e-frame .e-check {
+    background-color: dodgerblue !important;;
+    color: white !important;;
+}

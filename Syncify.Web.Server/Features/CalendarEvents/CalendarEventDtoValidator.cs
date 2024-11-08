@@ -6,12 +6,15 @@ using Config = CalendarEventEntityConfiguration;
 
 public class CalendarEventDtoValidator : AbstractValidator<CalendarEventDto>
 {
-    
     public CalendarEventDtoValidator()
     {
         RuleFor(x => x.Description).MaximumLength(Config.DescriptionMaxLength);
         RuleFor(x => x.Title).MaximumLength(Config.TitleMaxLength);
-        RuleFor(x => x.DisplayColor).MaximumLength(Config.ColorMaxLength);
+        
+        RuleFor(x => x.EndsOn)
+            .GreaterThan(x => x.StartsOn)
+            .When(x => x is { StartsOn: not null, EndsOn: not null })
+            .WithMessage("{PropertyName} must be after Starts On");
     }
 }
 
@@ -27,6 +30,6 @@ public class CalendarEventUpdateDtoValidator : AbstractValidator<CalendarEventUp
 {
     public CalendarEventUpdateDtoValidator()
     {
-        RuleFor(x => x.RecurrenceWeekDays).Must(x => x?.Count <= 10);
+        Include(new CalendarEventDtoValidator());
     }
 }

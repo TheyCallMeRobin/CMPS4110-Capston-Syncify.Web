@@ -11,7 +11,7 @@ public record Response
 {
     public bool HasErrors => Errors.Count != 0;
 
-    public List<Error> Errors { get; set; } = [];
+    public List<Error> Errors { get; init; } = [];
 
     public void AddErrors(params Error[] errors)
         => Errors.AddRange(errors);
