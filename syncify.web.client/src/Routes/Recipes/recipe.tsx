@@ -228,9 +228,6 @@ const Recipes = () => {
         );
         setNewIngredient({ name: '', description: '', quantity: 0, unit: '' });
       })
-      .catch((error) => {
-        console.error('Error adding ingredient:', error);
-      });
   };
 
   const handleEditIngredient = (ingredient) => {
@@ -278,9 +275,6 @@ const Recipes = () => {
           prevRecipes.filter((recipe) => recipe.id !== recipeId)
         );
       })
-      .catch((error) => {
-        console.error('Error deleting recipe:', error);
-      });
   };
 
   if (loading) return <div>Loading...</div>;
@@ -622,27 +616,26 @@ const Recipes = () => {
                             value={currentEditIngredient.unit}
                             onChange={handleIngredientChange}
                           />
-                                      <div className="icon-group">
-                                          <button
-                                              className="icon-update"
-                                              onClick={() =>
-                                                  handleUpdateIngredient(ingredient.id, {
-                                                      ...ingredient,
-                                                      quantity: currentEditIngredient?.quantity,
-                                                  })
-                                              }
-                                          >
-                                              <FaCheck />
-                                          </button>
+                           <div className="icon-group">
+                             <button
+                              className="icon-update"
+                              onClick={() =>
+                               handleUpdateIngredient(ingredient.id, {
+                                ...ingredient,
+                                quantity: currentEditIngredient?.quantity,
+                                })
+                               }
+                              >
+                               <FaCheck />
+                             </button>
 
-                                          <button
-                                              className="icon-cancel"
-                                              onClick={() => setCurrentEditIngredient(null)}
-                                          >
-                                              <FaTimes />
-                                          </button>
-                                      </div>
-
+                            <button
+                              className="icon-cancel"
+                              onClick={() => setCurrentEditIngredient(null)}
+                             >
+                               <FaTimes />
+                            </button>
+                            </div>
                         </>
                       ) : (
                         <div className="ingredient-item">
