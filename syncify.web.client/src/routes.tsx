@@ -1,6 +1,6 @@
 ﻿import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { MainPage } from './main-page/MainPage.tsx';
-import { Recipes } from './Routes/Recipes/recipe.tsx';
+import  Recipes  from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { RegisterPage } from './Routes/RegisterPage/RegisterPage.tsx';
 import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';

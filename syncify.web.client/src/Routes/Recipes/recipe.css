@@ -1,37 +1,403 @@
-.container {
+
+.recipecontainer {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
     gap: 20px;
+    padding: 0 0 10px 0;
+    justify-content: flex-start;
+    position: relative;
+    z-index: 1;
 }
 
-.recipe-item {
-    flex: 0 0 calc(30% - 20px);
+.recipe-card {
+    width: 525px;
+    height: 250px; 
     background-color: #ffffff;
     border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 300px;
-    width: 500px;
+    flex-direction: row; 
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    z-index: 2;
+    gap: 15px;
 }
 
-    .recipe-item h2, .recipe-item p {
+.recipe-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+}
+
+.plus-card {
+    width: 200px; 
+    height: 250px;
+    background-color: #28a745;
+    color: white;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    padding: 15px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 3;
+}
+
+    .plus-card:hover {
+        background-color: #218838;
+        transform: scale(1.05); 
+    }
+
+.recipe-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+    .recipe-card-content h4 {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 5px;
+        word-wrap: break-word;
         text-align: left;
     }
 
-.header {
-    background-color: #ddd;
-    padding: 20px;
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: bold;
+    .recipe-card-content p {
+        margin: 0 0 10px;
+        color: #666;
+        word-wrap: break-word;
+    }
+
+    .recipe-card-content small {
+        color: #666;
+        margin: 3px 0;
+    }
+
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: hidden;
+    opacity: 1;
+    
 }
 
-.recipe-title {
-    margin-top: 5px;
-    font-size: 1.25rem;
+.modal-content {
+    background: white;
+    background-color: #ffffff !important;
+    padding: 20px;
+    border-radius: 8px;
+    width: 350px;
+    max-width: 40%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: left;
+    z-index: 1001;
+    opacity: 1;
 }
+
+    .modal-content h3, .modal-content h4 {
+        font-size: 1.25rem;
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .modal-content label {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .modal-content input, .modal-content textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .modal-content button,
+    .add-ingredient-button
+    .btn-danger
+     .btn-warning{
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .modal-content .btn-primary,
+    .add-ingredient-button {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .modal-content .btn-warning:hover {
+        background-color: darkorange;
+        color: #fff;
+    }
+    .modal-content .btn-warning {
+        background-color: orange;
+        color: #fff;
+    }
+
+        .modal-content .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+    .modal-content ul {
+        list-style-type: none; 
+        padding-left: 0; 
+        margin: 0;
+    }
+
+        .modal-content ul li {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+.ingredient-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-ingredient-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+
+    .add-ingredient-button:hover {
+        background-color: #0056b3;
+    }
+
+
+.recipe-card-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    cursor: pointer;
+}
+
+    .recipe-card-menu .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 20px;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        z-index: 11;
+    }
+
+    .recipe-card-menu:hover .dropdown-menu {
+        display: block;
+    }
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px;
+    font-size: 0.875rem;
+    color: #333;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+    .dropdown-item.text-danger {
+        color: #d9534f;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+
+
+.recipe-of-the-day-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.recipe-of-the-day-wrapper {
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+}
+
+
+.recipe-of-the-day-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+
+.recipe-of-the-day-card {
+    display: flex;
+    width: 100%;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 2px solid #109648;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.recipe-of-the-day-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+}
+
+
+.recipe-of-the-day-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+    .recipe-of-the-day-content h4 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .recipe-of-the-day-content p {
+        color: #666;
+        margin: 0 0 10px;
+    }
+
+    .recipe-of-the-day-content small {
+        color: #666;
+        margin: 3px 0;
+    }
+
+    .recipe-of-the-day-content h5 {
+        font-size: 1.2rem;
+        margin-top: 20px;
+    }
+
+    .recipe-of-the-day-content ul {
+        padding-left: 0 !important; 
+        margin: 10px 0 0;
+        list-style-type: none !important; 
+    }
+
+    .recipe-of-the-day-content li {
+        display: list-item; 
+        color: #333;
+    }
+
+.ingredient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.icon-group {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.icon.edit-icon {
+    color: #f0ad4e;
+}
+
+.icon.delete-icon {
+    color: #d9534f;
+}
+
+.icon-button:hover .edit-icon {
+    color: #f0ad4e; 
+    transform: scale(1.1); 
+}
+
+.icon-button:hover .delete-icon {
+    color: #c9302c; 
+    transform: scale(1.1); 
+}
+
+.icon-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.icon-update {
+    background: none;
+    border: none;
+    color: #28a745; 
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
+
+.icon-cancel {
+    background: none;
+    border: none;
+    color: #d9534f;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
+
+    .icon-update:hover,
+    .icon-cancel:hover {
+        transform: scale(1.2); 
+    }
