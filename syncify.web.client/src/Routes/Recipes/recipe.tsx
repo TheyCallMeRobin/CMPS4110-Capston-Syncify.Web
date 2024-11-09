@@ -125,21 +125,16 @@ const Recipes = () => {
   };
 
   const handleEditClick = (recipe) => {
-    setEditRecipe(recipe);
-    setIsEditModalOpen(true);
+        setEditRecipe(recipe);
+        setIsEditModalOpen(true);
 
-    RecipieIngredientService.getAll({ recipeId: recipe.id })
-      .then((ingredientsResponse) => {
-        const ingredientsData = Array.isArray(ingredientsResponse)
-          ? ingredientsResponse
-          : ingredientsResponse?.data || [];
-        setIngredients(ingredientsData);
-      })
-      .catch((error) => {
-        console.error('Error fetching ingredients for editing:', error);
-        setIngredients([]);
-      });
-  };
+        RecipieIngredientService.getAll({ recipeId: recipe.id }).then((ingredientsResponse) => {
+            const ingredientsData = Array.isArray(ingredientsResponse)
+                ? ingredientsResponse
+                : ingredientsResponse?.data || [];
+            setIngredients(ingredientsData);
+        });
+    };
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -154,36 +149,26 @@ const Recipes = () => {
     });
   };
 
-  const handleUpdateRecipe = () => {
-    if (!editRecipe) return;
+    const handleUpdateRecipe = () => {
+        if (!editRecipe) return;
 
-    RecipesService.updateRecipe({
-      id: editRecipe.id,
-      body: editRecipe,
-    })
-      .then((response) => {
-        console.log('API response:', response);
-
-        if (response && response.data) {
-          setRecipes(
-            (prevRecipes) =>
-              prevRecipes.map((recipe) =>
-                recipe.id === editRecipe.id ? response.data : recipe
-              ) as RecipeGetDto[]
-          );
-          setIsEditModalOpen(false);
-          setEditRecipe(undefined);
-          console.log('Recipe updated successfully:', response.data);
-        } else {
-          console.error(
-            'Failed to update recipe: Response data is null or undefined.'
-          );
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to update recipe:', error);
-      });
-  };
+        RecipesService.updateRecipe({
+            id: editRecipe.id,
+            body: editRecipe,
+        }).then((response) => {
+            if (response && response.data) {
+                setRecipes((prevRecipes) =>
+                    prevRecipes
+                        .map((recipe) =>
+                            recipe.id === editRecipe.id ? response.data : recipe
+                        )
+                        .filter((recipe): recipe is RecipeGetDto => recipe !== null)
+                );
+                setIsEditModalOpen(false);
+                setEditRecipe(undefined);
+            }
+        });
+    };
 
   const handleOpenCreateModal = () => {
     setIsModalOpen(true);
