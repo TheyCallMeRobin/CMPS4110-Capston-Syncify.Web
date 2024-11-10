@@ -1,6 +1,9 @@
 import {
   RecipeGetDto,
   RecipeCreateDto,
+  RecipeUpdateDto,
+  EmptyResponse,
+  Error,
   IList,
   List,
   IListResult,
@@ -10,7 +13,6 @@ import {
   Dictionary,
   IDictionary,
   Response,
-  Error,
   IRequestOptions,
   IRequestConfig,
   getConfigs,
@@ -99,6 +101,50 @@ export class RecipesService {
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static updateRecipe(
+    params: {
+      /**  */
+      id: number;
+      /** requestBody */
+      body?: RecipeUpdateDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<RecipeGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/recipes/{id}';
+      url = url.replace('{id}', params['id'] + '');
+
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
+
+      let data = params.body;
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static deleteRecipe(
+    params: {
+      /**  */
+      id: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<EmptyResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/recipes/{id}';
+      url = url.replace('{id}', params['id'] + '');
+
+      const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });

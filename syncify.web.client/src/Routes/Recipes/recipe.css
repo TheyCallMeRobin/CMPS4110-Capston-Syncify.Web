@@ -1,11 +1,11 @@
-.container {
+.recipes-page-content .recipe-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 20px;
 }
 
-.recipe-item {
+.recipes-page-content .recipe-item {
     flex: 0 0 calc(30% - 20px);
     background-color: #ffffff;
     border: 1px solid #ccc;
@@ -19,11 +19,11 @@
     width: 500px;
 }
 
-    .recipe-item h2, .recipe-item p {
+    .recipes-page-content .recipe-item h2, .recipe-item p {
         text-align: left;
     }
 
-.header {
+.recipes-page-content .header {
     background-color: #ddd;
     padding: 20px;
     text-align: center;
@@ -31,7 +31,7 @@
     font-weight: bold;
 }
 
-.recipe-title {
+.recipes-page-content .recipe-title {
     margin-top: 5px;
     font-size: 1.25rem;
 }

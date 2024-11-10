@@ -33,7 +33,7 @@ export class ShoppingListItemService {
       shoppingListId: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<IEnumerable_ShoppingListItemGetDto>> {
+  ): Promise<Response<List<ShoppingListItemGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/shopping-list-items/list/{shoppingListId}';
       url = url.replace('{shoppingListId}', params['shoppingListId'] + '');
