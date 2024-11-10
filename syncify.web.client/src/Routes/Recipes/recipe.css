@@ -1,4 +1,5 @@
 
+
 .recipecontainer {
     display: flex;
     flex-wrap: wrap;
@@ -8,6 +9,7 @@
     position: relative;
     z-index: 1;
 }
+
 
 .recipe-card {
     width: 525px;
@@ -282,7 +284,6 @@
     align-items: center;
     justify-content: center;
 }
-
 
 .recipe-of-the-day-image {
     width: 200px;

@@ -6,7 +6,7 @@ namespace Syncify.Web.Server.Features.ShoppingListItems;
 
 public interface IShoppingListItemService
 {
-    Task<Response<IEnumerable<ShoppingListItemGetDto>>> GetShoppingListItems(int shoppingListId);
+    Task<Response<List<ShoppingListItemGetDto>>> GetShoppingListItems(int shoppingListId);
     Task<Response<ShoppingListItemGetDto>> GetShoppingListItemById(int id);
     Task<Response<ShoppingListItemGetDto>> CreateShoppingListItem(ShoppingListItemCreateDto createDto);
     Task<Response<ShoppingListItemGetDto>> UpdateShoppingListItem(int id, ShoppingListItemUpdateDto updateDto);
@@ -23,8 +23,6 @@ public class ShoppingListItemService : IShoppingListItemService
         _dataContext = dataContext;
     }
 
-
-
     private Task<bool> IsItemUnique(int shoppingListId, string name)
     {
         return _dataContext
@@ -32,13 +30,13 @@ public class ShoppingListItemService : IShoppingListItemService
             .AnyAsync(x => x.ShoppingListId == shoppingListId && x.Name.Equals(name));
     }
 
-    public async Task<Response<IEnumerable<ShoppingListItemGetDto>>> GetShoppingListItems(int shoppingListId)
+    public async Task<Response<List<ShoppingListItemGetDto>>> GetShoppingListItems(int shoppingListId)
     {
         var items = await _dataContext.Set<ShoppingListItem>()
                                       .Where(item => item.ShoppingListId == shoppingListId)
                                       .ToListAsync();
 
-        var dtoItems = items.Select(item => item.MapTo<ShoppingListItemGetDto>());
+    var dtoItems = items.Select(item => item.MapTo<ShoppingListItemGetDto>()).ToList();
         return dtoItems.AsResponse();
     }
 
