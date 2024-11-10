@@ -4283,6 +4283,7 @@
         },
         "additionalProperties": false
       },
+
       "RecurrenceType": {
         "enum": [
           "Daily",

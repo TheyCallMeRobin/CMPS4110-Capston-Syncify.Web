@@ -16,8 +16,8 @@
     <Folder Include="src\Routes\Authorization\" />
     <Folder Include="src\Routes\Calendars\" />
     <Folder Include="src\Routes\AccountSettings\" />
+    <Folder Include="src\Routes\Recipes\RecipeImages\" />
     <Folder Include="src\Routes\ShoppingListItems\" />
     <Folder Include="src\Routes\Reminders\" />
-    <Folder Include="src\Routes\Recipes\" />
   </ItemGroup>
 </Project>
