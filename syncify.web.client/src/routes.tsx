@@ -5,13 +5,17 @@ import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { RegisterPage } from './Routes/RegisterPage/RegisterPage.tsx';
 import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
-import { App } from './App.tsx';
-import { CalendarPage } from './calendar/calendar-page.tsx';
+import {App} from './App.tsx';
+import {FamilyManagement} from "./Routes/FamilyManagement/FamilyManagement.tsx";
 
 export const ROUTES = {
   LoginPage: {
     path: '/login',
     element: <LoginPage />,
+  },
+  FamilyManagement: {
+    path: '/family-management',
+    element: <FamilyManagement/>,
   },
   Dashboard: {
     path: '/',
@@ -20,10 +24,6 @@ export const ROUTES = {
   RegisterPage: {
     path: '/register',
     element: <RegisterPage />,
-  },
-  Calendars: {
-    path: '/calendars',
-    element: <CalendarPage />,
   },
   Recipes: {
     path: '/recipes',
