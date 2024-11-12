@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './../../index.css';
 import { FaEllipsisV, FaPlus } from 'react-icons/fa';
 import { FamilyService } from '../../api/generated/FamilyService';
 import { useUser } from '../../auth/auth-context';
@@ -7,62 +6,84 @@ import { Modal, Button, Dropdown, Form } from 'react-bootstrap';
 import { useAsyncFn } from 'react-use';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface Family {
-    id: number;
-    name: string;
-}
+import { useNavigate } from 'react-router-dom';
+import { FamilyGetDto } from '../../api/generated/index.defs';
 
 export const FamilyManagement = () => {
-    const [families, setFamilies] = useState<Family[]>([]);
+    const [families, setFamilies] = useState<FamilyGetDto[]>([]);
     const [newFamily, setNewFamily] = useState<string>('');
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [showConfirmEditModal, setShowConfirmEditModal] = useState<boolean>(false);
-    const [familyToDelete, setFamilyToDelete] = useState<Family | null>(null);
-    const [familyToEdit, setFamilyToEdit] = useState<Family | null>(null);
+    const [familyToDelete, setFamilyToDelete] = useState<FamilyGetDto | null>(null);
+    const [familyToEdit, setFamilyToEdit] = useState<FamilyGetDto | null>(null);
     const [editFamilyName, setEditFamilyName] = useState<string>('');
     const user = useUser();
+    const navigate = useNavigate();
 
-    useEffect(() => {
+    const [{ loading, error }, fetchFamilies] = useAsyncFn(async () => {
         if (user && user.id) {
-            FamilyService.getFamilyOptionsForUser({ userId: user.id })
-                .then(response => {
-                    const fetchedFamilies = response.data?.map((option: { label: string; value: number }) => ({
-                        id: option.value,
-                        name: option.label,
-                    })) || [];
-                    setFamilies(fetchedFamilies);
-                })
-                .catch(() => {
-                    setFamilies([]);
-                });
+            const response = await FamilyService.getFamilyOptionsForUser({ userId: user.id });
+            const fetchedFamilies = response.data?.map((option: { label: string; value: number }) => ({
+                id: option.value,
+                name: option.label,
+                identifier: '',
+                createdByUserId: 0,
+            })) || [];
+            setFamilies(fetchedFamilies);
         }
     }, [user]);
 
+    useEffect(() => {
+        fetchFamilies();
+    }, [fetchFamilies]);
     const [, handleAddFamily] = useAsyncFn(async () => {
         if (newFamily.trim() !== '') {
-            if (families.some(family => family.name === newFamily.trim())) {
-                toast.error("Family names cannot match");
-                return;
+            try {
+                const newFamilyObj = await FamilyService.createFamily({ body: { name: newFamily } });
+                if (newFamilyObj.hasErrors) {
+                    newFamilyObj.errors.forEach((error) => toast.error(error.errorMessage));
+                    return;
+                }
+                if (newFamilyObj.data) {
+                    const newFamilyDto = new FamilyGetDto({
+                        id: Number(newFamilyObj.data.id),
+                        name: newFamilyObj.data.name,
+                        identifier: '',
+                        createdByUserId: 0,
+                    });
+
+                    setFamilies([...families, newFamilyDto]);
+                    setNewFamily('');
+                    toast.success("Family Created");
+                }
+            } catch (error) {
+                toast.error("An error occurred while creating the family. Please try again.");
             }
-            const newFamilyObj = await FamilyService.createFamily({ body: { name: newFamily } });
-            if (newFamilyObj.data) {
-                setFamilies([...families, { id: Number(newFamilyObj.data.id), name: newFamilyObj.data.name }]);
-                setNewFamily('');
-                toast.success("Family Created");
-            }
+        } else {
+            toast.warning("Family name cannot be empty.");
         }
     }, [newFamily, families]);
 
     const [, handleDeleteFamily] = useAsyncFn(async () => {
         if (familyToDelete) {
-            await FamilyService.deleteFamily({ id: familyToDelete.id });
-            setFamilies(families.filter(family => family.id !== familyToDelete.id));
-            setShowDeleteModal(false);
-            toast.success("Family Deleted");
+            try {
+                
+                const response = await FamilyService.deleteFamily({ id: familyToDelete.id });
+
+                if (response.hasErrors) {
+                    response.errors.forEach((error) => toast.error(error.errorMessage));
+                    return;
+                }
+                setFamilies(families.filter(family => family.id !== familyToDelete.id));
+                setShowDeleteModal(false);
+                toast.success("Family Deleted");
+            } catch (error) {
+                toast.error("An error occurred while deleting the family. Please try again.");
+            }
         }
     }, [familyToDelete, families]);
+
 
     const [, handleEditFamily] = useAsyncFn(async () => {
         setShowConfirmEditModal(true);
@@ -70,14 +91,16 @@ export const FamilyManagement = () => {
 
     const [, confirmEditFamilyName] = useAsyncFn(async () => {
         if (familyToEdit && editFamilyName.trim() !== '') {
-            if (families.some(family => family.name === editFamilyName.trim() && family.id !== familyToEdit.id)) {
-                toast.error("Family names cannot match");
-                return;
-            }
             const updatedFamily = await FamilyService.updateFamily({
                 id: familyToEdit.id,
                 body: { name: editFamilyName },
             });
+
+            if (updatedFamily.errors) {
+                toast.error("Family names cannot match");
+                return;
+            }
+
             if (updatedFamily.data) {
                 setFamilies(families.map(family =>
                     family.id === familyToEdit.id ? { ...family, name: editFamilyName } : family
@@ -90,16 +113,25 @@ export const FamilyManagement = () => {
         }
     }, [familyToEdit, editFamilyName, families]);
 
+    const handleSelectFamily = (familyId: number) => {
+        navigate(`/family-members-management/${familyId}`);
+    };
+
     return (
         <>
             <div className="text-center">
                 <h2 className="text-highlight mb-4">My Families</h2>
                 <div className="container mt-4">
                     <ul className="list-group">
+                        {loading && <li className="list-group-item">Loading...</li>}
+                        {error && <li className="list-group-item text-danger">Error loading families.</li>}
                         {families.length > 0 ? (
                             families.map((family) => (
                                 <li key={family.id} className="list-group-item d-flex justify-content-between">
-                                    <span className="flex-grow-1 text-start">{family.name}</span>
+                                    <span
+                                        className="flex-grow-1 text-start"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => handleSelectFamily(family.id)}>{family.name}</span>
                                     <Dropdown align="end">
                                         <Dropdown.Toggle variant="link" id="family-options">
                                             <FaEllipsisV style={{ color: 'gray', fontSize: '18px' }} />
@@ -112,8 +144,8 @@ export const FamilyManagement = () => {
                                             }}>
                                                 Edit Family
                                             </Dropdown.Item>
-                                            <Dropdown.Item>
-                                                Edit Family Members
+                                            <Dropdown.Item onClick={() => handleSelectFamily(family.id)}>
+                                                View Members
                                             </Dropdown.Item>
                                             <Dropdown.Divider />
                                             <Dropdown.Item onClick={() => {
@@ -193,7 +225,7 @@ export const FamilyManagement = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            
             <Modal show={showConfirmEditModal} onHide={() => setShowConfirmEditModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Name Change</Modal.Title>
