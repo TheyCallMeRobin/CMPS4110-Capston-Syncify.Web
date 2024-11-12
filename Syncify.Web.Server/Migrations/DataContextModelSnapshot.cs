@@ -287,8 +287,15 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RecurrenceException")
+                        .HasMaxLength(100000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RecurrenceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RecurrenceRule")
-                        .HasMaxLength(-1)
+                        .HasMaxLength(100000)
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
