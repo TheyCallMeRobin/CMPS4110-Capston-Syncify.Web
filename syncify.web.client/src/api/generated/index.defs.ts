@@ -135,6 +135,12 @@ export class CalendarEventCreateDto {
   'recurrenceRule'?: string;
 
   /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
+
+  /**  */
   'isCompleted': boolean;
 
   /**  */
@@ -163,6 +169,12 @@ export class CalendarEventGetDto {
 
   /**  */
   'recurrenceRule'?: string;
+
+  /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
 
   /**  */
   'isCompleted': boolean;
@@ -202,6 +214,12 @@ export class CalendarEventUpdateDto {
 
   /**  */
   'recurrenceRule'?: string;
+
+  /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
 
   /**  */
   'isCompleted': boolean;

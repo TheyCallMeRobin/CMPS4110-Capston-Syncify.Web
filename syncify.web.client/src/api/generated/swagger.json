@@ -510,6 +510,66 @@
         }
       }
     },
+    "/api/calendar-events/series-singular/{id}": {
+      "put": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "UpdateSingularSeriesCalendarEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/calendars": {
       "post": {
         "tags": [
@@ -3251,6 +3311,15 @@
             "type": "string",
             "nullable": true
           },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
+            "type": "string",
+            "nullable": true
+          },
           "isCompleted": {
             "type": "boolean"
           },
@@ -3293,6 +3362,15 @@
             "nullable": true
           },
           "recurrenceRule": {
+            "type": "string",
+            "nullable": true
+          },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
             "type": "string",
             "nullable": true
           },
@@ -3353,6 +3431,15 @@
             "nullable": true
           },
           "recurrenceRule": {
+            "type": "string",
+            "nullable": true
+          },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
             "type": "string",
             "nullable": true
           },
