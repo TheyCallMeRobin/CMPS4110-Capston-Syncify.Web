@@ -1,13 +1,15 @@
 ﻿import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { MainPage } from './main-page/MainPage.tsx';
-import { Recipes } from './Routes/Recipes/recipe.tsx';
+import  Recipes  from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { RegisterPage } from './Routes/RegisterPage/RegisterPage.tsx';
 import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
 import {App} from './App.tsx';
-import {FamilyManagement} from './Routes/FamilyManagement/FamilyManagement.tsx';
-import {FamilyMemberManagement} from './Routes/FamilyManagement/FamilyMemberManagement.tsx';
+import { CalendarPage } from './calendar/calendar-page.tsx';
+import {FamilyManagement} from "./Routes/FamilyManagement/FamilyManagement.tsx";
+import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
+
 
 export const ROUTES = {
   LoginPage: {
@@ -17,10 +19,6 @@ export const ROUTES = {
   FamilyManagement: {
     path: '/family-management',
     element: <FamilyManagement/>,
-  },
-  FamilyMemberManagement: {
-    path: '/family-members-management/:familyId',
-    element: <FamilyMemberManagement />
   },
   Dashboard: {
     path: '/',
@@ -42,6 +40,12 @@ export const ROUTES = {
     path: '/shopping-lists',
     element: <ShoppingLists />,
   },
+
+  ShoppingListsItems: {
+    path: '/shopping-list-items/:listId',
+    element: <ShoppingListItems />,
+  }
+
 };
 
 const routes: RouteObject[] = [

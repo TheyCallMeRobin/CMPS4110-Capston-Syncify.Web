@@ -709,6 +709,30 @@ export class RecipeTagDto {
   }
 }
 
+export class RecipeUpdateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'prepTimeInSeconds'?: number;
+
+  /**  */
+  'cookTimeInSeconds'?: number;
+
+  /**  */
+  'servings'?: number;
+
+  /**  */
+  'feeds'?: number;
+
+  constructor(data: RecipeUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class ShoppingListCreateDto {
   /**  */
   'name': string;

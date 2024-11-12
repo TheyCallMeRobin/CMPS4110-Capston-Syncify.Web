@@ -15,7 +15,7 @@ public class ShoppingListItemController : ControllerBase
     }
 
     [HttpGet("list/{shoppingListId}")]
-    public async Task<ActionResult<Response<IEnumerable<ShoppingListItemGetDto>>>> GetShoppingListItems(int shoppingListId)
+    public async Task<ActionResult<Response<List<ShoppingListItemGetDto>>>> GetShoppingListItems(int shoppingListId)
     {
         var data = await _shoppingListItemService.GetShoppingListItems(shoppingListId);
         return Ok(data);
