@@ -10,6 +10,8 @@ public record CalendarEventDto
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? RecurrenceRule { get; set; }
+    public int? RecurrenceId { get; set; }
+    public string? RecurrenceException { get; set; }
     public bool IsCompleted { get; set; }
     public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset? EndsOn { get; set; }

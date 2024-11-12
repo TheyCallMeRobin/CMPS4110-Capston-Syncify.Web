@@ -17,6 +17,8 @@ public interface ICalendarEventService
     Task<Response<CalendarEventGetDto>> UpdateCalendarEventAsync(int id, CalendarEventUpdateDto dto);
     Task<Response> UpdateTaskStatus(ChangeCalendarEventStatusDto dto);
     Task<Response> DeleteCalendarEventAsync(int id);
+
+    Task<Response<CalendarEventGetDto>> HandleSingleSeriesUpdate(int id, CalendarEventUpdateDto dto, CancellationToken cancellationToken);
 }
 
 public class CalendarEventService : ICalendarEventService
@@ -149,5 +151,38 @@ public class CalendarEventService : ICalendarEventService
         await _dataContext.SaveChangesAsync();
 
         return Response.Success();
+    }
+
+    public async Task<Response<CalendarEventGetDto>> HandleSingleSeriesUpdate(
+        int id, 
+        CalendarEventUpdateDto dto, 
+        CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _dataContext.Database.BeginTransactionAsync(cancellationToken);
+        
+        var parentEvent = await _dataContext
+            .Set<CalendarEvent>()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (parentEvent is null)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return Error.AsResponse<CalendarEventGetDto>("Parent event not found", nameof(id));
+        }        
+
+        _mapper.Map(parentEvent, dto);
+        parentEvent.RecurrenceException = dto.RecurrenceException;
+
+        await _dataContext.SaveChangesAsync(cancellationToken);
+        
+        var calendarEvent = MappingExtensions.MapTo<CalendarEvent>(dto);
+        calendarEvent.RecurrenceId = parentEvent.Id;
+
+        _dataContext.Set<CalendarEvent>().Add(calendarEvent);
+        
+        await _dataContext.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        
+        return MappingExtensions.MapTo<CalendarEventGetDto>(calendarEvent).AsResponse();
     }
 }
