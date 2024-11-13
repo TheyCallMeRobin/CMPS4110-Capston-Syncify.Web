@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './api/generated/config';
 import './App.css';
 import './syncfusion-styles.css';
 import logo from './assets/Syncify.png';
-import { useUser } from './auth/auth-context.tsx';
+import { AuthContext, useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -24,6 +24,8 @@ export const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const authContext = useContext(AuthContext);
+
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
@@ -31,8 +33,11 @@ export const App: React.FC = () => {
   const [{ loading: signingOut, error }, handleSignOut] =
     useAsyncFn(async () => {
       await AuthenticationService.logout();
+
+      authContext.clearUser();
+
       navigate('/login');
-    }, [navigate]);
+    }, [authContext, navigate]);
 
   useEffect(() => {
     if (!user) {
