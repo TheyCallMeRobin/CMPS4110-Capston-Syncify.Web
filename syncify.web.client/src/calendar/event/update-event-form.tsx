@@ -1,15 +1,13 @@
 ﻿import React, { useCallback, useState } from 'react';
 import { SchedulerRef } from '../calendar.tsx';
-import { useUser } from '../../auth/auth-context.tsx';
 import {
   CalendarEventGetDto,
   CalendarEventUpdateDto,
 } from '../../api/generated/index.defs.ts';
-import { useAsync, useAsyncFn, useToggle } from 'react-use';
+import { useAsyncFn, useToggle } from 'react-use';
 import { CalendarEventService } from '../../api/generated/CalendarEventService.ts';
 import { toast } from 'react-toastify';
 import { notify } from '../../hooks/use-subscription.ts';
-import { CalendarsService } from '../../api/generated/CalendarsService.ts';
 import { LoadingContainer } from '../../Components/loading-container.tsx';
 import { EventForm } from './event-form.tsx';
 import { SeriesUpdateConfirmation } from './series-update.tsx';
@@ -26,8 +24,6 @@ export const UpdateEventForm: React.FC<UpdateEventFormProps> = ({
   event,
   windowRef,
 }) => {
-  const user = useUser();
-
   const [open, toggle] = useToggle(false);
 
   const handleSeriesClose = () => toggle(false);
@@ -96,7 +92,7 @@ export const UpdateEventForm: React.FC<UpdateEventFormProps> = ({
     [event.id, handleResponseSuccess]
   );
 
-  const [submitState, onSubmit] = useAsyncFn(
+  const [, onSubmit] = useAsyncFn(
     async (values: CalendarEventUpdateDto) => {
       setFormValues(() => values);
 
@@ -122,13 +118,6 @@ export const UpdateEventForm: React.FC<UpdateEventFormProps> = ({
       toggle,
     ]
   );
-
-  const fetchCalendarOptions = useAsync(async () => {
-    const response = await CalendarsService.getCalendarOptions({
-      userId: user?.id ?? 0,
-    });
-    return response.data;
-  }, [user?.id]);
 
   return (
     <LoadingContainer loading={false}>
