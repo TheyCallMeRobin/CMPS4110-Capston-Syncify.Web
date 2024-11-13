@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './FamilyManagement.css';
 import { FaEllipsisV, FaPlus } from 'react-icons/fa';
 import { FamilyService } from '../../api/generated/FamilyService';
 import { useUser } from '../../auth/auth-context';
@@ -6,6 +7,7 @@ import { Modal, Button, Dropdown, Form } from 'react-bootstrap';
 import { useAsyncFn } from 'react-use';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import { FamilyGetDto } from '../../api/generated/index.defs';
 
@@ -37,6 +39,7 @@ export const FamilyManagement = () => {
     useEffect(() => {
         fetchFamilies();
     }, [fetchFamilies]);
+
     const [, handleAddFamily] = useAsyncFn(async () => {
         if (newFamily.trim() !== '') {
             try {
@@ -68,7 +71,6 @@ export const FamilyManagement = () => {
     const [, handleDeleteFamily] = useAsyncFn(async () => {
         if (familyToDelete) {
             try {
-                
                 const response = await FamilyService.deleteFamily({ id: familyToDelete.id });
 
                 if (response.hasErrors) {
@@ -83,7 +85,6 @@ export const FamilyManagement = () => {
             }
         }
     }, [familyToDelete, families]);
-
 
     const [, handleEditFamily] = useAsyncFn(async () => {
         setShowConfirmEditModal(true);
@@ -182,8 +183,8 @@ export const FamilyManagement = () => {
                 </div>
             </div>
 
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-                <Modal.Header closeButton>
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+                <Modal.Header>
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -199,8 +200,8 @@ export const FamilyManagement = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-                <Modal.Header closeButton>
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+                <Modal.Header>
                     <Modal.Title>Edit Family Name</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -225,8 +226,8 @@ export const FamilyManagement = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            
-            <Modal show={showConfirmEditModal} onHide={() => setShowConfirmEditModal(false)}>
+
+            <Modal show={showConfirmEditModal} onHide={() => setShowConfirmEditModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Name Change</Modal.Title>
                 </Modal.Header>
