@@ -96,12 +96,7 @@ export const FamilyManagement = () => {
                 id: familyToEdit.id,
                 body: { name: editFamilyName },
             });
-
-            if (updatedFamily.errors) {
-                toast.error("Family names cannot match");
-                return;
-            }
-
+            
             if (updatedFamily.data) {
                 setFamilies(families.map(family =>
                     family.id === familyToEdit.id ? { ...family, name: editFamilyName } : family
@@ -228,7 +223,7 @@ export const FamilyManagement = () => {
             </Modal>
 
             <Modal show={showConfirmEditModal} onHide={() => setShowConfirmEditModal(false)} centered>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Confirm Name Change</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
