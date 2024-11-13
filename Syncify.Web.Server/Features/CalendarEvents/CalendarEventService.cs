@@ -176,8 +176,11 @@ public class CalendarEventService : ICalendarEventService
         await _dataContext.SaveChangesAsync(cancellationToken);
         
         var calendarEvent = MappingExtensions.MapTo<CalendarEvent>(dto);
+        
         calendarEvent.RecurrenceId = parentEvent.Id;
-
+        calendarEvent.CreatedByUserId = dto.UpdatedByUserId.GetValueOrDefault();
+        calendarEvent.CalendarId = dto.CalendarId;
+        
         _dataContext.Set<CalendarEvent>().Add(calendarEvent);
         
         await _dataContext.SaveChangesAsync(cancellationToken);

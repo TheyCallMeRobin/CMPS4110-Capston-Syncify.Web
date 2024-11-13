@@ -81,7 +81,11 @@ public class CalendarEventController : ControllerBase
     public async Task<ActionResult<Response<CalendarEventGetDto>>> UpdateSingularSeriesCalendarEvent(
         [FromRoute] int id, [FromBody] CalendarEventUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var data = await _calendarEventService.HandleSingleSeriesUpdate(id, dto, cancellationToken);
+        var data = await _calendarEventService.HandleSingleSeriesUpdate(id, dto with
+        {
+            UpdatedByUserId = User.GetCurrentUserId()
+            
+        }, cancellationToken);
         return Ok(data);
     }
     
