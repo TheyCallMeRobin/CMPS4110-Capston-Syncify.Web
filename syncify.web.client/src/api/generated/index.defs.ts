@@ -135,12 +135,6 @@ export class CalendarEventCreateDto {
   'recurrenceRule'?: string;
 
   /**  */
-  'recurrenceId'?: number;
-
-  /**  */
-  'recurrenceException'?: string;
-
-  /**  */
   'isCompleted': boolean;
 
   /**  */
@@ -169,12 +163,6 @@ export class CalendarEventGetDto {
 
   /**  */
   'recurrenceRule'?: string;
-
-  /**  */
-  'recurrenceId'?: number;
-
-  /**  */
-  'recurrenceException'?: string;
 
   /**  */
   'isCompleted': boolean;
@@ -214,12 +202,6 @@ export class CalendarEventUpdateDto {
 
   /**  */
   'recurrenceRule'?: string;
-
-  /**  */
-  'recurrenceId'?: number;
-
-  /**  */
-  'recurrenceException'?: string;
 
   /**  */
   'isCompleted': boolean;
@@ -723,6 +705,30 @@ export class RecipeTagDto {
   'recipeId': number;
 
   constructor(data: RecipeTagDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class RecipeUpdateDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'description'?: string;
+
+  /**  */
+  'prepTimeInSeconds'?: number;
+
+  /**  */
+  'cookTimeInSeconds'?: number;
+
+  /**  */
+  'servings'?: number;
+
+  /**  */
+  'feeds'?: number;
+
+  constructor(data: RecipeUpdateDto = {}) {
     Object.assign(this, data);
   }
 }

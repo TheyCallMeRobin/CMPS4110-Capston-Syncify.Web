@@ -1,10 +1,11 @@
 ﻿import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { MainPage } from './main-page/MainPage.tsx';
-import { Recipes } from './Routes/Recipes/recipe.tsx';
+import  Recipes  from './Routes/Recipes/recipe.tsx';
 import { Reminders } from './Routes/Reminders/reminders.tsx';
 import { RegisterPage } from './Routes/RegisterPage/RegisterPage.tsx';
 import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
+import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
 import { App } from './App.tsx';
 import { CalendarPage } from './calendar/calendar-page.tsx';
 
@@ -37,6 +38,12 @@ export const ROUTES = {
     path: '/shopping-lists',
     element: <ShoppingLists />,
   },
+
+  ShoppingListsItems: {
+    path: '/shopping-list-items/:listId',
+    element: <ShoppingListItems />,
+  }
+
 };
 
 const routes: RouteObject[] = [

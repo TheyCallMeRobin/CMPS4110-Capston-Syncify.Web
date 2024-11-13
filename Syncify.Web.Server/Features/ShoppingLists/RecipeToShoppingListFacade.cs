@@ -30,7 +30,7 @@ public class RecipeToShoppingListFacade
                 {
                     Name = x.Name,
                     Description = x.Description,
-                    Unit = x.Unit,
+                    Unit = x.Unit.ToString(),
                     Quantity = x.Quantity,
                     ShoppingListId = shoppingList.Id
                 }).ToListAsync();

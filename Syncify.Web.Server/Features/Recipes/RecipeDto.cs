@@ -16,7 +16,6 @@ public record RecipeDto
 
 public record RecipeGetDto(int Id, string CreatedByUserFullName) : RecipeDto;
 public record RecipeCreateDto([property: JsonIgnore] int CreatedByUserId) : RecipeDto;
-
 public record RecipeUpdateDto([property: JsonIgnore] int Id) : RecipeDto;
 
 public record RecipeQuery

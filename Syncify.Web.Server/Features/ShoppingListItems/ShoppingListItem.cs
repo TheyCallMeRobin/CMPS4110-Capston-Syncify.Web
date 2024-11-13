@@ -22,7 +22,7 @@ public class ShoppingListItemConfiguration : IEntityTypeConfiguration<ShoppingLi
 {
     internal const int NameMaxLength = 128;
     internal const int DescriptionMaxLength = 2056;
-    internal static readonly int UnitMaxLength = Units.List.GetLongestString().Length;
+    internal static readonly int UnitMaxLength = Enum.GetNames(typeof(Units)).Max(name => name.Length);
     public void Configure(EntityTypeBuilder<ShoppingListItem> builder)
     {
         builder.ToTable("ShoppingListItems");

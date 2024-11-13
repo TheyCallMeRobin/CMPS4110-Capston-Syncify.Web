@@ -1,0 +1,121 @@
+.shopping-list-items-page {
+    padding: 20px;
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+    .shopping-list-items-page h2 {
+        text-align: center;
+        color: #228B22;
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+    }
+
+.shopping-list-items {
+    width: 100%;
+}
+
+.shopping-list-item-row {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.shopping-list-menu-icon {
+    flex: 0 0 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding-right: 6px;
+}
+
+.column.item-name {
+    flex: 0 0 20rem;
+    text-align: left;
+    font-weight: bold;
+    padding-left: 6px;
+}
+
+.column.item-unit {
+    flex: 0 0 4rem;
+    text-align: center;
+}
+
+.column.item-quantity {
+    flex: 0 0 4rem;
+    text-align: center;
+}
+
+.name-input {
+    flex: 0 0 22rem;
+    text-align: left;
+}
+
+.unit-input {
+    flex: 0 0 6rem;
+    text-align: center;
+}
+
+.quantity-input {
+    flex: 0 0 3rem;
+    text-align: center;
+}
+
+.item-checkbox {
+    flex: 0 0 2rem;
+    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 4px;
+}
+
+.add-item-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.form-control {
+    padding: 4px;
+    font-size: 0.875rem;
+    height: 30px;
+}
+
+.shopping-list-item-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    color: white;
+    width: 40px;
+    height: 30px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.add-icon {
+    font-size: 1.75rem;
+    margin: 0;
+    color: #109648;
+}
+
+.shopping-list-item-menu-dropdown .dropdown-toggle::after {
+    display: none;
+}
+
+.bulk-delete-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
+}
