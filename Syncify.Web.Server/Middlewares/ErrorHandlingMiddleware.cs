@@ -10,6 +10,12 @@ public class ErrorHandlingMiddleware
 
     private readonly RequestDelegate _next;
 
+    private readonly JsonSerializerOptions _options = new()
+    {
+        WriteIndented = true, 
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
     public ErrorHandlingMiddleware(RequestDelegate next)
     {
         _next = next;
@@ -34,8 +40,8 @@ public class ErrorHandlingMiddleware
             
             var responseResult = new Response();
             responseResult.AddErrors(error);
-            
-            await response.WriteAsync(JsonSerializer.Serialize(responseResult));
+
+            await response.WriteAsync(JsonSerializer.Serialize(responseResult, _options));
         }
     }
 }
