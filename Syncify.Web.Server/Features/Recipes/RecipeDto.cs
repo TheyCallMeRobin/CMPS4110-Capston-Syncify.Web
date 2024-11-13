@@ -12,6 +12,7 @@ public record RecipeDto
     public int? CookTimeInSeconds { get; set; }
     public int? Servings { get; set; }
     public int? Feeds { get; set; }
+    public List<string> Instructions { get; set; } = [];
 }
 
 public record RecipeGetDto(int Id, string CreatedByUserFullName) : RecipeDto;
@@ -59,5 +60,11 @@ public class RecipeCreateDtoValidator : AbstractValidator<RecipeCreateDto>
         RuleFor(x => x.PrepTimeInSeconds)
             .GreaterThan(-1)
             .When(x => x.PrepTimeInSeconds.HasValue);
+
+        RuleFor(x => x.Instructions) 
+            .NotNull()
+            .WithMessage("Instructions cannot be null.")
+            .Must(list => list.Count > 0)
+            .WithMessage("Instructions cannot be empty.");    
     }
 }

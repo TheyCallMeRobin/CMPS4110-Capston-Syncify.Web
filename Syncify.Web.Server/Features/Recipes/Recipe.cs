@@ -21,6 +21,7 @@ public class Recipe
     public List<RecipeIngredient> RecipeIngredients { get; set; } = [];
     public List<RecipeTag> RecipeTags { get; set; } = [];
     public List<FamilyRecipe> FamilyRecipes { get; set; } = [];
+    public List<string> Instructions { get; set; } = [];
 }
 
 public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
@@ -49,6 +50,12 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne(x => x.Recipe)
             .HasForeignKey(x => x.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(x => x.Instructions) 
+            .HasConversion(
+                v => string.Join("|", v),
+                v => v.Split('|', StringSplitOptions.RemoveEmptyEntries).ToList());
     }
-}
+    }
+
 

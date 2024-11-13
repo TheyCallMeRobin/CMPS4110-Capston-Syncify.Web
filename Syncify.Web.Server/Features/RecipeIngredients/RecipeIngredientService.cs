@@ -66,7 +66,6 @@ public class RecipeIngredientService : IRecipeIngredientService
             return Error.AsResponse<RecipeIngredientGetDto>(ErrorMessages.NotFoundError, nameof(id));
 
         ingredient.Name = dto.Name;
-        ingredient.Description = dto.Description;
         ingredient.Quantity = dto.Quantity;
         ingredient.Unit = dto.Unit;
 
