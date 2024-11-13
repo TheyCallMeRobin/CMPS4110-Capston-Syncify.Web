@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241026235134_Update_Recipes")]
+    partial class Update_Recipes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,29 +289,28 @@ namespace Syncify.Web.Server.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<DateTimeOffset?>("EndsOn")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsAllDay")
-                        .HasColumnType("bit");
+                    b.Property<TimeOnly?>("EndTime")
+                        .HasColumnType("time");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RecurrenceException")
-                        .HasMaxLength(100000)
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly?>("RecurrenceEndDate")
+                        .HasColumnType("date");
 
-                    b.Property<int?>("RecurrenceId")
+                    b.Property<int?>("RecurrenceType")
                         .HasColumnType("int");
 
-                    b.Property<string>("RecurrenceRule")
-                        .HasMaxLength(100000)
+                    b.Property<string>("RecurrenceWeekDays")
+                        .HasMaxLength(-1)
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
-                    b.Property<DateTimeOffset?>("StartsOn")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateOnly?>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly?>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -334,11 +336,6 @@ namespace Syncify.Web.Server.Migrations
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
-
-                    b.Property<string>("DisplayColor")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Name")
                         .IsRequired()

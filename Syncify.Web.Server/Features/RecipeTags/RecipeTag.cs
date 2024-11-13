@@ -25,7 +25,7 @@ public class RecipeTagEntityConfiguration : IEntityTypeConfiguration<RecipeTag>
             .IsRequired();
 
         builder.HasOne(rt => rt.Recipe)
-            .WithMany(r => r.Tags)
+            .WithMany(r => r.RecipeTags)
             .HasForeignKey(rt => rt.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
     }

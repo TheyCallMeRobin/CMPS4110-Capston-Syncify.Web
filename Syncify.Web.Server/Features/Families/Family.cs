@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
 using Syncify.Web.Server.Features.FamilyMembers;
+using Syncify.Web.Server.Features.FamilyRecipes;
+using Syncify.Web.Server.Features.FamilyShoppingLists;
 
 namespace Syncify.Web.Server.Features.Families;
 
@@ -14,6 +16,8 @@ public class Family
 
     public User CreatedByUser { get; set; } = default!;
     public List<FamilyMember> FamilyMembers { get; set; } = [];
+    public List<FamilyRecipe> FamilyRecipes { get; set; } = [];
+    public List<FamilyShoppingList> FamilyShoppingLists { get; set; } = [];
 }
 
 public class FamilyEntityConfiguration : IEntityTypeConfiguration<Family>
@@ -37,6 +41,6 @@ public class FamilyEntityConfiguration : IEntityTypeConfiguration<Family>
         
         builder
             .HasOne(x => x.CreatedByUser)
-            .WithMany();
+            .WithMany(x => x.Families);
     }
 }

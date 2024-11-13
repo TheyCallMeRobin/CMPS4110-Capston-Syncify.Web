@@ -422,6 +422,9 @@ export class FamilyInviteCreateDto {
   /**  */
   'expiresOn'?: Date;
 
+  /**  */
+  'inviteQuery': string;
+
   constructor(data: FamilyInviteCreateDto = {}) {
     Object.assign(this, data);
   }
@@ -444,19 +447,13 @@ export class FamilyInviteGetDto {
   'userId': number;
 
   /**  */
-  'sentByUserFirstName': string;
-
-  /**  */
-  'sentByUserLastName': string;
-
-  /**  */
   'familyName': string;
 
   /**  */
-  'userFirstName': string;
+  'sentByUserFullName': string;
 
   /**  */
-  'userLastName': string;
+  'userFullName': string;
 
   /**  */
   'status': InviteStatus;
@@ -591,19 +588,19 @@ export class RecipeCreateDto {
   'name': string;
 
   /**  */
-  'description': string;
+  'description'?: string;
 
   /**  */
-  'prepTimeInMinutes': number;
+  'prepTimeInSeconds'?: number;
 
   /**  */
-  'cookTimeInMinutes': number;
+  'cookTimeInSeconds'?: number;
 
   /**  */
-  'servings': number;
+  'servings'?: number;
 
   /**  */
-  'userId': number;
+  'feeds'?: number;
 
   constructor(data: RecipeCreateDto = {}) {
     Object.assign(this, data);
@@ -612,25 +609,28 @@ export class RecipeCreateDto {
 
 export class RecipeGetDto {
   /**  */
-  'id': number;
-
-  /**  */
   'name': string;
 
   /**  */
-  'description': string;
+  'description'?: string;
 
   /**  */
-  'prepTimeInMinutes': number;
+  'prepTimeInSeconds'?: number;
 
   /**  */
-  'cookTimeInMinutes': number;
+  'cookTimeInSeconds'?: number;
 
   /**  */
-  'servings': number;
+  'servings'?: number;
 
   /**  */
-  'userFirstName': string;
+  'feeds'?: number;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'createdByUserFullName': string;
 
   constructor(data: RecipeGetDto = {}) {
     Object.assign(this, data);
@@ -904,5 +904,6 @@ export enum InviteStatus {
   'Pending' = 'Pending',
   'Accepted' = 'Accepted',
   'Declined' = 'Declined',
-  'Expired' = 'Expired'
+  'Expired' = 'Expired',
+  'Cancelled' = 'Cancelled'
 }

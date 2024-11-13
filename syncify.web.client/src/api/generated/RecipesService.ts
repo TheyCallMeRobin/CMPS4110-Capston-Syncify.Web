@@ -26,11 +26,38 @@ export class RecipesService {
   /**
    *
    */
-  static getRecipes(options: IRequestOptions = {}): Promise<Response<List<RecipeGetDto>>> {
+  static getRecipes(
+    params: {
+      /**  */
+      createdByUserId?: number;
+      /**  */
+      cookTimeLowerBound?: number;
+      /**  */
+      cookTimeUpperBound?: number;
+      /**  */
+      prepTimeLowerBound?: number;
+      /**  */
+      prepTimeUpperBound?: number;
+      /**  */
+      name?: string;
+      /**  */
+      tagIds?: any | null[];
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<RecipeGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/recipes';
 
       const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = {
+        CreatedByUserId: params['createdByUserId'],
+        CookTimeLowerBound: params['cookTimeLowerBound'],
+        CookTimeUpperBound: params['cookTimeUpperBound'],
+        PrepTimeLowerBound: params['prepTimeLowerBound'],
+        PrepTimeUpperBound: params['prepTimeUpperBound'],
+        Name: params['name'],
+        TagIds: params['tagIds']
+      };
 
       axios(configs, resolve, reject);
     });

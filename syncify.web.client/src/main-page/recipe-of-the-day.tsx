@@ -47,12 +47,22 @@ type RecipeDisplayProps = {
 const RecipeDisplay: React.FC<RecipeDisplayProps> = ({ recipe }) => {
   const cookTime = useMemo(
     () =>
-      !recipe?.cookTimeInMinutes || recipe.cookTimeInMinutes === 0 ? (
+      !recipe?.cookTimeInSeconds || recipe.cookTimeInSeconds === 0 ? (
         <span>&ndash; &ndash;</span>
       ) : (
-        <>{recipe.cookTimeInMinutes} minutes</>
+        <>{Math.round(recipe.cookTimeInSeconds / 60)} minutes</>
       ),
-    [recipe?.cookTimeInMinutes]
+    [recipe?.cookTimeInSeconds]
+  );
+
+  const prepTime = useMemo(
+    () =>
+      !recipe?.prepTimeInSeconds || recipe.prepTimeInSeconds === 0 ? (
+        <span>&ndash; &ndash;</span>
+      ) : (
+        <>{Math.round(recipe.prepTimeInSeconds / 60)} minutes</>
+      ),
+    [recipe?.prepTimeInSeconds]
   );
 
   if (!recipe) return <>No recipe today. Come back tomorrow!</>;
@@ -67,7 +77,7 @@ const RecipeDisplay: React.FC<RecipeDisplayProps> = ({ recipe }) => {
         <br />
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Prep Time</div>
-          <div className={'col'}>{recipe.prepTimeInMinutes} minutes</div>
+          <div className={'col'}>{prepTime} minutes</div>
         </div>
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Cook Time</div>

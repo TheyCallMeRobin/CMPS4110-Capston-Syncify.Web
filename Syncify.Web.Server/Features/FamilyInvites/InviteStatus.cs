@@ -8,5 +8,6 @@ public enum InviteStatus
     Pending,
     Accepted,
     Declined,
-    Expired
+    Expired,
+    Cancelled
 }

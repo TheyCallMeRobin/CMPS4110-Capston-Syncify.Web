@@ -11,7 +11,7 @@ public class FamilyInvite
     public Guid Token { get; init; } = Guid.NewGuid();
     public InviteStatus Status { get; set; } = InviteStatus.Pending;
     public DateTime? ExpiresOn { get; set; }
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
     public int FamilyId { get; set; }
     public int UserId { get; set; }
     public int SentByUserId { get; set; }

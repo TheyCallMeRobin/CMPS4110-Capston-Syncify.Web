@@ -12,6 +12,8 @@ public record FamilyInviteDto
 
 public record FamilyInviteCreateDto : FamilyInviteDto
 {
+    public string InviteQuery { get; set; } = string.Empty;
+    
     [JsonIgnore]
     public int SentByUserId { get; set; }
 }
@@ -21,18 +23,13 @@ public record FamilyInviteGetDto : FamilyInviteDto
     public int Id { get; set; }
     public int SentByUserId { get; set; }
     public int UserId { get; set; }
-    public string SentByUserFirstName { get; set; } = string.Empty;
-    public string SentByUserLastName { get; set; } = string.Empty;
     public string FamilyName { get; set; } = string.Empty;
-    public string UserFirstName { get; set; } = string.Empty;
-    public string UserLastName { get; set; } = string.Empty;
+    public string SentByUserFullName { get; set; } = string.Empty;
+    public string UserFullName { get; set; } = string.Empty;
     public InviteStatus Status { get; set; } = InviteStatus.Pending;
 }
 
 public record ChangeInviteStatusDto(int Id, InviteStatus Status);
-
-public record CreateFamilyInviteQuery(string? Email, string? MemberIdentifier, string? PhoneNumber);
-
 
 public class FamilyInviteMappingProfile : Profile
 {
@@ -40,6 +37,14 @@ public class FamilyInviteMappingProfile : Profile
     {
         CreateMap<FamilyInvite, FamilyInviteGetDto>();
         CreateMap<FamilyInviteCreateDto, FamilyInvite>();
+    }
+}
+
+public class ChangeInviteStatusDtoValidator : AbstractValidator<ChangeInviteStatusDto>
+{
+    public ChangeInviteStatusDtoValidator()
+    {
+        RuleFor(x => x.Status).IsInEnum();
     }
 }
 
@@ -58,6 +63,7 @@ public class FamilyInviteCreateDtoValidator : AbstractValidator<FamilyInviteCrea
     public FamilyInviteCreateDtoValidator()
     {
         Include(new FamilyInviteDtoValidator());
-        
+
+        RuleFor(x => x.InviteQuery).NotEmpty();
     }
 }
