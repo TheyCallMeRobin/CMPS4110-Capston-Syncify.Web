@@ -3,7 +3,7 @@ import { useUser } from '../auth/auth-context.tsx';
 import { useAsync } from 'react-use';
 import { FamilyService } from '../api/generated/FamilyService.ts';
 import { toast } from 'react-toastify';
-import { Select } from '../Components/inputs/select.tsx';
+import { Select } from '../Components/select-input/select.tsx';
 import { OptionDto } from '../api/generated/index.defs.ts';
 import { FamilyMemberService } from '../api/generated/FamilyMemberService.ts';
 import { cardStyle } from './MainPage.tsx';
