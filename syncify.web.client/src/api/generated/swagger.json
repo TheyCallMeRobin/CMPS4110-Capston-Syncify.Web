@@ -1986,6 +1986,234 @@
         }
       }
     },
+    "/api/recipe-ingredient": {
+      "post": {
+        "tags": [
+          "RecipeIngredient"
+        ],
+        "operationId": "Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipe-ingredient/recipe/{recipeId}": {
+      "get": {
+        "tags": [
+          "RecipeIngredient"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recipe-ingredient/{id}": {
+      "get": {
+        "tags": [
+          "RecipeIngredient"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "RecipeIngredient"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RecipeIngredient"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/recipes": {
       "get": {
         "tags": [
@@ -2540,234 +2768,6 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Response<Boolean>"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/recipe-ingredient": {
-      "post": {
-        "tags": [
-          "RecipieIngredient"
-        ],
-        "operationId": "Create",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientCreateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/recipe-ingredient/recipe/{recipeId}": {
-      "get": {
-        "tags": [
-          "RecipieIngredient"
-        ],
-        "operationId": "GetAll",
-        "parameters": [
-          {
-            "name": "recipeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<List<RecipeIngredientGetDto>>"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/recipe-ingredient/{id}": {
-      "get": {
-        "tags": [
-          "RecipieIngredient"
-        ],
-        "operationId": "GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "RecipieIngredient"
-        ],
-        "operationId": "Update",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecipeIngredientUpdateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response<RecipeIngredientGetDto>"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "RecipieIngredient"
-        ],
-        "operationId": "Delete",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
                 }
               }
             }
@@ -4246,7 +4246,6 @@
         },
         "additionalProperties": false
       },
-
       "RecipeUpdateDto": {
         "required": [
           "name"
@@ -4283,18 +4282,6 @@
         },
         "additionalProperties": false
       },
-
-      "RecurrenceType": {
-        "enum": [
-          "Daily",
-          "Weekly",
-          "BiWeekly",
-          "Monthly",
-          "Custom"
-        ],
-        "type": "string"
-      },
-
       "Response<Boolean>": {
         "required": [
           "data",

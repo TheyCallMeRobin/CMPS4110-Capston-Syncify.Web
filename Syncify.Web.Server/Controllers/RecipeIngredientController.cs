@@ -5,11 +5,11 @@ namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
 [Route("api/recipe-ingredient")]
-public class RecipieIngredientController : ControllerBase
+public class RecipeIngredientController : ControllerBase
 {
     private readonly IRecipeIngredientService _ingredientService;
 
-    public RecipieIngredientController(IRecipeIngredientService ingredientService)
+    public RecipeIngredientController(IRecipeIngredientService ingredientService)
     {
         _ingredientService = ingredientService;
     }

@@ -20,7 +20,7 @@ import {
   basePath
 } from './index.defs';
 
-export class RecipieIngredientService {
+export class RecipeIngredientService {
   /** Generate by swagger-axios-codegen */
   // @ts-nocheck
   /* eslint-disable */
