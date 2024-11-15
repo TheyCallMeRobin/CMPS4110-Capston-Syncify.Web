@@ -11,23 +11,23 @@ import { useAsyncFn } from 'react-use';
 import './recipe.css';
 
 const availableUnits = [
-  'tsp',
-  'tbsp',
-  'cup',
-  'pint',
-  'quart',
-  'gallon',
-  'ml',
-  'l',
-  'oz',
-  'lb',
-  'g',
-  'kg',
-  'mg',
-  'pinch',
-  'dash',
-  'fl oz',
-  'piece',
+    'Tsp',
+    'Tbsp',
+    'Cup',
+    'Pint',
+    'Quart',
+    'Gallon',
+    'Ml',
+    'L',
+    'Oz',
+    'Lb',
+    'G',
+    'Kg',
+    'Mg',
+    'Pinch',
+    'Dash',
+    'Fl oz',
+    'Piece',
 ];
 
 interface EditIngredientProps {
@@ -238,39 +238,35 @@ const EditIngredient: React.FC<EditIngredientProps> = ({
           </p>
         )}
 
-        <input
-          type="text"
-          placeholder="Unit"
-          value={newIngredient.unit}
-          onChange={(e) =>
-            setNewIngredient({
-              ...newIngredient,
-              unit: formatUnit(e.target.value),
-            })
-          }
-          className="ingredient-input"
-        />
-        {ingredientErrors?.unit && (
-          <p className="error-text">
-            <FaExclamationCircle
-              style={{ color: 'red', fontSize: '1em', marginRight: '5px' }}
-            />
-            {ingredientErrors.unit}
-          </p>
-        )}
+                <select
+                    className="form-control mb-2"
+                    value={newIngredient.unit}
+                    onChange={(e) => setNewIngredient({ ...newIngredient, unit: e.target.value })}
+                >
+                    <option value="">Select unit</option>
+                    {availableUnits.map((unit) => (
+                        <option key={unit} value={unit}>{unit}</option>
+                    ))}
+                </select>
+              {ingredientErrors?.unit && (
+                  <p className="error-text">
+                      <FaExclamationCircle
+                          style={{ color: 'red', fontSize: '1em', marginRight: '5px' }}
+                      />
+                      {ingredientErrors.unit}
+                  </p>
+              )}
 
-        <h4>Available Units:</h4>
-        <p style={{ textAlign: 'center' }}>{availableUnits.join(', ')}</p>
-        <button
-          onClick={handleAddIngredient}
-          className="add-ingredient-button"
-          disabled={addIngredientState.loading}
-        >
-          {addIngredientState.loading ? 'Adding...' : 'Add Ingredient'}
-        </button>
-      </div>
-    </div>
-  );
+                <button
+                    onClick={handleAddIngredient}
+                    className="add-ingredient-button"
+                    disabled={addIngredientState.loading}
+                >
+                    {addIngredientState.loading ? 'Adding...' : 'Add Ingredient'}
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default EditIngredient;

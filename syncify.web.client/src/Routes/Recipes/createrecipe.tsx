@@ -114,28 +114,24 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ onCreate, onClose }) => {
   };
 
   const availableUnits = [
-    'tsp',
-    'tbsp',
-    'cup',
-    'pint',
-    'quart',
-    'gallon',
-    'ml',
-    'l',
-    'oz',
-    'lb',
-    'g',
-    'kg',
-    'mg',
-    'pinch',
-    'dash',
-    'fl oz',
-    'piece',
+    'Tsp',
+    'Tbsp',
+    'Cup',
+    'Pint',
+    'Quart',
+    'Gallon',
+    'Ml',
+    'L',
+    'Oz',
+    'Lb',
+    'G',
+    'Kg',
+    'Mg',
+    'Pinch',
+    'Dash',
+    'Fl oz',
+    'Piece',
   ];
-
-  const formatUnit = (unit: string) => {
-    return unit.charAt(0).toUpperCase() + unit.slice(1).toLowerCase();
-  };
 
   return (
     <>
@@ -330,18 +326,16 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ onCreate, onClose }) => {
               </p>
             )}
 
-            <input
-              type="text"
-              className="form-control mb-2"
-              placeholder="Unit"
-              value={newIngredient.unit}
-              onChange={(e) =>
-                setNewIngredient({
-                  ...newIngredient,
-                  unit: formatUnit(e.target.value),
-                })
-              }
-            />
+                      <select
+                          className="form-control mb-2"
+                          value={newIngredient.unit}
+                          onChange={(e) => setNewIngredient({ ...newIngredient, unit: e.target.value })}
+                      >
+                          <option value="">Select unit</option>
+                          {availableUnits.map((unit) => (
+                              <option key={unit} value={unit}>{unit}</option>
+                          ))}
+                      </select>
             {ingredientErrors.unit && (
               <p className="error-text">
                 <FaExclamationCircle
@@ -350,8 +344,6 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ onCreate, onClose }) => {
                 {ingredientErrors.unit}
               </p>
             )}
-            <h4>Available Units:</h4>
-            <p style={{ textAlign: 'center' }}>{availableUnits.join(', ')}</p>
 
             <button className="btn btn-primary" onClick={handleAddIngredient}>
               Add Ingredient
