@@ -66,32 +66,32 @@ export const App: React.FC = () => {
                 </button>
                 <li className="nav-item align-text-">
                   <Link className="nav-link" to="/">
-                    <FaHome /> {!isSidebarCollapsed && ' Home'}
+                    <FaHome style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Home'}
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/calendars">
-                    <FaCalendarAlt /> {!isSidebarCollapsed && ' Calendar'}
+                  <Link className="nav-link" to="/calendars" >
+                    <FaCalendarAlt style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Calendar'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/reminders">
-                    <FaBell /> {!isSidebarCollapsed && ' Reminder'}
+                    <FaBell style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Reminder'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/recipes">
-                    <FaBook /> {!isSidebarCollapsed && ' Recipes'}
+                    <FaBook style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Recipes'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/shopping-lists">
-                    <FaShoppingCart /> {!isSidebarCollapsed && ' Shopping List'}
+                    <FaShoppingCart style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Shopping List'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/family-management">
-                    <FaUsers /> {!isSidebarCollapsed && ' Manage Family'}
+                    <FaUsers style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Manage Family'}
                   </Link>
                 </li>
               </ul>
