@@ -27,6 +27,7 @@
     position: relative;
     height: 300px;
     width: 281.25px;
+    min-width: 35%;
     text-align: left;
     border-radius: 5px;
     position: relative;
