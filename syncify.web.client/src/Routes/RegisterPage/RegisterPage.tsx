@@ -5,9 +5,10 @@ import './RegisterPage.css';
 import './../../index.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CreateUserDto } from '../../api/generated/index.defs.ts';
+import { CreateUserDto, LoginDto } from '../../api/generated/index.defs.ts';
 import { useAsyncFn } from 'react-use';
 import { UsersService } from '../../api/generated/UsersService.ts';
+import { AuthenticationService } from '../../api/generated/AuthenticationService.ts';
 
 const defaultValues: CreateUserDto = {
     userName: '',
@@ -38,9 +39,15 @@ export const RegisterPage: React.FC = () => {
         toast.error(message);
     };
 
-    const notifySuccess = (message: string) => {
-        toast.dismiss();
-        toast.success(message);
+    const loginUser = async (username: string, password: string) => {
+        const loginData: LoginDto = { username: username, password: password };
+        const loginResponse = await AuthenticationService.login({ body: loginData });
+
+        if (loginResponse.hasErrors) {
+            loginResponse.errors.forEach((err) => notifyError(err.errorMessage));
+            return false;
+        }
+        return true;
     };
 
     const [, handleRegister] = useAsyncFn(
@@ -52,8 +59,13 @@ export const RegisterPage: React.FC = () => {
                 response.errors.forEach((err) => notifyError(err.errorMessage));
                 return;
             }
-            notifySuccess('Registration successful');
-            navigate('/login');
+
+            const loggedIn = await loginUser(newUser.userName, newUser.password);
+            if (loggedIn) {
+                toast.success('Registration successful, you are now logged in! Redirecting to home page...', {
+                    onClose: () => navigate('/'),
+                });
+            }
         },
         [navigate, newUser]
     );
