@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syncify.Web.Server.Data;
 
@@ -11,9 +12,11 @@ using Syncify.Web.Server.Data;
 namespace Syncify.Web.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241113190045_AddInstructionsToRecipe")]
+    partial class AddInstructionsToRecipe
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -610,8 +613,8 @@ namespace Syncify.Web.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Instructions")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

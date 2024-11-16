@@ -21,13 +21,14 @@ public class Recipe
     public List<RecipeIngredient> RecipeIngredients { get; set; } = [];
     public List<RecipeTag> RecipeTags { get; set; } = [];
     public List<FamilyRecipe> FamilyRecipes { get; set; } = [];
+    public string Instructions { get; set; } = string.Empty;
 }
 
 public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
 {
-    internal const int NameMaxLength = 128;
-    internal const int DescriptionMaxLength = 512;
-    
+    public const int NameMaxLength = 128;
+    public const int DescriptionMaxLength = 512;
+    public const int InstructionsMaxLength = 2000;
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.ToTable("Recipes");
@@ -49,6 +50,9 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne(x => x.Recipe)
             .HasForeignKey(x => x.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
-    }
-}
 
+         builder.Property(x => x.Instructions)
+            .HasMaxLength(InstructionsMaxLength) 
+            .IsRequired(false);
+}
+    } 
