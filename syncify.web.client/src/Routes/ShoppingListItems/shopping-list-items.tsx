@@ -156,7 +156,9 @@ const ShoppingListItems: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                <div className="column item-name">{item.name}</div>
+                                <div className={`column item-name ${item.isChecked ? 'checked' : ''}`}>
+                                    {item.name}
+                                </div>
                                 <div className="column item-unit">{item.unit}</div>
                                 <div className="column item-quantity">Qty: {item.quantity}</div>
                                 <input
