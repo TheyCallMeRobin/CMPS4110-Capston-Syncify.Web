@@ -19,8 +19,6 @@ public record ShoppingListGetDto : ShoppingListDto
 public record ShoppingListCreateDto(string Name, string Description, int UserId);
 public record ShoppingListUpdateDto(string Name, string? Description);
 
-
-
 public record ShoppingListRecipeCreateDto(string Name, string Description, int UserId, int RecipeId)
     : ShoppingListCreateDto(Name, Description, UserId);
 public class ShoppingListMappingProfile : Profile

@@ -33,7 +33,7 @@ public class RecipeIngredientDtoValidator : AbstractValidator<RecipeIngredientDt
     public RecipeIngredientDtoValidator()
     {
         RuleFor(x => x.Name).MaximumLength(RecipeIngredientEntityConfiguration.RecipeIngredientNameMaxLength);
-        RuleFor(x => x.Unit).MustBeInList(Units.List);
+        RuleFor(x => x.Unit).Must(value => Enum.IsDefined(typeof(Units), value));
         RuleFor(x => x.Quantity).GreaterThan(0);
     }
 }

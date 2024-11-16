@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Syncify.Common.Constants;
+using Syncify.Web.Server.Common;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 
@@ -67,7 +67,7 @@ public class RecipeIngredientService : IRecipeIngredientService
 
         ingredient.Name = dto.Name;
         ingredient.Quantity = dto.Quantity;
-        ingredient.Unit = dto.Unit;
+        ingredient.Unit = Enum.Parse<Units>(dto.Unit);
 
         await _dataContext.SaveChangesAsync();
         return ingredient.MapTo<RecipeIngredientGetDto>().AsResponse();

@@ -11,7 +11,6 @@ public class RecipeIngredient
     public string Name { get; set; } = string.Empty;
     public string Unit { get; set; } = Units.Count;
     public int Quantity { get; set; }
-    
     public int RecipeId { get; set; }
     public Recipe Recipe { get; set; } = default!;
 }
