@@ -29,7 +29,7 @@ public class RecipeToShoppingListFacade
                 .Select(x => new ShoppingListItem
                 {
                     Name = x.Name,
-                    Unit = x.Unit,
+                    Unit = x.Unit.ToString(),
                     Quantity = x.Quantity,
                     ShoppingListId = shoppingList.Id
                 }).ToListAsync();
