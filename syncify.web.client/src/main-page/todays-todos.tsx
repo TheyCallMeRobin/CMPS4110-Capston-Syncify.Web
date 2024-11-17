@@ -7,6 +7,7 @@ import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
 import { cardStyle } from './MainPage.tsx';
 import { CalendarEventGetDto } from '../api/generated/index.defs.ts';
 import { FaClipboardList } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const TodaysTodos: React.FC = () => {
   const user = useUser();
@@ -93,8 +94,10 @@ export const TodaysTodos: React.FC = () => {
               <div>
                 <TodosDisplay />
               </div>
-              <div>
-                <a className={'btn btn-primary'}>View All To-Dos</a>
+               <div>
+                <Link to="/calendars" className={'btn btn-primary'}>
+                  View All To-Dos
+                </Link>
               </div>
             </div>
           </LoadingContainer>

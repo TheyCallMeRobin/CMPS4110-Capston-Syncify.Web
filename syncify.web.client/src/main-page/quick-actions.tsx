@@ -1,6 +1,6 @@
 ﻿import { FaPlus, FaRunning } from 'react-icons/fa';
 import { CSSProperties } from 'react';
-
+import { Link } from 'react-router-dom';
 export const QuickActions: React.FC = () => {
   return (
     <div className={'card mb-4 shadow dashboard-card'}>
@@ -13,28 +13,28 @@ export const QuickActions: React.FC = () => {
       <div className={'card-body'}>
         <div className={'vstack gap-3'}>
           <div>
-            <a className={'icon-link'} style={linkStyle}>
+            <Link className={'icon-link'} style={linkStyle} to={'/calendars'}>
               <FaPlus />
               Add Event
-            </a>
+            </Link>
           </div>
           <div>
-            <a className={'icon-link'} style={linkStyle}>
+            <Link className={'icon-link'} style={linkStyle} to={'/family-management'}>
               <FaPlus />
               Create Family Invite
-            </a>
+            </Link>
           </div>
           <div>
-            <a className={'icon-link'} style={linkStyle}>
+            <Link className={'icon-link'} style={linkStyle} to={'/shopping-lists'}>
               <FaPlus />
               Create Shopping List
-            </a>
+            </Link>
           </div>
           <div>
-            <a className={'icon-link'} style={linkStyle}>
+            <Link className={'icon-link'} style={linkStyle} to={'/recipes'}>
               <FaPlus />
               Create Recipe
-            </a>
+            </Link>
           </div>
         </div>
       </div>

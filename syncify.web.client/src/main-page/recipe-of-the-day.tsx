@@ -5,6 +5,7 @@ import { RecipeGetDto } from '../api/generated/index.defs.ts';
 import { cardStyle } from './MainPage.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { FaUtensils } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const RecipeOfTheDay: React.FC = () => {
   const fetchRecipes = useAsync(async () => {
@@ -30,9 +31,11 @@ export const RecipeOfTheDay: React.FC = () => {
             <div>
               <RecipeDisplay recipe={fetchRecipes.value} />
             </div>
-            <div>
-              <a className={'btn btn-primary'}>View Recipe</a>
-            </div>
+                      <div>
+                          <Link to="/recipes" className={'btn btn-primary'}>
+                              View Recipe
+                          </Link>
+                      </div>
           </div>
         </LoadingContainer>
       </div>

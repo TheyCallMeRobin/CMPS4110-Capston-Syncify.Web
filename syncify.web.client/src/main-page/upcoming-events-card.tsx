@@ -8,6 +8,7 @@ import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
 import { cardStyle } from './MainPage.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { FaCalendar } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const UpcomingEventsCard: React.FC = () => {
   const user = useUser();
@@ -75,7 +76,9 @@ export const UpcomingEventsCard: React.FC = () => {
                 <EventsDisplay />
               </div>
               <div>
-                <a className={'btn btn-primary'}>View All Events</a>
+                <Link to="/calendars" className={'btn btn-primary'}>
+                  View All Events
+                </Link>
               </div>
             </div>
           </LoadingContainer>
