@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LoginDto } from '../../api/generated/index.defs.ts';
 import { useAsyncFn } from 'react-use';
 import { AuthenticationService } from '../../api/generated/AuthenticationService.ts';
+import { notify } from '../../hooks/use-subscription.ts';
 
 const defaultLoginData: LoginDto = {
   username: '',
@@ -41,6 +42,8 @@ export const LoginPage: React.FC = () => {
         notifyError('Login failed: invalid response from server');
         return;
       }
+
+      notify('auth-trigger', undefined);
 
       toast.success('Logged in');
       navigate('/');

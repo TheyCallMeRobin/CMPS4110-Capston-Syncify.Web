@@ -1,19 +1,15 @@
-﻿import React, { useCallback } from 'react';
+﻿import React from 'react';
 import { useAsync } from 'react-use';
 import { useUser } from '../auth/auth-context.tsx';
 import { toast } from 'react-toastify';
-
 import './MainPage.css';
 import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
-import { cardStyle } from './MainPage.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { FaCalendar } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../routes.tsx';
+import { Link } from 'react-router-dom';
 
 export const UpcomingEventsCard: React.FC = () => {
   const user = useUser();
-  const navigate = useNavigate();
 
   const fetchUpcomingEvents = useAsync(async () => {
     const response = await CalendarEventService.getUpcomingEventsByUserId({
@@ -62,14 +58,9 @@ export const UpcomingEventsCard: React.FC = () => {
     );
   };
 
-  const navigateToEvents = useCallback(
-    () => navigate(ROUTES.Calendars.path),
-    [navigate]
-  );
-
   return (
     <>
-      <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
+      <div>
         <div className={'card-header primary-bg text-white hstack gap-2'}>
           <div>
             <FaCalendar />
@@ -83,12 +74,9 @@ export const UpcomingEventsCard: React.FC = () => {
                 <EventsDisplay />
               </div>
               <div>
-                <button
-                  className={'btn btn-primary'}
-                  onClick={navigateToEvents}
-                >
+                <Link to="/calendars" className={'btn btn-primary'}>
                   View All Events
-                </button>
+                </Link>
               </div>
             </div>
           </LoadingContainer>

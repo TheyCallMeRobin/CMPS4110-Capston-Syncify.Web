@@ -99,7 +99,7 @@ public class RecipeService : IRecipeService
         if (recipe is null)
             return Error.AsResponse<RecipeGetDto>("Unable to find recipe.", nameof(dto.Id));
 
-        if (await RecipeHasSameName(dto.Name))
+        if (await RecipeHasSameName(dto.Name, dto.Id))
             return Error.AsResponse<RecipeGetDto>("A recipe with this name already exists.", nameof(dto.Name));
         
         _mapper.Map(dto, recipe);
@@ -133,8 +133,11 @@ public class RecipeService : IRecipeService
         return Response.Success();
     }
 
-    private Task<bool> RecipeHasSameName(string name)
-        => _dataContext.Set<Recipe>().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
+    private Task<bool> RecipeHasSameName(string name, int? recipeId = null)
+{
+    return _dataContext.Set<Recipe>()
+        .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && (!recipeId.HasValue || x.Id != recipeId));
+}
 
     private RecipeGetDto? GetCachedRecipeOfTheDay()
         => _memoryCache.TryGetValue<RecipeGetDto>(RECIPE_OF_THE_DAY_CACHE_KEY, out var recipe) ? recipe : null;
