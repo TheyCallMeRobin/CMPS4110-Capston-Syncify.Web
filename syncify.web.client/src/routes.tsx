@@ -22,8 +22,8 @@ export const ROUTES = {
     element: <FamilyManagement/>,
   },
   FamilyMemberManagement: {
-    path: 'family-members-management/:familyId',
-    element: <FamilyManagement/>,
+    path: 'family-member-management/:familyId',
+    element: <FamilyMemberManagement/>,
   },
   Dashboard: {
     path: '/',
