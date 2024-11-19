@@ -96,7 +96,6 @@ export const FamilyManagement = () => {
                 id: familyToEdit.id,
                 body: { name: editFamilyName },
             });
-            
             if (updatedFamily.data) {
                 setFamilies(families.map(family =>
                     family.id === familyToEdit.id ? { ...family, name: editFamilyName } : family
@@ -108,9 +107,8 @@ export const FamilyManagement = () => {
             }
         }
     }, [familyToEdit, editFamilyName, families]);
-
     const handleSelectFamily = (familyId: number) => {
-        navigate(`/family-members-management/${familyId}`);
+        navigate(`/family-member-management/${familyId}`); 
     };
 
     return (
@@ -141,7 +139,7 @@ export const FamilyManagement = () => {
                                                 Edit Family
                                             </Dropdown.Item>
                                             <Dropdown.Item onClick={() => handleSelectFamily(family.id)}>
-                                                View Members
+                                                Edit Members
                                             </Dropdown.Item>
                                             <Dropdown.Divider />
                                             <Dropdown.Item onClick={() => {
