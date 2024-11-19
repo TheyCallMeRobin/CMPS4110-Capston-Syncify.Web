@@ -16,7 +16,7 @@ export const ROUTES = {
     element: <LoginPage />,
   },
   Calendar: {
-    path: '/calendar',
+    path: '/calendars',
     element: <CalendarPage />,
   },
   FamilyManagement: {
