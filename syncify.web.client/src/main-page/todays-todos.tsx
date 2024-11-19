@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 import React, { CSSProperties } from 'react';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
-import { cardStyle } from './MainPage.tsx';
 import { CalendarEventGetDto } from '../api/generated/index.defs.ts';
 import { FaClipboardList } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const TodaysTodos: React.FC = () => {
   const user = useUser();
@@ -80,7 +80,7 @@ export const TodaysTodos: React.FC = () => {
 
   return (
     <>
-      <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
+      <div>
         <div className={'card-header primary-bg text-white hstack gap-2'}>
           <div>
             <FaClipboardList />
@@ -94,7 +94,9 @@ export const TodaysTodos: React.FC = () => {
                 <TodosDisplay />
               </div>
               <div>
-                <a className={'btn btn-primary'}>View All To-Dos</a>
+                <Link to="/calendars" className={'btn btn-primary'}>
+                  View All To-Dos
+                </Link>
               </div>
             </div>
           </LoadingContainer>

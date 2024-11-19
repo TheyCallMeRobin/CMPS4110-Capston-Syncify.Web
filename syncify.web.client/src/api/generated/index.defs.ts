@@ -586,6 +586,9 @@ export class RecipeCreateDto {
   /**  */
   'feeds'?: number;
 
+  /**  */
+  'instructions': string;
+
   constructor(data: RecipeCreateDto = {}) {
     Object.assign(this, data);
   }
@@ -611,6 +614,9 @@ export class RecipeGetDto {
   'feeds'?: number;
 
   /**  */
+  'instructions': string;
+
+  /**  */
   'id': number;
 
   /**  */
@@ -624,9 +630,6 @@ export class RecipeGetDto {
 export class RecipeIngredientCreateDto {
   /**  */
   'name': string;
-
-  /**  */
-  'description'?: string;
 
   /**  */
   'quantity': number;
@@ -645,9 +648,6 @@ export class RecipeIngredientCreateDto {
 export class RecipeIngredientGetDto {
   /**  */
   'name': string;
-
-  /**  */
-  'description'?: string;
 
   /**  */
   'quantity': number;
@@ -671,13 +671,13 @@ export class RecipeIngredientUpdateDto {
   'name': string;
 
   /**  */
-  'description'?: string;
-
-  /**  */
   'quantity': number;
 
   /**  */
   'unit': string;
+
+  /**  */
+  'recipeId': number;
 
   constructor(data: RecipeIngredientUpdateDto = {}) {
     Object.assign(this, data);
@@ -729,6 +729,9 @@ export class RecipeUpdateDto {
 
   /**  */
   'feeds'?: number;
+
+  /**  */
+  'instructions': string;
 
   constructor(data: RecipeUpdateDto = {}) {
     Object.assign(this, data);

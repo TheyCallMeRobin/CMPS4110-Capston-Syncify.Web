@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { Select } from '../Components/inputs/select.tsx';
 import { OptionDto } from '../api/generated/index.defs.ts';
 import { FamilyMemberService } from '../api/generated/FamilyMemberService.ts';
-import { cardStyle } from './MainPage.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { FaPeopleGroup } from 'react-icons/fa6';
 
@@ -73,7 +72,7 @@ export const FamilyMembers: React.FC = () => {
   };
 
   return (
-    <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
+    <div>
       <div className={'card-header primary-bg text-white'}>
         <div className={'hstack gap-3'}>
           <div className={'hstack gap-2'}>

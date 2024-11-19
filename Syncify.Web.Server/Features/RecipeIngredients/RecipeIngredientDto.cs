@@ -8,7 +8,6 @@ namespace Syncify.Web.Server.Features.RecipeIngredients;
 public record RecipeIngredientDto
 {
     public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int Quantity { get; set; }
     public string Unit { get; set; } = string.Empty;
 }
@@ -17,7 +16,10 @@ public record RecipeIngredientGetDto(int Id, int RecipeId) : RecipeIngredientDto
 
 public record RecipeIngredientCreateDto(int RecipeId) : RecipeIngredientDto;
 
-public record RecipeIngredientUpdateDto : RecipeIngredientDto;
+public record RecipeIngredientUpdateDto : RecipeIngredientDto
+{
+    public int RecipeId { get; set; }
+}
 
 public class RecipeIngredientMappingProfile : Profile
 {
@@ -47,7 +49,7 @@ public class RecipeIngredientCreateDtoValidator : AbstractValidator<RecipeIngred
     }
 }
 
-public class RecipeIngredientUpdateDtoValidator : AbstractValidator<RecipeIngredientCreateDto>
+public class RecipeIngredientUpdateDtoValidator : AbstractValidator<RecipeIngredientUpdateDto>
 {
     public RecipeIngredientUpdateDtoValidator()
     {
