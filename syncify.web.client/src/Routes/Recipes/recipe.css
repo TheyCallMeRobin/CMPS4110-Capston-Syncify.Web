@@ -12,7 +12,7 @@
 
 
 .recipe-card {
-    width: 525px;
+    width: 30%;
     height: 250px; 
     background-color: #ffffff;
     border: 1px solid #ccc;
@@ -138,6 +138,7 @@
         border: 1px solid #ccc;
         border-radius: 4px;
     }
+
 
     .modal-content button,
     .add-ingredient-button
@@ -335,7 +336,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+
 }
 
 .icon-group {
