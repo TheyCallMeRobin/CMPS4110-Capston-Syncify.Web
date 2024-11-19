@@ -5,11 +5,11 @@ namespace Syncify.Web.Server.Controllers;
 
 [ApiController]
 [Route("api/recipe-ingredient")]
-public class RecipieIngredientController : ControllerBase
+public class RecipeIngredientController : ControllerBase
 {
     private readonly IRecipeIngredientService _ingredientService;
 
-    public RecipieIngredientController(IRecipeIngredientService ingredientService)
+    public RecipeIngredientController(IRecipeIngredientService ingredientService)
     {
         _ingredientService = ingredientService;
     }
@@ -21,7 +21,7 @@ public class RecipieIngredientController : ControllerBase
         return Ok(data);
     }
 
-    
+
     [HttpGet("recipe/{recipeId}")]
     public async Task<ActionResult<Response<List<RecipeIngredientGetDto>>>> GetAll(int recipeId)
     {
@@ -37,7 +37,7 @@ public class RecipieIngredientController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Response<RecipeIngredientGetDto>>> Update(int id, RecipeIngredientUpdateDto dto)
+    public async Task<ActionResult<Response<RecipeIngredientGetDto>>> Update(int id, [FromBody] RecipeIngredientUpdateDto dto)
     {
         var data = await _ingredientService.UpdateRecipeIngredient(id, dto);
         return Ok(data);
