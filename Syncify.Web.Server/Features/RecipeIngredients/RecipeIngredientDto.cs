@@ -16,7 +16,10 @@ public record RecipeIngredientGetDto(int Id, int RecipeId) : RecipeIngredientDto
 
 public record RecipeIngredientCreateDto(int RecipeId) : RecipeIngredientDto;
 
-public record RecipeIngredientUpdateDto : RecipeIngredientDto;
+public record RecipeIngredientUpdateDto : RecipeIngredientDto
+{
+    public int RecipeId { get; set; }
+}
 
 public class RecipeIngredientMappingProfile : Profile
 {
@@ -46,7 +49,7 @@ public class RecipeIngredientCreateDtoValidator : AbstractValidator<RecipeIngred
     }
 }
 
-public class RecipeIngredientUpdateDtoValidator : AbstractValidator<RecipeIngredientCreateDto>
+public class RecipeIngredientUpdateDtoValidator : AbstractValidator<RecipeIngredientUpdateDto>
 {
     public RecipeIngredientUpdateDtoValidator()
     {
