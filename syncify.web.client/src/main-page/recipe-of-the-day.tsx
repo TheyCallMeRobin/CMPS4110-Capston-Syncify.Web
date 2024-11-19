@@ -80,7 +80,7 @@ const RecipeDisplay: React.FC<RecipeDisplayProps> = ({ recipe }) => {
         <br />
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Prep Time</div>
-          <div className={'col'}>{prepTime} minutes</div>
+          <div className={'col'}>{prepTime}</div>
         </div>
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Cook Time</div>
