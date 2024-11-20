@@ -14,12 +14,7 @@ import { useForm } from 'react-hook-form';
 import { notify } from '../hooks/use-subscription.ts';
 import { FaFilter } from 'react-icons/fa';
 import { CalendarInfo } from './calendar-info.tsx';
-
-type SelectOption = {
-  text: string;
-  value: string;
-  id: number;
-};
+import { SelectOption } from '../types/form.ts';
 
 export const CalendarFilter: React.FC = () => {
   const [on, toggle] = useToggle(false);
@@ -30,7 +25,7 @@ export const CalendarFilter: React.FC = () => {
 
   const store = useCalendarFilterStore;
 
-  const selectedValues = useMemo(
+  const selectedValues: SelectOption[] = useMemo(
     () =>
       store
         .getState()
@@ -58,7 +53,9 @@ export const CalendarFilter: React.FC = () => {
   const { handleSubmit, register } = useForm<CalendarFilterType>();
 
   const [applyState, handleApply] = useAsyncFn(async (values) => {
-    const transformed = values.calendarIds.map((obj) => parseInt(obj.value));
+    const transformed = values.calendarIds.map((id: { value: string }) =>
+      parseInt(id.value)
+    );
     useCalendarFilterStore.setState((state) => ({
       ...state,
       filter: {
@@ -90,31 +87,26 @@ export const CalendarFilter: React.FC = () => {
           <div className={'vstack gap-4'}></div>
           <div>
             <form onSubmit={handleSubmit(handleApply)}>
-              <div className={'vstack gap-5'}>
-                <div className={'grid'}>
-                  <div className={'col-md-10'}>
-                    <label htmlFor="selectedCalendars">
-                      Selected Calendars
-                    </label>
-                    <MultiSelectComponent
-                      id={'selectedCalendars'}
-                      dataSource={options}
-                      allowCustomValue={false}
-                      title={'Selected Calendars'}
-                      showSelectAll
-                      showDropDownIcon
-                      showClearButton
-                      allowFiltering={false}
-                      mode={'CheckBox'}
-                      value={selectedValues}
-                      allowObjectBinding
-                      {...register('calendarIds')}
-                    >
-                      <Inject services={[CheckBoxSelection]} />
-                    </MultiSelectComponent>
-                  </div>
-                </div>
-                <div>
+              <div className={'mb-4'}>
+                <label htmlFor="selectedCalendars">Selected Calendars</label>
+                <MultiSelectComponent
+                  id={'selectedCalendars'}
+                  dataSource={options}
+                  allowCustomValue={false}
+                  title={'Selected Calendars'}
+                  showSelectAll
+                  showDropDownIcon
+                  showClearButton
+                  allowFiltering={false}
+                  mode={'CheckBox'}
+                  value={selectedValues}
+                  allowObjectBinding
+                  {...register('calendarIds')}
+                >
+                  <Inject services={[CheckBoxSelection]} />
+                </MultiSelectComponent>
+
+                <div className={'form-actions'}>
                   <button
                     type="submit"
                     className={'btn btn-primary'}
