@@ -4,6 +4,7 @@
   EventSettingsModel,
   Inject,
   Month,
+  PopupOpenEventArgs,
   QuickInfoTemplatesModel,
   ScheduleComponent,
   ViewDirective,
@@ -31,6 +32,8 @@ import { QuickInfoFooter } from './quick-info.tsx';
 const services = [Day, Week, WorkWeek, Month, Agenda];
 
 export type SchedulerRef = React.MutableRefObject<ScheduleComponent | null>;
+
+//TODO: Prevent default "Update on or update all" modal from appearing
 
 export const Calendar: React.FC = () => {
   const user = useUser();
@@ -107,6 +110,8 @@ export const Calendar: React.FC = () => {
         endTime: { name: 'endsOn' },
         isAllDay: { name: 'isAllDay' },
         recurrenceRule: { name: 'recurrenceRule' },
+        recurrenceID: { name: 'recurrenceId' },
+        recurrenceException: { name: 'recurrenceException' },
       },
     }),
     [fetchCalendarEvents.value]
@@ -120,9 +125,22 @@ export const Calendar: React.FC = () => {
     footer: QuickInfoFooter,
   };
 
-  const onEventRendered = (args) => {
-    // eslint-disable-next-line no-restricted-syntax
-    console.log(args);
+  const onPopupOpen = (args: PopupOpenEventArgs) => {
+    if (args.type === 'Editor') {
+      const dialog = (args.element as HTMLElement).closest(
+        '.e-schedule-dialog'
+      ) as HTMLElement;
+      if (dialog) {
+        dialog.style.width = '800px';
+        dialog.style.height = '610px';
+      }
+    }
+  };
+
+  const onEventRendered = (args: {
+    data: { calendarDisplayColor: any };
+    element: { style: { backgroundColor: string } };
+  }) => {
     if (args.data.calendarDisplayColor) {
       args.element.style.backgroundColor = args.data.calendarDisplayColor;
     } else {
@@ -147,6 +165,7 @@ export const Calendar: React.FC = () => {
         ref={scheduleObj}
         width={'auto'}
         height={'auto'}
+        popupOpen={onPopupOpen}
       >
         <CalendarViews />
         <Inject services={services} />

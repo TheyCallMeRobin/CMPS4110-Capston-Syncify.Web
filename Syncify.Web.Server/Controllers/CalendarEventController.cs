@@ -77,6 +77,18 @@ public class CalendarEventController : ControllerBase
         return Ok(data);
     }
     
+    [HttpPut("series-singular/{id}")]
+    public async Task<ActionResult<Response<CalendarEventGetDto>>> UpdateSingularSeriesCalendarEvent(
+        [FromRoute] int id, [FromBody] CalendarEventUpdateDto dto, CancellationToken cancellationToken = default)
+    {
+        var data = await _calendarEventService.HandleSingleSeriesUpdate(id, dto with
+        {
+            UpdatedByUserId = User.GetCurrentUserId()
+            
+        }, cancellationToken);
+        return Ok(data);
+    }
+    
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> DeleteCalendarEvent(int id)
     {
