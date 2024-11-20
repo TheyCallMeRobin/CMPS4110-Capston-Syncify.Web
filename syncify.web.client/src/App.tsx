@@ -82,9 +82,8 @@ export const App: React.FC = () => {
     const changeInviteStatusDto: ChangeInviteStatusDto = { id: inviteId, status };
 
     await FamilyInviteService.changeInviteStatus({ body: changeInviteStatusDto });
-    setInvites(prevInvites => prevInvites.filter(invite => invite.id !== inviteId));
-
     toast.success(`Invite successfully ${action === 'accept' ? 'accepted' : 'declined'}`);
+    await fetchInvites();
     setLoadingAction(null);
   };
 
