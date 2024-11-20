@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './api/generated/config';
 import './App.css';
 import './syncfusion-styles.css';
 import logo from './assets/Syncify.png';
-import { useUser } from './auth/auth-context.tsx';
+import { AuthContext, useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -35,15 +35,19 @@ export const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const authContext = useContext(AuthContext);
+
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   const [{ loading: signingOut, error }, handleSignOut] =
-      useAsyncFn(async () => {
-        await AuthenticationService.logout();
-        navigate('/login');
-      }, [navigate]);
+
+    useAsyncFn(async () => {
+      await AuthenticationService.logout();
+      authContext.clearUser();
+      navigate('/login');
+    }, [authContext, navigate]);
 
   useEffect(() => {
     if (!user) {
@@ -109,32 +113,32 @@ export const App: React.FC = () => {
                 </button>
                 <li className="nav-item align-text-center">
                   <Link className="nav-link" to="/">
-                    <FaHome /> {!isSidebarCollapsed && ' Home'}
+                    <FaHome style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Home'}
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/calendars">
-                    <FaCalendarAlt /> {!isSidebarCollapsed && ' Calendar'}
+                  <Link className="nav-link" to="/calendars" >
+                    <FaCalendarAlt style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Calendar'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/reminders">
-                    <FaBell /> {!isSidebarCollapsed && ' Reminder'}
+                    <FaBell style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Reminder'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/recipes">
-                    <FaBook /> {!isSidebarCollapsed && ' Recipes'}
+                    <FaBook style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Recipes'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/shopping-lists">
-                    <FaShoppingCart /> {!isSidebarCollapsed && ' Shopping List'}
+                    <FaShoppingCart style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Shopping List'}
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/family-management">
-                    <FaUsers /> {!isSidebarCollapsed && ' Manage Family'}
+                    <FaUsers style={{ marginRight: '5px' }} /> {!isSidebarCollapsed && ' Manage Family'}
                   </Link>
                 </li>
               </ul>

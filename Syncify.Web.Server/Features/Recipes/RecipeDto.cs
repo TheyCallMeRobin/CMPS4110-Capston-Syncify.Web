@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using AutoMapper;
 using FluentValidation;
+using Syncify.Web.Server.Features.Recipes;
 
 namespace Syncify.Web.Server.Features.Recipes;
 
@@ -12,6 +13,7 @@ public record RecipeDto
     public int? CookTimeInSeconds { get; set; }
     public int? Servings { get; set; }
     public int? Feeds { get; set; }
+    public string Instructions { get; set; } = string.Empty;
 }
 
 public record RecipeGetDto(int Id, string CreatedByUserFullName) : RecipeDto;
@@ -58,5 +60,13 @@ public class RecipeCreateDtoValidator : AbstractValidator<RecipeCreateDto>
         RuleFor(x => x.PrepTimeInSeconds)
             .GreaterThan(-1)
             .When(x => x.PrepTimeInSeconds.HasValue);
+
+         RuleFor(x => x.Instructions)
+            .NotNull()
+            .WithMessage("Instructions cannot be null.")
+            .NotEmpty()
+            .WithMessage("Instructions cannot be empty.")
+            .MaximumLength(RecipeEntityConfiguration.InstructionsMaxLength)
+            .WithMessage($"Instructions cannot exceed {RecipeEntityConfiguration.InstructionsMaxLength} characters.");   
     }
 }

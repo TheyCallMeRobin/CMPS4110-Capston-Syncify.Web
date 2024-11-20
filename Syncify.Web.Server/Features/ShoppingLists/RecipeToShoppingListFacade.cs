@@ -29,7 +29,6 @@ public class RecipeToShoppingListFacade
                 .Select(x => new ShoppingListItem
                 {
                     Name = x.Name,
-                    Description = x.Description,
                     Unit = x.Unit.ToString(),
                     Quantity = x.Quantity,
                     ShoppingListId = shoppingList.Id

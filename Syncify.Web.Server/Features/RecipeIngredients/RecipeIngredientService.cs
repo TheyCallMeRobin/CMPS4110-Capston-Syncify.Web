@@ -29,7 +29,7 @@ public class RecipeIngredientService : IRecipeIngredientService
         if (await IngredientAlreadyExists(dto.RecipeId, dto.Name))
             return Error.AsResponse<RecipeIngredientGetDto>("An ingredient with this name already exists for this recipe",
                 nameof(dto.Name));
-        
+
         var ingredient = dto.MapTo<RecipeIngredient>();
 
         _dataContext.Set<RecipeIngredient>().Add(ingredient);
@@ -60,19 +60,26 @@ public class RecipeIngredientService : IRecipeIngredientService
     {
         var ingredient = await _dataContext.Set<RecipeIngredient>().FindAsync(id);
         if (ingredient is null)
-            return Error.AsResponse<RecipeIngredientGetDto>(ErrorMessages.NotFoundError, nameof(id));
-        
-        if (await IngredientAlreadyExists(ingredient.RecipeId, ingredient.Name))
-            return Error.AsResponse<RecipeIngredientGetDto>(ErrorMessages.NotFoundError, nameof(id));
+            return Error.AsResponse<RecipeIngredientGetDto>("Ingredient not found.", nameof(id));
+
+        if (dto.RecipeId != ingredient.RecipeId)
+            return Error.AsResponse<RecipeIngredientGetDto>("RecipeId mismatch.", nameof(dto.RecipeId));
+
+        var duplicateExists = await _dataContext.Set<RecipeIngredient>()
+            .AnyAsync(x => x.RecipeId == dto.RecipeId && x.Name.ToLower() == dto.Name.ToLower() && x.Id != id);
+
+        if (duplicateExists)
+            return Error.AsResponse<RecipeIngredientGetDto>("An ingredient with this name already exists for this recipe.", nameof(dto.Name));
 
         ingredient.Name = dto.Name;
-        ingredient.Description = dto.Description;
         ingredient.Quantity = dto.Quantity;
-        ingredient.Unit = Enum.Parse<Units>(dto.Unit);
+        ingredient.Unit = Enum.Parse<Units>(dto.Unit, true);
 
         await _dataContext.SaveChangesAsync();
         return ingredient.MapTo<RecipeIngredientGetDto>().AsResponse();
     }
+
+
 
     public async Task<Response> DeleteRecipeIngredient(int id)
     {

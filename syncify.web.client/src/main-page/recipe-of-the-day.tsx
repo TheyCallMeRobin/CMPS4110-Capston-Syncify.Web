@@ -5,6 +5,7 @@ import { RecipeGetDto } from '../api/generated/index.defs.ts';
 import { cardStyle } from './MainPage.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { FaUtensils } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const RecipeOfTheDay: React.FC = () => {
   const fetchRecipes = useAsync(async () => {
@@ -17,7 +18,7 @@ export const RecipeOfTheDay: React.FC = () => {
   }, []);
 
   return (
-    <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
+    <div style={cardStyle}>
       <div className={'card-header primary-bg text-white hstack gap-2'}>
         <div>
           <FaUtensils />
@@ -31,7 +32,9 @@ export const RecipeOfTheDay: React.FC = () => {
               <RecipeDisplay recipe={fetchRecipes.value} />
             </div>
             <div>
-              <a className={'btn btn-primary'}>View Recipe</a>
+              <Link to="/recipes" className={'btn btn-primary'}>
+                View Recipe
+              </Link>
             </div>
           </div>
         </LoadingContainer>
@@ -77,7 +80,7 @@ const RecipeDisplay: React.FC<RecipeDisplayProps> = ({ recipe }) => {
         <br />
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Prep Time</div>
-          <div className={'col'}>{prepTime} minutes</div>
+          <div className={'col'}>{prepTime}</div>
         </div>
         <div className={'col-md-4 col-sm-4'}>
           <div className={'col fw-bold'}>Cook Time</div>
