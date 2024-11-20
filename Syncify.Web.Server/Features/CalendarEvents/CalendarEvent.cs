@@ -17,6 +17,8 @@ public class CalendarEvent
     public string? Description { get; set; } = string.Empty;
     public string? DisplayColor { get; set; } = string.Empty;
     public string? RecurrenceRule { get; set; } = string.Empty;
+    public int? RecurrenceId { get; set; }
+    public string? RecurrenceException { get; set; }
     public bool IsCompleted { get; set; }
     public bool IsAllDay { get; set; }
     public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
@@ -24,7 +26,6 @@ public class CalendarEvent
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
     public Calendar Calendar { get; set; } = default!;
     public User CreatedByUser { get; set; } = default!;
-    
 }
 
 public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<CalendarEvent>
@@ -40,7 +41,7 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         
         builder
             .Property(x => x.RecurrenceRule)
-            .HasMaxLength(-1)
+            .HasMaxLength(100000)
             .IsUnicode(false);
 
         builder
@@ -61,6 +62,12 @@ public class CalendarEventEntityConfiguration : IEntityTypeConfiguration<Calenda
         builder
             .Property(x => x.Description)
             .IsRequired(false);
-        
+        builder
+            .Property(x => x.RecurrenceException)
+            .HasMaxLength(100000)
+            .IsRequired(false);
+        builder
+            .Property(x => x.RecurrenceId)
+            .IsRequired(false);
     }
 }

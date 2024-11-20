@@ -116,3 +116,7 @@ tr.strikethrough td:before {
     content: ' *';
     color: red;
 }
+
+.form-actions {
+    margin: 20px 0
+}
