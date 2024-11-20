@@ -33,11 +33,24 @@ public class FamilyService : IFamilyService
             return Error.AsResponse<FamilyGetDto>("There is already a family with this name for this user",
                 nameof(dto.Name));
 
+        await using var transaciton = await _dataContext.Database.BeginTransactionAsync();
+        
         var family = dto.MapTo<Family>();
-
+        
         _dataContext.Set<Family>().Add(family);
         await _dataContext.SaveChangesAsync();
 
+        var familyMember = new FamilyMember
+        {
+            UserId = dto.CreatedByUserId,
+            FamilyId = family.Id
+        };
+
+        _dataContext.Set<FamilyMember>().Add(familyMember);
+        await _dataContext.SaveChangesAsync();
+        
+        await transaciton.CommitAsync();
+        
         return family.MapTo<FamilyGetDto>().AsResponse();
     }
 
