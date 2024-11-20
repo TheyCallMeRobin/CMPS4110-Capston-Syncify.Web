@@ -11,7 +11,6 @@ import {FamilyManagement} from "./Routes/FamilyManagement/FamilyManagement.tsx";
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
 import {FamilyMemberManagement} from "./Routes/FamilyManagement/FamilyMemberManagement.tsx";
 
-
 export const ROUTES = {
   LoginPage: {
     path: '/login',
@@ -24,6 +23,10 @@ export const ROUTES = {
   FamilyMemberManagement: {
     path: 'family-members-management/:familyId',
     element: <FamilyManagement/>,
+  },
+  CalendarPage: {
+    path: '/calendars',
+    element: <CalendarPage />,
   },
   Dashboard: {
     path: '/',
@@ -45,7 +48,6 @@ export const ROUTES = {
     path: '/shopping-lists',
     element: <ShoppingLists />,
   },
-
   ShoppingListsItems: {
     path: '/shopping-list-items/:listId',
     element: <ShoppingListItems />,

@@ -9,7 +9,7 @@ import {
 } from '../../api/generated/index.defs';
 import { useUser } from '../../auth/auth-context';
 import { FaEllipsisV, FaEye, FaEdit, FaTrashAlt, FaPlus } from 'react-icons/fa';
-import Syncify from '../../Images/Syncify.png';
+import image from '../../Images/Feast.png';
 import CreateRecipe from './createrecipe';
 import ViewRecipes from './viewrecipe';
 import EditRecipes from './editrecipe';
@@ -140,7 +140,7 @@ const Recipes = () => {
           </h3>
           <div className="recipe-of-the-day-card">
             <img
-              src={Syncify}
+              src={image}
               alt="Recipe of the Day"
               className="recipe-of-the-day-image"
             />
@@ -174,7 +174,7 @@ const Recipes = () => {
       <div className="recipecontainer">
         {recipes.map((recipe) => (
           <div className="recipe-card" key={recipe.id}>
-            <img src={Syncify} alt="Recipe Image" className="recipe-image" />
+            <img src={image} alt="Recipe Image" className="recipe-image" />
             <div className="recipe-card-content">
               <h4>{recipe.name}</h4>
               <p>

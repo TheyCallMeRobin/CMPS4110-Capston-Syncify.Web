@@ -121,8 +121,6 @@ export const Calendar: React.FC = () => {
   };
 
   const onEventRendered = (args) => {
-    // eslint-disable-next-line no-restricted-syntax
-    console.log(args);
     if (args.data.calendarDisplayColor) {
       args.element.style.backgroundColor = args.data.calendarDisplayColor;
     } else {
