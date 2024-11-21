@@ -132,20 +132,22 @@
 }
 
     .actions-container .return-button {
-        padding: 10px 20px;
+        padding: 3px 12px;
         background-color: #109648;
         font-weight: bold;
         color: white;
         border: none;
+        font-size: 0.8rem;
     }
 
     .actions-container .bulk-delete-button {
-        padding: 10px 20px;
+        padding: 3px 12px;
         font-weight: bold;
         background-color: #dc3545;
         color: white;
         border: none;
         cursor: pointer;
+        font-size: 0.8rem;
     }
 
         .actions-container .bulk-delete-button:disabled {

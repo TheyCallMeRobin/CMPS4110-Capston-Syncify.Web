@@ -124,7 +124,7 @@ const ShoppingListItems: React.FC = () => {
                     onClick={isBulkDeleteEnabled ? handleBulkDelete : undefined}
                     disabled={!isBulkDeleteEnabled}
                 >
-                    Bulk Delete
+                    Delete Checked
                 </button>
             </div>
             <div className="shopping-list-items">
