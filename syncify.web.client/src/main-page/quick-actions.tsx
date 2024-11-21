@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export const QuickActions: React.FC = () => {
   return (
-    <div>
+      <div className={'card mb-4 shadow dashb' }>
       <div className={'card-header primary-bg text-white hstack gap-2'}>
         <div>
           <FaRunning />
@@ -12,7 +12,7 @@ export const QuickActions: React.FC = () => {
         <div>Quick Actions</div>
       </div>
       <div className={'card-body'}>
-        <div className={'vstack gap-3 justify-content-start'}>
+        <div className={'vstack gap-3'}>
           <div>
             <Link className={'icon-link'} style={linkStyle} to={'/calendars'}>
               <FaPlus />

@@ -17,7 +17,7 @@ public record ShoppingListItemDto
 
 public record ShoppingListItemGetDto(int Id, int ShoppingListId) : ShoppingListItemDto;
 public record ShoppingListItemCreateDto(int ShoppingListId) : ShoppingListItemDto;
-public record ShoppingListItemUpdateDto(bool IsChecked) : ShoppingListItemDto;
+public record ShoppingListItemUpdateDto : ShoppingListItemDto;
 
 public class ShoppingListItemMappingProfile : Profile
 {
@@ -37,5 +37,6 @@ public class ShoppingListItemDtoValidator : AbstractValidator<ShoppingListItemDt
         RuleFor(x => x.Unit).MaximumLength(ShoppingListItemConfiguration.UnitMaxLength).NotEmpty();
         RuleFor(x => x.Description).MaximumLength(ShoppingListItemConfiguration.DescriptionMaxLength);
         RuleFor(x => x.Quantity).GreaterThan(0);
+        RuleFor(x => x.IsChecked).NotNull();
     }
 }

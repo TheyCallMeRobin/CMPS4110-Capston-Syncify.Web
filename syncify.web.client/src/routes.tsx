@@ -27,6 +27,10 @@ export const ROUTES = {
     path: 'family-members-management/:familyId',
     element: <FamilyManagement />,
   },
+  CalendarPage: {
+    path: '/calendars',
+    element: <CalendarPage />,
+  },
   Dashboard: {
     path: '/',
     element: <MainPage />,

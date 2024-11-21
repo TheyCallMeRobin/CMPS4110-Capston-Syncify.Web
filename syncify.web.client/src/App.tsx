@@ -150,7 +150,7 @@ export const App: React.FC = () => {
               </nav>
           )}
           <main
-              className={'px-5'}
+              className={''}
               style={{ marginLeft: isSidebarCollapsed ? '80px' : '180px' }}
           >
             <Outlet />

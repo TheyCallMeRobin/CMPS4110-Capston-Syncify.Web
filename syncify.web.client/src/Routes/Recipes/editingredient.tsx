@@ -124,24 +124,9 @@ const EditIngredient: React.FC<EditIngredientProps> = ({
   }>({});
 
   const [units] = useState<string[]>([
-    'Count',
-    'Teaspoon',
-    'Tablespoon',
-    'Cup',
-    'Pint',
-    'Quart',
-    'Gallon',
-    'Milliliter',
-    'Liter',
-    'Ounce',
-    'Pound',
-    'Gram',
-    'Kilogram',
-    'Milligram',
-    'Pinch',
-    'Dash',
-    'FluidOunce',
-    'Piece',
+    "count", "tsp", "tbsp", "cup", "pint", "quart", "gallon",
+    "ml", "l", "oz", "lb", "g", "kg", "mg", "pinch", "dash",
+    "fl oz", "piece"
   ]);
 
   return (
