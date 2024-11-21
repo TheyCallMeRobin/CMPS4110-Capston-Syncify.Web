@@ -18,7 +18,7 @@ export const RecipeOfTheDay: React.FC = () => {
   }, []);
 
   return (
-    <div style={cardStyle}>
+      <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
       <div className={'card-header primary-bg text-white hstack gap-2'}>
         <div>
           <FaUtensils />

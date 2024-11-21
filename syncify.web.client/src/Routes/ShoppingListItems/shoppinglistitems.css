@@ -123,3 +123,35 @@
     align-items: center;
     margin-bottom: 10px;
 }
+
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+    .actions-container .return-button {
+        padding: 3px 12px;
+        background-color: #109648;
+        font-weight: bold;
+        color: white;
+        border: none;
+        font-size: 0.8rem;
+    }
+
+    .actions-container .bulk-delete-button {
+        padding: 3px 12px;
+        font-weight: bold;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+
+        .actions-container .bulk-delete-button:disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            color: #a0a0a0;
+        }

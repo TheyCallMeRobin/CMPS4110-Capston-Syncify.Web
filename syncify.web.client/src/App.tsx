@@ -205,8 +205,8 @@ export const App: React.FC = () => {
               </nav>
           )}
           <main
-              className={'px-5'}
-              style={{ marginLeft: isSidebarCollapsed ? '50px' : '180px' }}
+              className={''}
+              style={{ marginLeft: isSidebarCollapsed ? '80px' : '180px' }}
           >
             {isInviteMenuOpen && invites.length > 0 && (
                 <div className="invites-dropdown position-absolute bg-white border border-secondary rounded-2 p-2" style={{ right: '0', top: '50px', zIndex: '100', width: '300px' }}>
