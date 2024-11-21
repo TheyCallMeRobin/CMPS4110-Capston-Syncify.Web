@@ -19,4 +19,5 @@ public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
     }
+
 }

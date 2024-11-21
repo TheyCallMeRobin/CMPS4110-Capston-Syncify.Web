@@ -213,4 +213,29 @@ export class CalendarEventService {
       axios(configs, resolve, reject);
     });
   }
+  /**
+   *
+   */
+  static updateSingularSeriesCalendarEvent(
+    params: {
+      /**  */
+      id: number;
+      /** requestBody */
+      body?: CalendarEventUpdateDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<CalendarEventGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/calendar-events/series-singular/{id}';
+      url = url.replace('{id}', params['id'] + '');
+
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
+
+      let data = params.body;
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
 }
