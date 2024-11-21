@@ -8,6 +8,7 @@ import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
 import { App } from './App.tsx';
 import { CalendarPage } from './calendar/calendar-page.tsx';
 import { FamilyManagement } from './Routes/FamilyManagement/FamilyManagement.tsx';
+import {FamilyMemberManagement} from "./Routes/FamilyManagement/FamilyMemberManagement.tsx";
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
 
 export const ROUTES = {
@@ -24,8 +25,8 @@ export const ROUTES = {
     element: <FamilyManagement />,
   },
   FamilyMemberManagement: {
-    path: 'family-members-management/:familyId',
-    element: <FamilyManagement />,
+    path: 'family-member-management/:familyId',
+    element: <FamilyMemberManagement/>,
   },
   CalendarPage: {
     path: '/calendars',

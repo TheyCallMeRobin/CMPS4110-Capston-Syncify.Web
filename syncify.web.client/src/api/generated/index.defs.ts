@@ -406,6 +406,8 @@ export class FamilyInviteCreateDto {
 
   /**  */
   'inviteQuery': string;
+  
+  'sentByUserId': number;
 
   constructor(data: FamilyInviteCreateDto = {}) {
     Object.assign(this, data);
