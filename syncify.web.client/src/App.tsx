@@ -8,7 +8,6 @@ import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaAlignJustify,
-  FaBell,
   FaBook,
   FaCalendarAlt,
   FaHome,
@@ -122,9 +121,6 @@ export const App: React.FC = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/reminders">
-                    <FaBell style={{ marginRight: '5px' }}/> {!isSidebarCollapsed && ' Reminder'}
-                  </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/recipes">
