@@ -30,22 +30,7 @@
     min-width: 25%;
     text-align: left;
     border-radius: 5px;
-    position: relative;
 }
-
-    .shopping-list-item .shopping-list-menu-icon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        cursor: pointer;
-        z-index: 2;
-        background: none;
-        border: none;
-    }
-
-    .shopping-list-item .dropdown-toggle::after {
-        display: none;
-    }
 
 .shopping-list-title-container {
     position: absolute;
@@ -55,9 +40,48 @@
     text-align: center;
 }
 
+    .shopping-list-title-container.editing {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
 .shopping-list-title {
     font-size: 1.25rem;
     margin: 0;
+}
+
+.shopping-list-item input.form-control {
+    font-size: 1.25rem;
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: auto;
+    padding: 5px;
+}
+
+.shopping-list-item .shopping-list-menu-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 2;
+    background: none;
+    border: none;
+}
+
+.shopping-list-item .dropdown-toggle::after {
+    display: none;
+}
+
+.shopping-list-preview-container {
+    position: absolute;
+    top: 140px;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
 
 .shopping-list-preview {
@@ -82,7 +106,6 @@
     margin-top: 4px;
 }
 
-
 .shopping-list-add {
     display: flex;
     justify-content: center;
@@ -96,11 +119,10 @@
     position: relative;
 }
 
-.shopping-list-add .add-icon {
-    font-size: 3rem;
-    transform: scale(2)
-}
-
+    .shopping-list-add .add-icon {
+        font-size: 3rem;
+        transform: scale(2);
+    }
 
 .trash-icon {
     position: absolute;
