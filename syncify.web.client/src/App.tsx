@@ -250,7 +250,6 @@ export const App: React.FC = () => {
           </main>
         </div>
 
-        <ToastContainer />
       </div>
   );
 };

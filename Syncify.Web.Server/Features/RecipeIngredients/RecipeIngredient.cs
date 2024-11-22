@@ -26,5 +26,11 @@ public class RecipeIngredientEntityConfiguration : IEntityTypeConfiguration<Reci
 
         builder.HasOne(x => x.Recipe)
             .WithMany(x => x.RecipeIngredients);
+        builder.Property(x => x.Unit)
+    .HasConversion(
+        u => u.ToString(), 
+        u => (Units)Enum.Parse(typeof(Units), u) 
+    );
+
     }
 }
