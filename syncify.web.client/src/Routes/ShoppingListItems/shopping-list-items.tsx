@@ -11,9 +11,24 @@ const ShoppingListItems: React.FC = () => {
     const { listId } = useParams<{ listId: string }>();
     const [items, setItems] = useState<ShoppingListItemGetDto[]>([]);
     const [units] = useState<string[]>([
-        "count", "tsp", "tbsp", "cup", "pint", "quart", "gallon",
-        "ml", "l", "oz", "lb", "g", "kg", "mg", "pinch", "dash",
-        "fl oz", "piece"
+        'Count',
+        'Teaspoon',
+        'Tablespoon',
+        'Cup',
+        'Pint',
+        'Quart',
+        'Gallon',
+        'Milliliter',
+        'Liter',
+        'Ounce',
+        'Pound',
+        'Gram',
+        'Kilogram',
+        'Milligram',
+        'Pinch',
+        'Dash',
+        'FluidOunce',
+        'Piece',
     ]);
     const [newItem, setNewItem] = useState({ name: "", unit: "", quantity: 1 });
     const [editingItemId, setEditingItemId] = useState<number | null>(null);

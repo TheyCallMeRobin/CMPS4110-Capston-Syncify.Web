@@ -111,7 +111,10 @@ const ShoppingLists: React.FC = () => {
                 {loading && <p>Loading...</p>}
                 {error && <p>Error loading shopping lists.</p>}
                 {items.map((item) => (
-                    <div key={item.id} className="shopping-list-item">
+                    <div
+                        key={item.id}
+                        className="shopping-list-item"
+                    >
                         <Dropdown className="shopping-list-menu-dropdown">
                             <Dropdown.Toggle as="div" className="shopping-list-menu-icon">
                                 <FaEllipsisV />
@@ -132,39 +135,39 @@ const ShoppingLists: React.FC = () => {
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        {editingItemId === item.id ? (
-                            <input
-                                type="text"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                                onBlur={() => handleSaveItem(item.id)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSaveItem(item.id)}
-                                className="form-control"
-                                autoFocus
-                                ref={inputRef}
-                            />
-                        ) : (
-                            <div className="shopping-list-title-container">
+                        <div className={`shopping-list-title-container ${editingItemId === item.id ? 'editing' : ''}`}>
+                            {editingItemId === item.id ? (
+                                <input
+                                    type="text"
+                                    value={editedName}
+                                    onChange={(e) => setEditedName(e.target.value)}
+                                    onBlur={() => handleSaveItem(item.id)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSaveItem(item.id)}
+                                    className="form-control"
+                                    autoFocus
+                                    ref={inputRef}
+                                />
+                            ) : (
                                 <h2 className="shopping-list-title">{item.name}</h2>
-                                <div
-                                    className="shopping-list-preview-container"
-                                    onClick={() => navigate(`/shopping-list-items/${item.id}`)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <ul className="shopping-list-preview">
-                                        {previewItems[item.id]?.map((previewItem, index) =>
-                                            typeof previewItem === "string" ? (
-                                                <li key={index} className="preview-item">. . .</li>
-                                            ) : (
-                                                <li key={previewItem.id} className="preview-item">
-                                                    {previewItem.name}
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+                        <div
+                            className="shopping-list-preview-container"
+                            onClick={() => navigate(`/shopping-list-items/${item.id}`)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            <ul className="shopping-list-preview">
+                                {previewItems[item.id]?.map((previewItem, index) =>
+                                    typeof previewItem === "string" ? (
+                                        <li key={index} className="preview-item">. . .</li>
+                                    ) : (
+                                        <li key={previewItem.id} className="preview-item">
+                                            {previewItem.name}
+                                        </li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
                     </div>
                 ))}
                 <div className="shopping-list-add" onClick={handleAddItem}>
