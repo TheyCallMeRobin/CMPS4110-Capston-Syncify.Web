@@ -16,6 +16,7 @@ import EditRecipes from './editrecipe';
 import { useAsyncFn } from 'react-use';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Modal, Button } from 'react-bootstrap';
 
 const Recipes = () => {
     const [recipes, setRecipes] = useState<RecipeGetDto[]>([]);
@@ -33,6 +34,7 @@ const Recipes = () => {
     const [editRecipeIngredients, setEditRecipeIngredients] = useState<
         RecipeIngredientGetDto[]
     >([]);
+    const [deleteModal, setDeleteModal] = useState({ show: false, recipeId: null as number | null });
     const user = useUser();
 
     const [fetchRecipesState, fetchRecipes] = useAsyncFn(async () => {
@@ -211,7 +213,7 @@ const Recipes = () => {
                                 </button>
                                 <button
                                     className="dropdown-item text-danger"
-                                    onClick={() => handleDeleteRecipe(recipe.id)}
+                                    onClick={() => setDeleteModal({ show: true, recipeId: recipe.id })}
                                 >
                                     <FaTrashAlt /> Delete
                                 </button>
@@ -242,6 +244,28 @@ const Recipes = () => {
                     onClose={handleCloseEditModal}
                 />
             )}
+
+            <Modal show={deleteModal.show} onHide={() => setDeleteModal({ show: false, recipeId: null })} centered>
+                <Modal.Header>
+                    <Modal.Title>Delete Recipe</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this recipe? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setDeleteModal({ show: false, recipeId: null })}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (deleteModal.recipeId) handleDeleteRecipe(deleteModal.recipeId);
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
