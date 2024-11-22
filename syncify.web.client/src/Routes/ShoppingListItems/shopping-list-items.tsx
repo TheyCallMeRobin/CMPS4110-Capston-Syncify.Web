@@ -4,7 +4,7 @@ import './shoppinglistitems.css';
 import { ShoppingListItemService } from '../../api/generated/ShoppingListItemService';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService';
 import { ShoppingListItemGetDto, ShoppingListItemCreateDto } from '../../api/generated/index.defs';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Modal, Button } from 'react-bootstrap';
 import { FaEllipsisV, FaPen, FaTrashAlt, FaArrowLeft, FaPlusSquare } from 'react-icons/fa';
 
 const ShoppingListItems: React.FC = () => {
@@ -30,11 +30,13 @@ const ShoppingListItems: React.FC = () => {
         'FluidOunce',
         'Piece',
     ]);
-    const [newItem, setNewItem] = useState({ name: "", unit: "", quantity: 1 });
+    const [newItem, setNewItem] = useState({ name: '', unit: '', quantity: 1 });
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
-    const [listName, setListName] = useState<string>("");
+    const [listName, setListName] = useState<string>('');
     const [isBulkDeleteEnabled, setIsBulkDeleteEnabled] = useState<boolean>(false);
     const navigate = useNavigate();
+
+    const [deleteModal, setDeleteModal] = useState({ show: false, itemId: null as number | null });
 
     useEffect(() => {
         const fetchItemsAndListName = async () => {
@@ -71,7 +73,7 @@ const ShoppingListItems: React.FC = () => {
 
         if (createdResponse.data) {
             setItems([...items, createdResponse.data]);
-            setNewItem({ name: "", unit: "", quantity: 1 });
+            setNewItem({ name: '', unit: '', quantity: 1 });
         }
     };
 
@@ -88,7 +90,7 @@ const ShoppingListItems: React.FC = () => {
         await ShoppingListItemService.updateShoppingListItem({ id, body: itemData });
         setItems(items.map((i) => (i.id === id ? itemData : i)));
         setEditingItemId(null);
-        setNewItem({ name: "", unit: "", quantity: 1 });
+        setNewItem({ name: '', unit: '', quantity: 1 });
     };
 
     const handleDeleteItem = async (id: number) => {
@@ -155,7 +157,7 @@ const ShoppingListItems: React.FC = () => {
                                     <FaPen style={{ marginRight: '10px', color: 'green' }} />
                                     Edit
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleDeleteItem(item.id)}>
+                                <Dropdown.Item onClick={() => setDeleteModal({ show: true, itemId: item.id })}>
                                     <FaTrashAlt style={{ marginRight: '10px', color: 'red' }} />
                                     Delete
                                 </Dropdown.Item>
@@ -234,6 +236,35 @@ const ShoppingListItems: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                show={deleteModal.show}
+                onHide={() => setDeleteModal({ show: false, itemId: null })}
+                centered
+            >
+                <Modal.Header>
+                    <Modal.Title>Delete Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this item? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setDeleteModal({ show: false, itemId: null })}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (deleteModal.itemId !== null) {
+                                handleDeleteItem(deleteModal.itemId);
+                                setDeleteModal({ show: false, itemId: null });
+                            }
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
