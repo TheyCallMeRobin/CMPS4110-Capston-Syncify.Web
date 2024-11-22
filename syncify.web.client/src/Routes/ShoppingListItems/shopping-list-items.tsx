@@ -154,6 +154,12 @@ const ShoppingListItems: React.FC = () => {
                                     onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                                     className="form-control item-edit-input"
                                 />
+                                <input
+                                    type="number"
+                                    value={newItem.quantity}
+                                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                                    className="form-control item-edit-quantity"
+                                />
                                 <select
                                     value={newItem.unit}
                                     onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
@@ -164,12 +170,6 @@ const ShoppingListItems: React.FC = () => {
                                         <option key={unit} value={unit}>{unit}</option>
                                     ))}
                                 </select>
-                                <input
-                                    type="number"
-                                    value={newItem.quantity}
-                                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                                    className="form-control item-edit-quantity"
-                                />
                                 <button onClick={() => handleSaveItem(item.id)} className="btn btn-save">Save</button>
                             </>
                         ) : (
@@ -177,8 +177,8 @@ const ShoppingListItems: React.FC = () => {
                                 <div className={`column item-name ${item.isChecked ? 'checked' : ''}`}>
                                     {item.name}
                                 </div>
-                                <div className="column item-unit">{item.unit}</div>
                                 <div className="column item-quantity">Qty: {item.quantity}</div>
+                                <div className="column item-unit">{item.unit}</div>
                                 <input
                                     type="checkbox"
                                     checked={item.isChecked}
@@ -197,6 +197,13 @@ const ShoppingListItems: React.FC = () => {
                         placeholder="Enter item name"
                         className="form-control name-input"
                     />
+                    <input
+                        type="number"
+                        value={newItem.quantity}
+                        onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                        className="form-control quantity-input"
+                        min="1"
+                    />
                     <select
                         value={newItem.unit}
                         onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
@@ -207,13 +214,6 @@ const ShoppingListItems: React.FC = () => {
                             <option key={unit} value={unit}>{unit}</option>
                         ))}
                     </select>
-                    <input
-                        type="number"
-                        value={newItem.quantity}
-                        onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                        className="form-control quantity-input"
-                        min="1"
-                    />
                     <div className="shopping-list-item-add" onClick={handleAddItem}>
                         <FaPlusSquare className="add-icon" />
                     </div>
