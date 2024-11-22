@@ -16,7 +16,7 @@ import EditRecipes from './editrecipe';
 import { useAsyncFn } from 'react-use';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Dropdown } from 'react-bootstrap';
 const Recipes = () => {
     const [recipes, setRecipes] = useState<RecipeGetDto[]>([]);
     const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeGetDto | null>(
@@ -115,6 +115,7 @@ const Recipes = () => {
     useEffect(() => {
         if (deleteRecipeState.value) {
             toast.success(deleteRecipeState.value);
+            deleteRecipeState.value = undefined; 
         }
     }, [deleteRecipeState.value]);
 
@@ -125,6 +126,7 @@ const Recipes = () => {
                 deleteRecipeState.error.message ||
                 'Failed to delete recipe. Please try again.';
             toast.error(errorMessage);
+            deleteRecipeState.error = undefined; 
         }
     }, [deleteRecipeState.error]);
 
@@ -195,27 +197,28 @@ const Recipes = () => {
                             <small>Servings: {recipe.servings || 'N/A'}</small>
                         </div>
                         <div className="recipe-card-menu">
-                            <FaEllipsisV />
-                            <div className="dropdown-menu">
-                                <button
-                                    className="dropdown-item"
-                                    onClick={() => handleViewClick(recipe)}
-                                >
-                                    <FaEye /> View
-                                </button>
-                                <button
-                                    className="dropdown-item"
-                                    onClick={() => handleEditClick(recipe)}
-                                >
-                                    <FaEdit /> Edit
-                                </button>
-                                <button
-                                    className="dropdown-item text-danger"
+                        <Dropdown>
+                            <Dropdown.Toggle as="div" className="recipe-card-menu-icon">
+                                <FaEllipsisV />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => handleViewClick(recipe)}>
+                                    <FaEye style={{ marginRight: '10px', color: 'blue' }} />
+                                    View
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleEditClick(recipe)}>
+                                    <FaEdit style={{ marginRight: '10px', color: 'green' }} />
+                                    Edit
+                                </Dropdown.Item>
+                                <Dropdown.Item
                                     onClick={() => handleDeleteRecipe(recipe.id)}
+                                    className="text-danger"
                                 >
-                                    <FaTrashAlt /> Delete
-                                </button>
-                            </div>
+                                    <FaTrashAlt style={{ marginRight: '10px', color: 'red' }} />
+                                    Delete
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                         </div>
                     </div>
                 ))}
