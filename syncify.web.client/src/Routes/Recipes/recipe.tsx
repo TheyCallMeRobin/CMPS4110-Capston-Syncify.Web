@@ -10,32 +10,20 @@ import {
 import { useUser } from '../../auth/auth-context';
 import { FaEllipsisV, FaEye, FaEdit, FaTrashAlt, FaPlusSquare } from 'react-icons/fa';
 import image from '../../Images/Feast.png';
-import CreateRecipe from './createrecipe';
-import ViewRecipes from './viewrecipe';
-import EditRecipes from './editrecipe';
 import { useAsyncFn } from 'react-use';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button } from 'react-bootstrap';
 import { Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+
 const Recipes = () => {
     const [recipes, setRecipes] = useState<RecipeGetDto[]>([]);
-    const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeGetDto | null>(
-        null
-    );
-    const [recipeOfTheDayIngredients, setRecipeOfTheDayIngredients] = useState<
-        RecipeIngredientGetDto[]
-    >([]);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [viewRecipe, setViewRecipe] = useState<RecipeGetDto | null>(null);
-    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const [editRecipe, setEditRecipe] = useState<RecipeGetDto | null>(null);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editRecipeIngredients, setEditRecipeIngredients] = useState<
-        RecipeIngredientGetDto[]
-    >([]);
+    const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeGetDto | null>(null);
+    const [recipeOfTheDayIngredients, setRecipeOfTheDayIngredients] = useState<RecipeIngredientGetDto[]>([]);
     const [deleteModal, setDeleteModal] = useState({ show: false, recipeId: null as number | null });
     const user = useUser();
+    const navigate = useNavigate(); // Use useNavigate for navigation
 
     const [fetchRecipesState, fetchRecipes] = useAsyncFn(async () => {
         if (!user?.id) return;
@@ -45,58 +33,26 @@ const Recipes = () => {
         setRecipes(response.data || []);
     }, [user?.id]);
 
-    const [fetchRecipeOfTheDayState, fetchRecipeOfTheDay] =
-        useAsyncFn(async () => {
-            const recipeOfTheDayResponse = await RecipesService.getRecipeOfTheDay();
-            const recipe = recipeOfTheDayResponse.data || null;
-            setRecipeOfTheDay(recipe);
+    const [fetchRecipeOfTheDayState, fetchRecipeOfTheDay] = useAsyncFn(async () => {
+        const recipeOfTheDayResponse = await RecipesService.getRecipeOfTheDay();
+        const recipe = recipeOfTheDayResponse.data || null;
+        setRecipeOfTheDay(recipe);
 
-            if (recipe) {
-                const ingredientsResponse = await RecipeIngredientService.getAll({
-                    recipeId: recipe.id,
-                });
-                setRecipeOfTheDayIngredients(ingredientsResponse.data || []);
-            }
-        }, []);
+        if (recipe) {
+            const ingredientsResponse = await RecipeIngredientService.getAll({
+                recipeId: recipe.id,
+            });
+            setRecipeOfTheDayIngredients(ingredientsResponse.data || []);
+        }
+    }, []);
 
     useEffect(() => {
         fetchRecipes();
         fetchRecipeOfTheDay();
     }, [fetchRecipes, fetchRecipeOfTheDay]);
 
-    const handleViewClick = (recipe: RecipeGetDto) => {
-        setViewRecipe(recipe);
-        setIsViewModalOpen(true);
-    };
-
-    const handleCloseViewModal = () => {
-        setIsViewModalOpen(false);
-        setViewRecipe(null);
-    };
-
-    const handleEditClick = async (recipe: RecipeGetDto) => {
-        setEditRecipe(recipe);
-        setIsEditModalOpen(true);
-
-        const ingredientsResponse = await RecipeIngredientService.getAll({
-            recipeId: recipe.id,
-        });
-        setEditRecipeIngredients(ingredientsResponse.data || []);
-    };
-
-    const handleCloseEditModal = () => {
-        setIsEditModalOpen(false);
-        setEditRecipe(null);
-        setEditRecipeIngredients([]);
-    };
-
-    const handleUpdateRecipe = (updatedRecipe: RecipeGetDto) => {
-        setRecipes((prevRecipes) =>
-            prevRecipes.map((recipe) =>
-                recipe.id === updatedRecipe.id ? updatedRecipe : recipe
-            )
-        );
-        handleCloseEditModal();
+    const handleEditClick = (recipe: RecipeGetDto) => {
+        navigate(`/edit-recipe/${recipe.id}`);
     };
 
     const handleAddRecipe = (newRecipe: RecipeGetDto) => {
@@ -109,7 +65,7 @@ const Recipes = () => {
             setRecipes((prevRecipes) =>
                 prevRecipes.filter((recipe) => recipe.id !== recipeId)
             );
-            setDeleteModal({ show: false, recipeId: null }); 
+            setDeleteModal({ show: false, recipeId: null });
             return 'Recipe deleted successfully!';
         },
         [recipes]
@@ -118,16 +74,13 @@ const Recipes = () => {
     useEffect(() => {
         if (deleteRecipeState.value) {
             toast.success(deleteRecipeState.value);
-            deleteRecipeState.value = undefined; 
+            deleteRecipeState.value = undefined;
         }
     }, [deleteRecipeState.value]);
 
     useEffect(() => {
         if (deleteRecipeState.error) {
-            const errorMessage =
-                (deleteRecipeState.error as any)?.errors?.[0]?.errorMessage ||
-                deleteRecipeState.error.message ||
-                'Failed to delete recipe. Please try again.';
+            const errorMessage = (deleteRecipeState.error as any)?.errors?.[0]?.errorMessage || deleteRecipeState.error.message || 'Failed to delete recipe. Please try again.';
             toast.error(errorMessage);
         }
     }, [deleteRecipeState.error]);
@@ -139,28 +92,14 @@ const Recipes = () => {
 
             <div className="recipe-of-the-day-container">
                 <div className="recipe-of-the-day-wrapper">
-                    <h3 className="recipe-of-the-day-title text-center">
-                        Recipe of the Day
-                    </h3>
+                    <h3 className="recipe-of-the-day-title text-center">Recipe of the Day</h3>
                     <div className="recipe-of-the-day-card">
-                        <img
-                            src={image}
-                            alt="Recipe of the Day"
-                            className="recipe-of-the-day-image"
-                        />
+                        <img src={image} alt="Recipe of the Day" className="recipe-of-the-day-image" />
                         <div className="recipe-of-the-day-content">
                             <h4>{recipeOfTheDay?.name || 'No Recipe'}</h4>
                             <p>{recipeOfTheDay?.description || 'No description available'}</p>
-                            <small>
-                                Prep Time:{' '}
-                                {Math.round((recipeOfTheDay?.prepTimeInSeconds || 0) / 60)}{' '}
-                                minutes
-                            </small>
-                            <small>
-                                Cook Time:{' '}
-                                {Math.round((recipeOfTheDay?.cookTimeInSeconds || 0) / 60)}{' '}
-                                minutes
-                            </small>
+                            <small>Prep Time: {Math.round((recipeOfTheDay?.prepTimeInSeconds || 0) / 60)} minutes</small>
+                            <small>Cook Time: {Math.round((recipeOfTheDay?.cookTimeInSeconds || 0) / 60)} minutes</small>
                             <small>Servings: {recipeOfTheDay?.servings || 'N/A'}</small>
                             <h5>Ingredients</h5>
                             <ul className="recipe-of-the-day-ingredients">
@@ -188,14 +127,8 @@ const Recipes = () => {
                                         : recipe.description
                                     : 'No description available'}
                             </p>
-                            <small>
-                                Prep Time: {Math.round((recipe.prepTimeInSeconds || 0) / 60)}{' '}
-                                minutes
-                            </small>
-                            <small>
-                                Cook Time: {Math.round((recipe.cookTimeInSeconds || 0) / 60)}{' '}
-                                minutes
-                            </small>
+                            <small>Prep Time: {Math.round((recipe.prepTimeInSeconds || 0) / 60)} minutes</small>
+                            <small>Cook Time: {Math.round((recipe.cookTimeInSeconds || 0) / 60)} minutes</small>
                             <small>Servings: {recipe.servings || 'N/A'}</small>
                         </div>
                         <div className="recipe-card-menu">
@@ -204,7 +137,7 @@ const Recipes = () => {
                                     <FaEllipsisV />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => handleViewClick(recipe)}>
+                                    <Dropdown.Item onClick={() => navigate(`/view-recipe/${recipe.id}`)}>
                                         <FaEye style={{ marginRight: '10px', color: 'blue' }} />
                                         View
                                     </Dropdown.Item>
@@ -222,32 +155,13 @@ const Recipes = () => {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-
                     </div>
                 ))}
-                <div className="recipe-add" onClick={() => setIsCreateModalOpen(true)}>
+                {/* Navigation to Create Recipe Page */}
+                <div className="recipe-add" onClick={() => navigate('/create-recipe')}>
                     <FaPlusSquare className="add-icon" />
                 </div>
             </div>
-
-            {isCreateModalOpen && (
-                <CreateRecipe
-                    onCreate={handleAddRecipe}
-                    onClose={() => setIsCreateModalOpen(false)}
-                />
-            )}
-
-            {isViewModalOpen && viewRecipe && (
-                <ViewRecipes recipe={viewRecipe} onClose={handleCloseViewModal} />
-            )}
-
-            {isEditModalOpen && editRecipe && (
-                <EditRecipes
-                    recipe={editRecipe}
-                    onUpdate={handleUpdateRecipe}
-                    onClose={handleCloseEditModal}
-                />
-            )}
 
             <Modal show={deleteModal.show} onHide={() => setDeleteModal({ show: false, recipeId: null })} centered>
                 <Modal.Header>
