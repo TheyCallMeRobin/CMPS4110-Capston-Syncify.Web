@@ -8,13 +8,14 @@ import { ShoppingListGetDto, ShoppingListItemGetDto, ShoppingListUpdateDto } fro
 import { useUser } from '../../auth/auth-context';
 import { useAsync } from 'react-use';
 import { FaTrashAlt, FaEllipsisV, FaPen, FaEye, FaPlusSquare } from 'react-icons/fa';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Modal, Button } from 'react-bootstrap';
 
 const ShoppingLists: React.FC = () => {
     const [items, setItems] = useState<ShoppingListGetDto[]>([]);
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
     const [editedName, setEditedName] = useState<string>('');
     const [previewItems, setPreviewItems] = useState<Record<number, (ShoppingListItemGetDto | string)[]>>({});
+    const [deleteModal, setDeleteModal] = useState({ show: false, itemId: null as number | null });
     const user = useUser();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
@@ -70,6 +71,7 @@ const ShoppingLists: React.FC = () => {
     const handleDeleteItem = async (id: number) => {
         await ShoppingListsService.deleteShoppingList({ id });
         setItems(items.filter((item) => item.id !== id));
+        setDeleteModal({ show: false, itemId: null });
     };
 
     const handleSaveItem = async (id: number) => {
@@ -109,7 +111,10 @@ const ShoppingLists: React.FC = () => {
                 {loading && <p>Loading...</p>}
                 {error && <p>Error loading shopping lists.</p>}
                 {items.map((item) => (
-                    <div key={item.id} className="shopping-list-item">
+                    <div
+                        key={item.id}
+                        className="shopping-list-item"
+                    >
                         <Dropdown className="shopping-list-menu-dropdown">
                             <Dropdown.Toggle as="div" className="shopping-list-menu-icon">
                                 <FaEllipsisV />
@@ -124,51 +129,73 @@ const ShoppingLists: React.FC = () => {
                                     <FaPen style={{ marginRight: '10px', color: 'green' }} />
                                     Edit
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleDeleteItem(item.id)}>
+                                <Dropdown.Item onClick={() => setDeleteModal({ show: true, itemId: item.id })}>
                                     <FaTrashAlt style={{ marginRight: '10px', color: 'red' }} />
                                     Delete
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        {editingItemId === item.id ? (
-                            <input
-                                type="text"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                                onBlur={() => handleSaveItem(item.id)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSaveItem(item.id)}
-                                className="form-control"
-                                autoFocus
-                                ref={inputRef}
-                            />
-                        ) : (
-                            <div className="shopping-list-title-container">
+                        <div className={`shopping-list-title-container ${editingItemId === item.id ? 'editing' : ''}`}>
+                            {editingItemId === item.id ? (
+                                <input
+                                    type="text"
+                                    value={editedName}
+                                    onChange={(e) => setEditedName(e.target.value)}
+                                    onBlur={() => handleSaveItem(item.id)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSaveItem(item.id)}
+                                    className="form-control"
+                                    autoFocus
+                                    ref={inputRef}
+                                />
+                            ) : (
                                 <h2 className="shopping-list-title">{item.name}</h2>
-                                <div
-                                    className="shopping-list-preview-container"
-                                    onClick={() => navigate(`/shopping-list-items/${item.id}`)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <ul className="shopping-list-preview">
-                                        {previewItems[item.id]?.map((previewItem, index) =>
-                                            typeof previewItem === "string" ? (
-                                                <li key={index} className="preview-item">. . .</li>
-                                            ) : (
-                                                <li key={previewItem.id} className="preview-item">
-                                                    {previewItem.name}
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+                        <div
+                            className="shopping-list-preview-container"
+                            onClick={() => navigate(`/shopping-list-items/${item.id}`)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            <ul className="shopping-list-preview">
+                                {previewItems[item.id]?.map((previewItem, index) =>
+                                    typeof previewItem === "string" ? (
+                                        <li key={index} className="preview-item">. . .</li>
+                                    ) : (
+                                        <li key={previewItem.id} className="preview-item">
+                                            {previewItem.name}
+                                        </li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
                     </div>
                 ))}
                 <div className="shopping-list-add" onClick={handleAddItem}>
                     <FaPlusSquare className="add-icon" />
                 </div>
             </div>
+
+            <Modal show={deleteModal.show} onHide={() => setDeleteModal({ show: false, itemId: null })} centered>
+                <Modal.Header>
+                    <Modal.Title>Delete Shopping List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this shopping list? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setDeleteModal({ show: false, itemId: null })}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (deleteModal.itemId) handleDeleteItem(deleteModal.itemId);
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

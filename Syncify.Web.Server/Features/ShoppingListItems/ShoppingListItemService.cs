@@ -65,6 +65,7 @@ public class ShoppingListItemService : IShoppingListItemService
 
         item.Name = updateDto.Name;
         item.Quantity = updateDto.Quantity;
+        item.IsChecked = updateDto.IsChecked;
 
         await _dataContext.SaveChangesAsync();
         return item.MapTo<ShoppingListItemGetDto>().AsResponse();

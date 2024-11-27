@@ -1,31 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './shoppinglistitems.css';
 import { ShoppingListItemService } from '../../api/generated/ShoppingListItemService';
 import { ShoppingListsService } from '../../api/generated/ShoppingListsService';
 import { ShoppingListItemGetDto, ShoppingListItemCreateDto } from '../../api/generated/index.defs';
-import { Dropdown } from 'react-bootstrap';
-import { FaEllipsisV, FaPen, FaTrashAlt, FaPlusSquare } from 'react-icons/fa';
+import { Dropdown, Modal, Button } from 'react-bootstrap';
+import { FaEllipsisV, FaPen, FaTrashAlt, FaArrowLeft, FaPlusSquare } from 'react-icons/fa';
 
 const ShoppingListItems: React.FC = () => {
     const { listId } = useParams<{ listId: string }>();
     const [items, setItems] = useState<ShoppingListItemGetDto[]>([]);
     const [units] = useState<string[]>([
-        "count", "tsp", "tbsp", "cup", "pint", "quart", "gallon",
-        "ml", "l", "oz", "lb", "g", "kg", "mg", "pinch", "dash",
-        "fl oz", "piece"
+        'Count',
+        'Teaspoon',
+        'Tablespoon',
+        'Cup',
+        'Pint',
+        'Quart',
+        'Gallon',
+        'Milliliter',
+        'Liter',
+        'Ounce',
+        'Pound',
+        'Gram',
+        'Kilogram',
+        'Milligram',
+        'Pinch',
+        'Dash',
+        'FluidOunce',
+        'Piece',
     ]);
-    const [newItem, setNewItem] = useState({ name: "", unit: "", quantity: 1 });
+    const [newItem, setNewItem] = useState({ name: '', unit: '', quantity: 1 });
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
-    const [listName, setListName] = useState<string>("");
-    const [isBulkDeleteVisible, setIsBulkDeleteVisible] = useState<boolean>(false);
+    const [listName, setListName] = useState<string>('');
+    const [isBulkDeleteEnabled, setIsBulkDeleteEnabled] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    const [deleteModal, setDeleteModal] = useState({ show: false, itemId: null as number | null });
 
     useEffect(() => {
         const fetchItemsAndListName = async () => {
             if (listId) {
                 const shoppingListId = parseInt(listId);
                 const itemsResponse = await ShoppingListItemService.getShoppingListItems({ shoppingListId });
-                setItems(itemsResponse.data || []);
+                const fetchedItems = itemsResponse.data || [];
+
+                setItems(fetchedItems);
+                setIsBulkDeleteEnabled(fetchedItems.some((item) => item.isChecked));
 
                 const listResponse = await ShoppingListsService.getShoppingListById({ id: shoppingListId });
                 if (listResponse.data) setListName(listResponse.data.name);
@@ -52,7 +73,7 @@ const ShoppingListItems: React.FC = () => {
 
         if (createdResponse.data) {
             setItems([...items, createdResponse.data]);
-            setNewItem({ name: "", unit: "", quantity: 1 });
+            setNewItem({ name: '', unit: '', quantity: 1 });
         }
     };
 
@@ -69,7 +90,7 @@ const ShoppingListItems: React.FC = () => {
         await ShoppingListItemService.updateShoppingListItem({ id, body: itemData });
         setItems(items.map((i) => (i.id === id ? itemData : i)));
         setEditingItemId(null);
-        setNewItem({ name: "", unit: "", quantity: 1 });
+        setNewItem({ name: '', unit: '', quantity: 1 });
     };
 
     const handleDeleteItem = async (id: number) => {
@@ -77,15 +98,26 @@ const ShoppingListItems: React.FC = () => {
         setItems(items.filter((item) => item.id !== id));
     };
 
-    const toggleItemChecked = (id: number) => {
+    const toggleItemChecked = async (id: number) => {
+        const item = items.find((item) => item.id === id);
+        if (!item) return;
+
+        const updatedItem = { ...item, isChecked: !item.isChecked };
+
+        const response = await ShoppingListItemService.updateShoppingListItem({
+            id: item.id,
+            body: updatedItem,
+        });
+
         setItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, isChecked: !item.isChecked } : item
+            prevItems.map((i) =>
+                i.id === id ? { ...i, isChecked: response.data!.isChecked } : i
             )
         );
 
-        const anyChecked = items.some((item) => item.id === id ? !item.isChecked : item.isChecked);
-        setIsBulkDeleteVisible(anyChecked);
+        setIsBulkDeleteEnabled(
+            items.some((item) => item.id === id ? !item.isChecked : item.isChecked)
+        );
     };
 
     const handleBulkDelete = async () => {
@@ -94,21 +126,24 @@ const ShoppingListItems: React.FC = () => {
             checkedItems.map((item) => ShoppingListItemService.deleteShoppingListItem({ id: item.id }))
         );
         setItems(items.filter((item) => !item.isChecked));
-        setIsBulkDeleteVisible(false); // Hide trash can after deletion
+        setIsBulkDeleteEnabled(false);
     };
 
     return (
         <div className="shopping-list-items-page">
             <h2>Items for {listName} List</h2>
-            {isBulkDeleteVisible && (
-                <div className="bulk-delete-container">
-                    <FaTrashAlt
-                        onClick={handleBulkDelete}
-                        style={{ cursor: 'pointer', color: 'red', fontSize: '1rem', marginRight: '1rem' }}
-                        title="Delete Selected"
-                    />
-                </div>
-            )}
+            <div className="actions-container">
+                <button className="btn btn-secondary return-button" onClick={() => navigate('/shopping-lists')}>
+                    <FaArrowLeft style={{ marginRight: '8px' }} /> Return to Shopping Lists
+                </button>
+                <button
+                    className="btn btn-danger bulk-delete-button"
+                    onClick={isBulkDeleteEnabled ? handleBulkDelete : undefined}
+                    disabled={!isBulkDeleteEnabled}
+                >
+                    Delete Checked
+                </button>
+            </div>
             <div className="shopping-list-items">
                 {items.map((item) => (
                     <div key={item.id} className="shopping-list-item-row">
@@ -122,7 +157,7 @@ const ShoppingListItems: React.FC = () => {
                                     <FaPen style={{ marginRight: '10px', color: 'green' }} />
                                     Edit
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleDeleteItem(item.id)}>
+                                <Dropdown.Item onClick={() => setDeleteModal({ show: true, itemId: item.id })}>
                                     <FaTrashAlt style={{ marginRight: '10px', color: 'red' }} />
                                     Delete
                                 </Dropdown.Item>
@@ -136,6 +171,12 @@ const ShoppingListItems: React.FC = () => {
                                     onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                                     className="form-control item-edit-input"
                                 />
+                                <input
+                                    type="number"
+                                    value={newItem.quantity}
+                                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                                    className="form-control item-edit-quantity"
+                                />
                                 <select
                                     value={newItem.unit}
                                     onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
@@ -146,12 +187,6 @@ const ShoppingListItems: React.FC = () => {
                                         <option key={unit} value={unit}>{unit}</option>
                                     ))}
                                 </select>
-                                <input
-                                    type="number"
-                                    value={newItem.quantity}
-                                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                                    className="form-control item-edit-quantity"
-                                />
                                 <button onClick={() => handleSaveItem(item.id)} className="btn btn-save">Save</button>
                             </>
                         ) : (
@@ -159,8 +194,8 @@ const ShoppingListItems: React.FC = () => {
                                 <div className={`column item-name ${item.isChecked ? 'checked' : ''}`}>
                                     {item.name}
                                 </div>
-                                <div className="column item-unit">{item.unit}</div>
                                 <div className="column item-quantity">Qty: {item.quantity}</div>
+                                <div className="column item-unit">{item.unit}</div>
                                 <input
                                     type="checkbox"
                                     checked={item.isChecked}
@@ -179,6 +214,13 @@ const ShoppingListItems: React.FC = () => {
                         placeholder="Enter item name"
                         className="form-control name-input"
                     />
+                    <input
+                        type="number"
+                        value={newItem.quantity}
+                        onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                        className="form-control quantity-input"
+                        min="1"
+                    />
                     <select
                         value={newItem.unit}
                         onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
@@ -189,18 +231,40 @@ const ShoppingListItems: React.FC = () => {
                             <option key={unit} value={unit}>{unit}</option>
                         ))}
                     </select>
-                    <input
-                        type="number"
-                        value={newItem.quantity}
-                        onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                        className="form-control quantity-input"
-                        min="1"
-                    />
                     <div className="shopping-list-item-add" onClick={handleAddItem}>
                         <FaPlusSquare className="add-icon" />
                     </div>
                 </div>
             </div>
+
+            <Modal
+                show={deleteModal.show}
+                onHide={() => setDeleteModal({ show: false, itemId: null })}
+                centered
+            >
+                <Modal.Header>
+                    <Modal.Title>Delete Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this item? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setDeleteModal({ show: false, itemId: null })}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (deleteModal.itemId !== null) {
+                                handleDeleteItem(deleteModal.itemId);
+                                setDeleteModal({ show: false, itemId: null });
+                            }
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

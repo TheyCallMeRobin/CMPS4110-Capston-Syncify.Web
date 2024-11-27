@@ -25,7 +25,7 @@ namespace Syncify.Web.Server.Migrations
             migrationBuilder.AlterColumn<int>(
                 name: "Unit",
                 table: "RecipeIngredients",
-                type: "int",
+                type: "nvarchar(10)",
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");

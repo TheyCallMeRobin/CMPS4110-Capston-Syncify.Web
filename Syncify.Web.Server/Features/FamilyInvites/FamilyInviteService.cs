@@ -39,6 +39,13 @@ public class FamilyInviteService : IFamilyInviteService
         if (user is null)
             return Error.AsResponse<FamilyInviteGetDto>("User not found", nameof(dto.InviteQuery));
 
+        var invite = await _dataContext
+            .Set<FamilyInvite>()
+            .FirstOrDefaultAsync(x => x.FamilyId == family.Id && x.UserId == user.Id);
+
+        if (invite is not null)
+            return Error.AsResponse<FamilyInviteGetDto>("This user has already been invited to this family");
+        
         var familyInvite = new FamilyInvite
         {
             SentByUserId = dto.SentByUserId,

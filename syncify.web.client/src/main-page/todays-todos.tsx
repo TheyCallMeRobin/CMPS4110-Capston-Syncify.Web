@@ -5,6 +5,7 @@ import React, { CSSProperties } from 'react';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
 import { CalendarEventGetDto } from '../api/generated/index.defs.ts';
+import { cardStyle } from './MainPage.tsx';
 import { FaClipboardList } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -80,7 +81,7 @@ export const TodaysTodos: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div className={'card mb-4 shadow dashboard-card'} style={cardStyle}>
         <div className={'card-header primary-bg text-white hstack gap-2'}>
           <div>
             <FaClipboardList />

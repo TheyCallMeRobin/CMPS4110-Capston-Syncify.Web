@@ -115,27 +115,26 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ onCreate, onClose }) => {
     setCreatedRecipeId(null);
     onClose();
   };
-
-  const [units] = useState<string[]>([
-    'Count',
-    'Teaspoon',
-    'Tablespoon',
-    'Cup',
-    'Pint',
-    'Quart',
-    'Gallon',
-    'Milliliter',
-    'Liter',
-    'Ounce',
-    'Pound',
-    'Gram',
-    'Kilogram',
-    'Milligram',
-    'Pinch',
-    'Dash',
-    'FluidOunce',
-    'Piece',
-  ]);
+    const [units] = useState<string[]>([
+        'Count',
+        'Teaspoon',
+        'Tablespoon',
+        'Cup',
+        'Pint',
+        'Quart',
+        'Gallon',
+        'Milliliter',
+        'Liter',
+        'Ounce',
+        'Pound',
+        'Gram',
+        'Kilogram',
+        'Milligram',
+        'Pinch',
+        'Dash',
+        'FluidOunce',
+        'Piece',
+    ]);
 
   return (
     <>
