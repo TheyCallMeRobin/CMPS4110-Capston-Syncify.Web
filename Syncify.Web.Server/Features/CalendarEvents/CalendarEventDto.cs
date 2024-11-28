@@ -1,7 +1,5 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using System.Text.Json.Serialization;
-using Syncify.Web.Server.Extensions;
 
 namespace Syncify.Web.Server.Features.CalendarEvents;
 
@@ -14,8 +12,8 @@ public record CalendarEventDto
     public int? RecurrenceId { get; set; }
     public string? RecurrenceException { get; set; }
     public bool IsCompleted { get; set; }
-    public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
-    public DateTimeOffset? EndsOn { get; set; }
+
+
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
 }
 
@@ -24,12 +22,38 @@ public record CalendarEventGetDto : CalendarEventDto
     public int Id { get; set; }
     public string? CalendarDisplayColor { get; set; }
 
+    public DateTimeOffset? StartsOn { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset? EndsOn { get; set; }
+    
     public bool IsAllDay { get; set; }
 }
 
-public record CalendarEventUpdateDto(int? UpdatedByUserId) : CalendarEventDto;
+public record CalendarEventWriteDto : CalendarEventDto
+{
+    public TimeOnly StartsOnTime { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
+    public TimeOnly? EndsOnTime { get; set; }
+    
+    /// <remarks>
+    /// This is <see cref="DateTimeOffset"/> rather than <see cref="DateOnly" />
+    /// the TimeZone Offset needs to be captured as well
+    /// </remarks>
+    public DateTimeOffset StartsOnDate { get; set; }
+    
+    /// <remarks>
+    /// This is <see cref="DateTimeOffset"/> rather than <see cref="DateOnly" />
+    /// the TimeZone Offset needs to be captured as well
+    /// </remarks>
+    public DateTimeOffset? EndsOnDate { get; set; }
+}
 
-public record CalendarEventCreateDto : CalendarEventDto
+public record CalendarEventUpdateDto : CalendarEventWriteDto
+{
+    
+    [JsonIgnore]
+    public int? UpdatedByUserId { get; set; }
+};
+
+public record CalendarEventCreateDto : CalendarEventWriteDto
 {
     
     [JsonIgnore]
@@ -44,18 +68,7 @@ public class CalendarEventMappingProfile : Profile
     {
         CreateMap<CalendarEvent, CalendarEventDto>();
         CreateMap<CalendarEventUpdateDto, CalendarEvent>();
-        CreateMap<CalendarEventCreateDto, CalendarEvent>()
-            .ForMember(x => x.EndsOn, opts => opts.MapFrom(x => MapEndsOn(x)));
+        CreateMap<CalendarEventCreateDto, CalendarEvent>();
         CreateMap<CalendarEvent, CalendarEventGetDto>();
-    }
-    
-    private static DateTimeOffset? MapEndsOn(CalendarEventCreateDto dto)
-    {
-        if (!dto.EndsOn.HasValue)
-        {
-            return dto.StartsOn?.EndOfDay() ?? DateTimeOffset.Now.EndOfDay();
-        }
-
-        return dto.EndsOn;
     }
 }
