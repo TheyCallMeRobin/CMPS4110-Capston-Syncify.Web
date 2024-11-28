@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginPage.css';
@@ -9,6 +9,8 @@ import { LoginDto } from '../../api/generated/index.defs.ts';
 import { useAsyncFn } from 'react-use';
 import { AuthenticationService } from '../../api/generated/AuthenticationService.ts';
 import { notify } from '../../hooks/use-subscription.ts';
+import { useUser } from '../../auth/auth-context.tsx';
+import { ROUTES } from '../../routes.tsx';
 
 const defaultLoginData: LoginDto = {
   username: '',
@@ -19,11 +21,20 @@ export const LoginPage: React.FC = () => {
   const [loginData, setLoginData] = useState<LoginDto>(defaultLoginData);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const user = useUser();
 
   const notifyError = (message: string) => {
     toast.dismiss();
     toast.error(message);
   };
+
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+
+    if (user && currentPath === ROUTES.LoginPage.path) {
+      navigate(ROUTES.Dashboard.path, { replace: true });
+    }
+  }, [navigate, user]);
 
   const [, handleLogin] = useAsyncFn(
     async (event: React.FormEvent) => {
