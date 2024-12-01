@@ -39,13 +39,44 @@ public class FamilyInviteService : IFamilyInviteService
         if (user is null)
             return Error.AsResponse<FamilyInviteGetDto>("User not found", nameof(dto.InviteQuery));
 
-        var invite = await _dataContext
+        var existingMember = await _dataContext
+            .Set<FamilyMember>()
+            .FirstOrDefaultAsync(x => x.FamilyId == family.Id && x.UserId == user.Id);
+
+        if (existingMember != null)
+        {
+            return Error.AsResponse<FamilyInviteGetDto>("This user is already a member of the family.");
+        }
+
+        var existingInvite = await _dataContext
             .Set<FamilyInvite>()
             .FirstOrDefaultAsync(x => x.FamilyId == family.Id && x.UserId == user.Id);
 
-        if (invite is not null)
-            return Error.AsResponse<FamilyInviteGetDto>("This user has already been invited to this family");
-        
+        if (existingInvite != null)
+        {
+            if (existingInvite.Status == InviteStatus.Declined || existingInvite.ExpiresOn < DateTime.UtcNow)
+            {
+                existingInvite.Status = InviteStatus.Pending;
+                existingInvite.SentByUserId = dto.SentByUserId;
+                existingInvite.ExpiresOn = dto.ExpiresOn;
+
+                await _dataContext.SaveChangesAsync();
+                return existingInvite.MapTo<FamilyInviteGetDto>().AsResponse();
+            }
+
+            if (existingInvite.Status == InviteStatus.Accepted)
+            {
+                existingInvite.Status = InviteStatus.Pending;
+                existingInvite.SentByUserId = dto.SentByUserId;
+                existingInvite.ExpiresOn = dto.ExpiresOn;
+
+                await _dataContext.SaveChangesAsync();
+                return existingInvite.MapTo<FamilyInviteGetDto>().AsResponse();
+            }
+
+            return Error.AsResponse<FamilyInviteGetDto>("This user has already been invited to this family.");
+        }
+
         var familyInvite = new FamilyInvite
         {
             SentByUserId = dto.SentByUserId,
@@ -59,7 +90,7 @@ public class FamilyInviteService : IFamilyInviteService
 
         return familyInvite.MapTo<FamilyInviteGetDto>().AsResponse();
     }
-    
+
     public async Task<Response<FamilyInviteGetDto>> ChangeInviteStatusAsync(ChangeInviteStatusDto dto)
     {
         var invite = await _dataContext.Set<FamilyInvite>().FirstOrDefaultAsync(x => x.Id == dto.Id);
@@ -67,9 +98,9 @@ public class FamilyInviteService : IFamilyInviteService
             return Error.AsResponse<FamilyInviteGetDto>("Invite not found");
 
         await using var transaction = await _dataContext.Database.BeginTransactionAsync();
-        
+
         invite.Status = dto.Status;
-        
+
         await _dataContext.SaveChangesAsync();
 
         if (dto.Status == InviteStatus.Accepted)
@@ -85,7 +116,7 @@ public class FamilyInviteService : IFamilyInviteService
 
         await _dataContext.SaveChangesAsync();
         await transaction.CommitAsync();
-        
+
         return invite.MapTo<FamilyInviteGetDto>().AsResponse();
     }
 
@@ -93,7 +124,7 @@ public class FamilyInviteService : IFamilyInviteService
     {
         var invites = await _dataContext
             .Set<FamilyInvite>()
-            .Where(x => x.UserId == userId)
+            .Where(x => x.UserId == userId && x.Status == InviteStatus.Pending)
             .ProjectTo<FamilyInviteGetDto>()
             .ToListAsync();
 
