@@ -510,6 +510,66 @@
         }
       }
     },
+    "/api/calendar-events/series-singular/{id}": {
+      "put": {
+        "tags": [
+          "CalendarEvent"
+        ],
+        "operationId": "UpdateSingularSeriesCalendarEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<CalendarEventGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/calendars": {
       "post": {
         "tags": [
@@ -2775,6 +2835,149 @@
         }
       }
     },
+    "/api/Reminders": {
+      "post": {
+        "tags": [
+          "Reminders"
+        ],
+        "operationId": "CreateReminder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Reminders/user/{userId}": {
+      "get": {
+        "tags": [
+          "Reminders"
+        ],
+        "operationId": "GetRemindersByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Reminders/{id}": {
+      "get": {
+        "tags": [
+          "Reminders"
+        ],
+        "operationId": "GetReminderById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Reminders"
+        ],
+        "operationId": "UpdateReminder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Reminders"
+        ],
+        "operationId": "DeleteReminder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/shopping-list-items/list/{shoppingListId}": {
       "get": {
         "tags": [
@@ -3383,12 +3586,18 @@
           "calendarEventType",
           "calendarId",
           "isCompleted",
+          "startsOnDate",
+          "startsOnTime",
           "title"
         ],
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
+          },
+          "calendarId": {
+            "type": "integer",
+            "format": "int32"
           },
           "description": {
             "type": "string",
@@ -3398,25 +3607,38 @@
             "type": "string",
             "nullable": true
           },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
+            "type": "string",
+            "nullable": true
+          },
           "isCompleted": {
             "type": "boolean"
           },
-          "startsOn": {
+          "startsOnTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnTime": {
             "type": "string",
             "format": "date-time",
             "nullable": true
           },
-          "endsOn": {
+          "startsOnDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
           },
           "calendarEventType": {
             "$ref": "#/components/schemas/CalendarEventType"
-          },
-          "calendarId": {
-            "type": "integer",
-            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -3428,12 +3650,18 @@
           "id",
           "isAllDay",
           "isCompleted",
+          "startsOnDate",
+          "startsOnTime",
           "title"
         ],
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
+          },
+          "calendarId": {
+            "type": "integer",
+            "format": "int32"
           },
           "description": {
             "type": "string",
@@ -3443,15 +3671,32 @@
             "type": "string",
             "nullable": true
           },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
+            "type": "string",
+            "nullable": true
+          },
           "isCompleted": {
             "type": "boolean"
           },
-          "startsOn": {
+          "startsOnTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnTime": {
             "type": "string",
             "format": "date-time",
             "nullable": true
           },
-          "endsOn": {
+          "startsOnDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -3463,12 +3708,18 @@
             "type": "integer",
             "format": "int32"
           },
-          "calendarId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "calendarDisplayColor": {
             "type": "string",
+            "nullable": true
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endsOn": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
           "isAllDay": {
@@ -3487,13 +3738,20 @@
       "CalendarEventUpdateDto": {
         "required": [
           "calendarEventType",
+          "calendarId",
           "isCompleted",
+          "startsOnDate",
+          "startsOnTime",
           "title"
         ],
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
+          },
+          "calendarId": {
+            "type": "integer",
+            "format": "int32"
           },
           "description": {
             "type": "string",
@@ -3503,15 +3761,32 @@
             "type": "string",
             "nullable": true
           },
+          "recurrenceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recurrenceException": {
+            "type": "string",
+            "nullable": true
+          },
           "isCompleted": {
             "type": "boolean"
           },
-          "startsOn": {
+          "startsOnTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnTime": {
             "type": "string",
             "format": "date-time",
             "nullable": true
           },
-          "endsOn": {
+          "startsOnDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsOnDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4283,6 +4558,54 @@
           },
           "instructions": {
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReminderCreateDto": {
+        "required": [
+          "description",
+          "reminderDateTime",
+          "title",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "reminderDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReminderUpdateDto": {
+        "required": [
+          "description",
+          "id",
+          "reminderDateTime",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "reminderDateTime": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

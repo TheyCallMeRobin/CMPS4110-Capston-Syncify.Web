@@ -24,9 +24,9 @@ public class CalendarEventCreateDtoValidator : AbstractValidator<CalendarEventCr
             .When(ValidatorHelper.StartsOnIsTheSameDay)
             .WithMessage("{PropertyName} must be after Starts On");
         
-        RuleFor(x => x.EndsOnDate)
-            .GreaterThan(x => x.StartsOnDate)
-            .When(x => x.EndsOnDate is not null);
+        // RuleFor(x => x.EndsOnDate)
+        //     .GreaterThan(x => x.StartsOnDate)
+        //     .When(x => x.EndsOnDate is not null);
     }
 }
 
@@ -41,20 +41,24 @@ public class CalendarEventUpdateDtoValidator : AbstractValidator<CalendarEventUp
             .When(ValidatorHelper.StartsOnIsTheSameDay)
             .WithMessage("{PropertyName} must be after Starts On");
 
-        RuleFor(x => x.EndsOnDate)
-            .GreaterThan(x => x.StartsOnDate)
-            .When(x => x.EndsOnDate is not null);
+        // RuleFor(x => x.EndsOnDate)
+        //     .GreaterThan(x => x.StartsOnDate)
+        //     .When(x => x.EndsOnDate is not null);
     }
 }
 
 file static class ValidatorHelper
 {
-    public static bool StartsOnIsTheSameDay(CalendarEventWriteDto calendarEvent)
+    public static bool StartsOnIsTheSameDay(CalendarEventDto calendarEvent)
     {
         return calendarEvent switch
         {
             { EndsOnTime: null, EndsOnDate: null } => false,
             { EndsOnDate: null } => false,
+            {
+                StartsOnDate.Date: var startsOnDate, StartsOnTime.TimeOfDay: var startsOnTime, 
+                EndsOnDate.Date: var endsOnDate, EndsOnTime.TimeOfDay: var endsOnTime
+            } when startsOnDate == endsOnDate && startsOnTime != endsOnTime => false,
             {
                 StartsOnDate.Date: var startsOnDate, EndsOnDate.Date: var endsOnDate
             } when startsOnDate == endsOnDate => true,

@@ -5,7 +5,7 @@ import {
   CalendarEventUpdateDto,
   OptionDto,
 } from '../../api/generated/index.defs.ts';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { Controller, DefaultValues, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from 'react-bootstrap';
 import {
@@ -17,14 +17,25 @@ import { CalendarsService } from '../../api/generated/CalendarsService.ts';
 import { useUser } from '../../auth/auth-context.tsx';
 import {
   HtmlEditor,
+  QuickToolbar,
   RichTextEditorComponent,
   Toolbar,
 } from '@syncfusion/ej2-react-richtexteditor';
 import { toolbarSettings } from './text-editor-settings.ts';
-import { DateTimeField, EventFormProps, FormValues } from './types.ts';
+import { EventFormProps, FormValues } from './types.ts';
 import { schema } from './index.ts';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
-type UpdateDateFunc = (date: Date) => void;
+const today = new Date();
+const oneHourFromNow = new Date(
+  today.getFullYear(),
+  today.getMonth(),
+  today.getDay(),
+  today.getHours() + 1,
+  today.getMinutes(),
+  today.getSeconds()
+);
 
 export const EventForm = <
   T extends CalendarEventCreateDto | CalendarEventUpdateDto
@@ -43,50 +54,77 @@ export const EventForm = <
 
   const loading = fetchCalendarOptions.loading;
 
-  const handleRRuleChange = (args: { value: string | undefined }) => {
+  const handleRRuleChange = (args: { value?: string }) => {
     setValue('recurrenceRule', args.value);
   };
+
+  const firstCalendarId = useMemo(
+    () => fetchCalendarOptions.value?.map((option) => option.value).at(0) ?? 0,
+    [fetchCalendarOptions.value]
+  );
+
+  const defaultCalendarId = useMemo(
+    () =>
+      Number(initialValues?.calendarId) > 0
+        ? initialValues?.calendarId
+        : firstCalendarId,
+    [firstCalendarId, initialValues?.calendarId]
+  );
 
   const defaultValues: DefaultValues<FormValues> = useMemo<
     DefaultValues<FormValues>
   >(
     () => ({
-      title: initialValues?.title ?? '',
-      description: initialValues?.description ?? undefined,
-      startsOn: initialValues
-        ? new Date(initialValues.startsOn?.toDateString() ?? '')
-        : new Date(),
-      endsOn: initialValues?.endsOn
-        ? new Date(initialValues.endsOn)
-        : undefined,
+      title: initialValues?.title,
+      description: initialValues?.description,
+      startsOnDate: initialValues?.startsOnDate ?? today,
+      startsOnTime: initialValues?.startsOnTime ?? today,
+      endsOnDate: initialValues?.endsOnDate ?? today,
+      endsOnTime: initialValues?.endsOnTime ?? oneHourFromNow,
       calendarEventType:
         initialValues?.calendarEventType ?? CalendarEventType.Event,
       recurrenceRule: initialValues?.recurrenceRule ?? '',
-      calendarId:
-        initialValues?.calendarId ??
-        fetchCalendarOptions.value?.map((x) => x.value).at(0) ??
-        0,
+      calendarId: defaultCalendarId,
     }),
-    [fetchCalendarOptions.value, initialValues]
+    [
+      defaultCalendarId,
+      initialValues?.calendarEventType,
+      initialValues?.description,
+      initialValues?.endsOnDate,
+      initialValues?.endsOnTime,
+      initialValues?.recurrenceRule,
+      initialValues?.startsOnDate,
+      initialValues?.startsOnTime,
+      initialValues?.title,
+    ]
   );
 
   const {
     handleSubmit,
     register,
     setValue,
-    getValues,
     watch,
+    control,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
+    shouldFocusError: true,
   });
 
   const [, _onSubmit] = useAsyncFn(
     async (values: FormValues) => {
-      await onSubmit(values as T);
+      if (
+        values.calendarId === 0 ||
+        !defaultValues.calendarId ||
+        defaultValues.calendarId <= 0
+      ) {
+        values.calendarId = Number(defaultCalendarId);
+      }
+
+      await onSubmit(values as any as T);
     },
-    [onSubmit]
+    [defaultCalendarId, defaultValues.calendarId, onSubmit]
   );
 
   const _onClose = () => {
@@ -94,35 +132,6 @@ export const EventForm = <
   };
 
   const eventType = watch('calendarEventType');
-
-  function updateDateTime(fieldName: DateTimeField, update: UpdateDateFunc) {
-    const selectedField: Date = getValues(fieldName) ?? new Date();
-    const newValue = new Date(selectedField);
-
-    update(newValue);
-
-    setValue(fieldName, newValue);
-  }
-
-  function handleTimeFieldChange(timeString: string, fieldName: DateTimeField) {
-    const [hours, minutes] = timeString.split(':').map(Number);
-
-    updateDateTime(fieldName, (date) => {
-      date.setHours(hours, minutes, 0, 0);
-    });
-  }
-
-  function handleDateFieldChange(dateString: string, fieldName: DateTimeField) {
-    const date = new Date(dateString);
-
-    updateDateTime(fieldName, (selectedField) => {
-      selectedField.setFullYear(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      );
-    });
-  }
 
   return (
     <>
@@ -134,11 +143,7 @@ export const EventForm = <
                 <Form.Label className="form-required" column={false}>
                   Event Title
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  {...register('title')}
-                  isValid={!errors.title}
-                />
+                <Form.Control type="text" {...register('title')} size={'lg'} />
                 {errors.title && (
                   <p style={{ color: 'red' }}>{errors.title.message}</p>
                 )}
@@ -151,16 +156,14 @@ export const EventForm = <
                 </Form.Label>
                 <Form.Select
                   {...register('calendarId', { valueAsNumber: true })}
-                  defaultValue={fetchCalendarOptions.value
-                    ?.map((x) => x.value)
-                    .at(0)}
-                  isValid={!errors.calendarId}
                 >
-                  {fetchCalendarOptions.value?.map((option: OptionDto) => (
-                    <option key={option.value} value={option?.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  {fetchCalendarOptions.value?.map((option: OptionDto) => {
+                    return (
+                      <option key={option.value} value={option?.value}>
+                        {option.label}
+                      </option>
+                    );
+                  })}
                 </Form.Select>
                 {errors.calendarId && (
                   <p style={{ color: 'red' }}>{errors.calendarId.message}</p>
@@ -174,10 +177,7 @@ export const EventForm = <
                 <Form.Label className="form-required" column={false}>
                   Type
                 </Form.Label>
-                <Form.Select
-                  {...register('calendarEventType')}
-                  isValid={!errors.calendarEventType}
-                >
+                <Form.Select {...register('calendarEventType')}>
                   <option value={CalendarEventType.Event}>Event</option>
                   <option value={CalendarEventType.Task}>Task</option>
                 </Form.Select>
@@ -192,9 +192,9 @@ export const EventForm = <
           <div className="row">
             <div className="col-md-12">
               <Form.Group className="mb-3">
-                <Form.Label column={false}>Description Test</Form.Label>
+                <Form.Label column={false}>Description</Form.Label>
                 <RichTextEditorComponent toolbarSettings={toolbarSettings}>
-                  <Inject services={[Toolbar, HtmlEditor]} />
+                  <Inject services={[Toolbar, HtmlEditor, QuickToolbar]} />
                 </RichTextEditorComponent>
                 {errors.description && (
                   <p style={{ color: 'red' }}>{errors.description.message}</p>
@@ -202,63 +202,135 @@ export const EventForm = <
               </Form.Group>
             </div>
           </div>
-
           <div className="row">
             <div className="col-md-6">
               <Form.Label className="form-required" column={false}>
                 Starts On
               </Form.Label>
               <div className="d-flex gap-2">
-                <Form.Control
-                  type="date"
-                  onChange={(e) =>
-                    handleDateFieldChange(e.currentTarget.value, 'startsOn')
-                  }
-                  isValid={!errors.startsOn}
-                />
-                <Form.Control
-                  type="time"
-                  onChange={(e) =>
-                    handleTimeFieldChange(e.currentTarget.value, 'startsOn')
-                  }
-                  isValid={!errors.endsOn}
-                />
+                <div>
+                  <Controller
+                    name="startsOnDate"
+                    control={control}
+                    defaultValue={defaultValues.endsOnDate}
+                    render={({
+                      field: { onChange, value, name, ...field },
+                    }) => (
+                      <DatePicker
+                        {...field}
+                        slotProps={{ textField: { size: 'small' } }}
+                        onChange={(value) =>
+                          onChange(new Date(value?.toString() ?? ''))
+                        }
+                        value={value ? dayjs(value) : value}
+                        name={name}
+                        defaultValue={value ? dayjs(value) : value}
+                      />
+                    )}
+                  />
+                  {errors.startsOnDate && (
+                    <p style={{ color: 'red' }}>
+                      {errors.startsOnDate?.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Controller
+                    name="startsOnTime"
+                    control={control}
+                    defaultValue={defaultValues.endsOnDate}
+                    render={({
+                      field: { onChange, value, name, ...field },
+                    }) => (
+                      <TimePicker
+                        {...field}
+                        slotProps={{ textField: { size: 'small' } }}
+                        onChange={(value) =>
+                          onChange(new Date(value?.toString() ?? ''))
+                        }
+                        value={value ? dayjs(value) : value}
+                        name={name}
+                        defaultValue={value ? dayjs(value) : value}
+                      />
+                    )}
+                  />
+                  {errors.startsOnTime && (
+                    <p style={{ color: 'red' }}>
+                      {errors.startsOnTime?.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              {errors.startsOn && (
-                <p style={{ color: 'red' }}>{errors.startsOn.message}</p>
-              )}
             </div>
             {(eventType === CalendarEventType.Event || !eventType) && (
               <div className="col-md-6">
                 <Form.Label column={false}>Ends On</Form.Label>
                 <div className="d-flex gap-2">
-                  <Form.Control
-                    type="date"
-                    onChange={(e) =>
-                      handleDateFieldChange(e.currentTarget.value, 'endsOn')
-                    }
-                    isValid={!errors.endsOn}
-                  />
-                  <Form.Control
-                    type="time"
-                    onChange={(e) =>
-                      handleTimeFieldChange(e.currentTarget.value, 'endsOn')
-                    }
-                    isValid={!errors.endsOn}
-                  />
+                  <div>
+                    <Controller
+                      name="endsOnDate"
+                      control={control}
+                      defaultValue={defaultValues.endsOnDate}
+                      render={({
+                        field: { onChange, value, name, ...field },
+                      }) => (
+                        <DatePicker
+                          {...field}
+                          slotProps={{ textField: { size: 'small' } }}
+                          onChange={(value) =>
+                            onChange(new Date(value?.toString() ?? ''))
+                          }
+                          value={value ? dayjs(value) : value}
+                          name={name}
+                          defaultValue={value ? dayjs(value) : value}
+                        />
+                      )}
+                    />
+                    {errors.endsOnDate && (
+                      <p style={{ color: 'red' }}>
+                        {errors.endsOnDate?.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      name="endsOnTime"
+                      control={control}
+                      defaultValue={defaultValues.endsOnDate}
+                      render={({
+                        field: { onChange, value, name, ...field },
+                      }) => (
+                        <TimePicker
+                          {...field}
+                          slotProps={{ textField: { size: 'small' } }}
+                          onChange={(value) =>
+                            onChange(new Date(value?.toString() ?? ''))
+                          }
+                          value={value ? dayjs(value) : value}
+                          name={name}
+                          defaultValue={value ? dayjs(value) : value}
+                        />
+                      )}
+                    />
+                    {errors.endsOnTime && (
+                      <p style={{ color: 'red' }}>
+                        {errors.endsOnTime?.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {errors.endsOn && (
-                  <p style={{ color: 'red' }}>{errors.endsOn.message}</p>
-                )}
               </div>
             )}
           </div>
           <div className="row mt-3">
             <div className="col-md-12">
-              <RecurrenceEditorComponent change={handleRRuleChange} />
+              <RecurrenceEditorComponent
+                change={handleRRuleChange}
+                cssClass={'recurrence-editor'}
+              />
             </div>
           </div>
-          <div className="row mt-4">
+          <div className="row mt-1">
             <div className="col-md-12">
               <div className="d-flex flex-row justify-content-between">
                 <button

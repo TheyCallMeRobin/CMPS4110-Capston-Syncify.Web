@@ -132,7 +132,7 @@ export const Calendar: React.FC = () => {
       ) as HTMLElement;
       if (dialog) {
         dialog.style.width = '800px';
-        dialog.style.height = '610px';
+        dialog.style.height = '55%';
       }
     }
   };
@@ -158,13 +158,13 @@ export const Calendar: React.FC = () => {
         editorTemplate={(props: CalendarEventGetDto) =>
           CalendarEventWindow({ event: props, windowRef: scheduleObj })
         }
-        enableAdaptiveUI
+        enableAdaptiveUI={false}
         enableRecurrenceValidation
         editorFooterTemplate={() => undefined}
         quickInfoTemplates={quickInfoTemplates}
         ref={scheduleObj}
         width={'auto'}
-        height={'auto'}
+        height={'80vh'}
         popupOpen={onPopupOpen}
       >
         <CalendarViews />

@@ -5,7 +5,7 @@ import { CreateCalendar } from './create-calendar.tsx';
 
 export const CalendarPage: React.FC = () => {
   return (
-    <div className={'vh-100'} style={{ minHeight: '110%' }}>
+    <div className={'row'}>
       <div className={'mt-4'}>
         <div className={'hstack'}>
           <div>

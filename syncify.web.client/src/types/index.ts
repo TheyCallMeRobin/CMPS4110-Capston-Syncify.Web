@@ -7,3 +7,7 @@ export type KeysOfType<TTarget, TValue = any> = {
 export type UndefinableKeysOfType<T, U> = {
   [K in keyof T]-?: NonNullable<T[K]> extends U ? K : never;
 }[keyof T];
+
+export type ObjectWithStringKeys<T> = {
+  [K in keyof T]: string;
+};

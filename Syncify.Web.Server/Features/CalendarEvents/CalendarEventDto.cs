@@ -13,6 +13,11 @@ public record CalendarEventDto
     public string? RecurrenceException { get; set; }
     public bool IsCompleted { get; set; }
 
+    public DateTimeOffset StartsOnTime { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset? EndsOnTime { get; set; }
+    public DateTimeOffset StartsOnDate { get; set; } = DateTimeOffset.Now;
+    
+    public DateTimeOffset? EndsOnDate { get; set; }
 
     public CalendarEventType CalendarEventType { get; set; } = CalendarEventType.Event;
 }
@@ -28,32 +33,14 @@ public record CalendarEventGetDto : CalendarEventDto
     public bool IsAllDay { get; set; }
 }
 
-public record CalendarEventWriteDto : CalendarEventDto
-{
-    public TimeOnly StartsOnTime { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
-    public TimeOnly? EndsOnTime { get; set; }
-    
-    /// <remarks>
-    /// This is <see cref="DateTimeOffset"/> rather than <see cref="DateOnly" />
-    /// the TimeZone Offset needs to be captured as well
-    /// </remarks>
-    public DateTimeOffset StartsOnDate { get; set; }
-    
-    /// <remarks>
-    /// This is <see cref="DateTimeOffset"/> rather than <see cref="DateOnly" />
-    /// the TimeZone Offset needs to be captured as well
-    /// </remarks>
-    public DateTimeOffset? EndsOnDate { get; set; }
-}
-
-public record CalendarEventUpdateDto : CalendarEventWriteDto
+public record CalendarEventUpdateDto : CalendarEventDto
 {
     
     [JsonIgnore]
     public int? UpdatedByUserId { get; set; }
 };
 
-public record CalendarEventCreateDto : CalendarEventWriteDto
+public record CalendarEventCreateDto : CalendarEventDto
 {
     
     [JsonIgnore]
@@ -69,6 +56,10 @@ public class CalendarEventMappingProfile : Profile
         CreateMap<CalendarEvent, CalendarEventDto>();
         CreateMap<CalendarEventUpdateDto, CalendarEvent>();
         CreateMap<CalendarEventCreateDto, CalendarEvent>();
-        CreateMap<CalendarEvent, CalendarEventGetDto>();
+        CreateMap<CalendarEvent, CalendarEventGetDto>()
+            .ForMember(dest => dest.StartsOnDate, opts => opts.MapFrom(src => src.StartsOn.GetValueOrDefault()))
+            .ForMember(dest => dest.EndsOnDate, opts => opts.MapFrom(src => src.EndsOn))
+            .ForMember(dest => dest.StartsOnTime, opts => opts.MapFrom(src => src.StartsOn))
+            .ForMember(dest => dest.EndsOnTime, opts => opts.MapFrom(src => src.EndsOn));
     }
 }

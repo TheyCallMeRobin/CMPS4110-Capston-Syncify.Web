@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@mui/x-date-pickers": "^7.23.0",
     "@syncfusion/ej2": "^27.1.56",
     "@syncfusion/ej2-react-buttons": "^27.1.53",
     "@syncfusion/ej2-react-calendars": "^27.1.55",
@@ -20,6 +21,8 @@
     "@syncfusion/ej2-react-schedule": "^27.1.56",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.13",
+    "luxon": "^3.5.0",
     "mitt": "^3.0.1",
     "qs": "^6.13.0",
     "react": "^18.3.1",

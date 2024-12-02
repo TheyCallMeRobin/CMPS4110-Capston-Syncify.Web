@@ -129,25 +129,37 @@ export class CalendarEventCreateDto {
   'title': string;
 
   /**  */
+  'calendarId': number;
+
+  /**  */
   'description'?: string;
 
   /**  */
   'recurrenceRule'?: string;
 
   /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
+
+  /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startsOn'?: Date;
+  'startsOnTime': Date;
 
   /**  */
-  'endsOn'?: Date;
+  'endsOnTime'?: Date;
+
+  /**  */
+  'startsOnDate': Date;
+
+  /**  */
+  'endsOnDate'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
-
-  /**  */
-  'calendarId': number;
 
   constructor(data: CalendarEventCreateDto = {}) {
     Object.assign(this, data);
@@ -159,19 +171,34 @@ export class CalendarEventGetDto {
   'title': string;
 
   /**  */
+  'calendarId': number;
+
+  /**  */
   'description'?: string;
 
   /**  */
   'recurrenceRule'?: string;
 
   /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
+
+  /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startsOn'?: Date;
+  'startsOnTime': Date;
 
   /**  */
-  'endsOn'?: Date;
+  'endsOnTime'?: Date;
+
+  /**  */
+  'startsOnDate': Date;
+
+  /**  */
+  'endsOnDate'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
@@ -180,10 +207,13 @@ export class CalendarEventGetDto {
   'id': number;
 
   /**  */
-  'calendarId': number;
+  'calendarDisplayColor'?: string;
 
   /**  */
-  'calendarDisplayColor'?: string;
+  'startsOn'?: Date;
+
+  /**  */
+  'endsOn'?: Date;
 
   /**  */
   'isAllDay': boolean;
@@ -198,19 +228,34 @@ export class CalendarEventUpdateDto {
   'title': string;
 
   /**  */
+  'calendarId': number;
+
+  /**  */
   'description'?: string;
 
   /**  */
   'recurrenceRule'?: string;
 
   /**  */
+  'recurrenceId'?: number;
+
+  /**  */
+  'recurrenceException'?: string;
+
+  /**  */
   'isCompleted': boolean;
 
   /**  */
-  'startsOn'?: Date;
+  'startsOnTime': Date;
 
   /**  */
-  'endsOn'?: Date;
+  'endsOnTime'?: Date;
+
+  /**  */
+  'startsOnDate': Date;
+
+  /**  */
+  'endsOnDate'?: Date;
 
   /**  */
   'calendarEventType': CalendarEventType;
@@ -406,8 +451,6 @@ export class FamilyInviteCreateDto {
 
   /**  */
   'inviteQuery': string;
-  
-  'sentByUserId': number;
 
   constructor(data: FamilyInviteCreateDto = {}) {
     Object.assign(this, data);
@@ -734,6 +777,39 @@ export class RecipeUpdateDto {
   'instructions': string;
 
   constructor(data: RecipeUpdateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ReminderCreateDto {
+  /**  */
+  'title': string;
+
+  /**  */
+  'description': string;
+
+  /**  */
+  'reminderDateTime': Date;
+
+  /**  */
+  'userId': number;
+
+  constructor(data: ReminderCreateDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class ReminderUpdateDto {
+  /**  */
+  'title': string;
+
+  /**  */
+  'description': string;
+
+  /**  */
+  'reminderDateTime': Date;
+
+  constructor(data: ReminderUpdateDto = {}) {
     Object.assign(this, data);
   }
 }

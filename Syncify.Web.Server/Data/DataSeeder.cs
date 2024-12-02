@@ -213,7 +213,7 @@ public class DataSeeder
                 Title = "Go to Timmy's Basketball game",
                 CreatedByUserId = john.Id,
                 StartsOnDate = dates[0],
-                StartsOnTime = dates[0].ToTimeOnly(),
+                StartsOnTime = dates[0].AddHours(1),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -249,9 +249,9 @@ public class DataSeeder
                 CreatedByUserId = jane.Id,
                 Title = "Dentist Appointment",
                 StartsOnDate = dates[3],
-                StartsOnTime = dates[3].ToTimeOnly(),
+                StartsOnTime = dates[3].AddHours(1),
                 EndsOnDate = dates[3],
-                EndsOnTime = dates[3].ToTimeOnly(),
+                EndsOnTime = dates[3].AddHours(2),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -260,7 +260,7 @@ public class DataSeeder
                 CreatedByUserId = jane.Id,
                 Title = "Take Albert to Soccer practice",
                 StartsOnDate = dates[4],
-                StartsOnTime = dates[4].ToTimeOnly(),
+                StartsOnTime = dates[4].AddHours(1),
                 CalendarEventType = CalendarEventType.Task
             }
         }.ProjectTo<CalendarEvent>();
