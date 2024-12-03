@@ -35,47 +35,21 @@ public class FamilyInviteService : IFamilyInviteService
             .FirstOrDefaultAsync(x => x.Email.Equals(dto.InviteQuery)
                                       || x.PhoneNumber.Equals(dto.InviteQuery)
                                       || x.MemberIdentifier.ToString().Equals(dto.InviteQuery));
-
         if (user is null)
             return Error.AsResponse<FamilyInviteGetDto>("User not found", nameof(dto.InviteQuery));
 
         var existingMember = await _dataContext
             .Set<FamilyMember>()
             .FirstOrDefaultAsync(x => x.FamilyId == family.Id && x.UserId == user.Id);
-
         if (existingMember != null)
-        {
             return Error.AsResponse<FamilyInviteGetDto>("This user is already a member of the family.");
-        }
 
         var existingInvite = await _dataContext
             .Set<FamilyInvite>()
             .FirstOrDefaultAsync(x => x.FamilyId == family.Id && x.UserId == user.Id);
 
         if (existingInvite != null)
-        {
-            if (existingInvite.Status == InviteStatus.Declined || existingInvite.ExpiresOn < DateTime.UtcNow)
-            {
-                existingInvite.Status = InviteStatus.Pending;
-                existingInvite.SentByUserId = dto.SentByUserId;
-                existingInvite.ExpiresOn = dto.ExpiresOn;
-
-                await _dataContext.SaveChangesAsync();
-                return existingInvite.MapTo<FamilyInviteGetDto>().AsResponse();
-            }
-
-            if (existingInvite.Status == InviteStatus.Accepted)
-            {
-                existingInvite.Status = InviteStatus.Pending;
-                existingInvite.SentByUserId = dto.SentByUserId;
-                existingInvite.ExpiresOn = dto.ExpiresOn;
-
-                await _dataContext.SaveChangesAsync();
-                return existingInvite.MapTo<FamilyInviteGetDto>().AsResponse();
-            }
-
             return Error.AsResponse<FamilyInviteGetDto>("This user has already been invited to this family.");
-        }
 
         var familyInvite = new FamilyInvite
         {
@@ -83,6 +57,7 @@ public class FamilyInviteService : IFamilyInviteService
             FamilyId = dto.FamilyId,
             ExpiresOn = dto.ExpiresOn,
             UserId = user.Id,
+            Status = InviteStatus.Pending
         };
 
         _dataContext.Set<FamilyInvite>().Add(familyInvite);

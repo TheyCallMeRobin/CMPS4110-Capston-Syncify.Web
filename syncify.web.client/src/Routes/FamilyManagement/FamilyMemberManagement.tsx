@@ -1,87 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FamilyMemberService } from '../../api/generated/FamilyMemberService';
-import { FamilyMemberGetDto } from '../../api/generated/index.defs';
 import { FamilyService } from '../../api/generated/FamilyService';
 import {
   Button,
   Modal,
   Form,
-  Spinner,
   Container,
   Row,
   Col,
   ListGroup,
 } from 'react-bootstrap';
-import { FaTrashAlt } from 'react-icons/fa';
 import { FamilyInviteService } from '../../api/generated/FamilyInviteService';
 import { FamilyInviteCreateDto } from '../../api/generated/index.defs';
 import { useUser } from '../../auth/auth-context';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAsyncFn } from 'react-use';
+import { useAsync, useAsyncFn } from 'react-use';
+import { FaArrowLeft } from 'react-icons/fa';
 
 export const FamilyMemberManagement = () => {
   const { familyId } = useParams<{ familyId: string }>();
-  const [data, setData] = useState({
-    familyName: '',
-    createdByUserId: null as number | null,
-    members: [] as FamilyMemberGetDto[],
-    loading: true,
-    error: null as string | null,
-  });
+  const user = useUser();
+
+  const [fetchFamilyDetails, runFetchFamilyDetails] = useAsyncFn(async () => {
+    const familyResponse = await FamilyService.getFamilyById({
+      id: Number(familyId),
+    });
+
+    if (familyResponse.hasErrors) {
+      familyResponse.errors.forEach((error) => toast.error(error.errorMessage));
+      return null;
+    }
+
+    if (familyResponse.data) {
+      const memberResponse = await FamilyMemberService.getFamilyMembers({
+        familyId: Number(familyId),
+      });
+
+      if (memberResponse.hasErrors) {
+        memberResponse.errors.forEach((error) =>
+          toast.error(error.errorMessage)
+        );
+        return null;
+      }
+
+      return {
+        familyName: familyResponse.data.name,
+        createdByUserId: familyResponse.data.createdByUserId,
+        members: memberResponse.data || [],
+      };
+    }
+
+    return null;
+  }, [familyId]);
+
+  React.useEffect(() => {
+    runFetchFamilyDetails();
+  }, [runFetchFamilyDetails]);
+
   const [inviteModal, setInviteModal] = useState({
     show: false,
     email: '',
     loading: false,
-    error: null as string | null,
     success: false,
   });
-  const [removeModal, setRemoveModal] = useState({
-    show: false,
-    memberId: null as number | null,
-  });
+
   const [leaveModal, setLeaveModal] = useState({
     show: false,
     memberId: null as number | null,
   });
 
-  const user = useUser();
-
-  const fetchFamilyDetails = async () => {
-    if (familyId) {
-      setData({ ...data, loading: true });
-
-      const familyResponse = await FamilyService.getFamilyById({
-        id: Number(familyId),
-      });
-
-      if (familyResponse.data) {
-        const memberResponse = await FamilyMemberService.getFamilyMembers({
-          familyId: Number(familyId),
-        });
-
-        setData({
-          familyName: familyResponse.data.name,
-          createdByUserId: familyResponse.data.createdByUserId,
-          members: memberResponse.data || [],
-          loading: false,
-          error: null,
-        });
-      } else {
-        setData({
-          ...data,
-          loading: false,
-          error: 'Failed to load family details',
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchFamilyDetails();
-  }, [familyId]);
+  const [checkedMembers, setCheckedMembers] = useState<number[]>([]);
 
   const [{ loading: sendingInvite }, handleInviteSubmit] =
     useAsyncFn(async () => {
@@ -89,13 +80,6 @@ export const FamilyMemberManagement = () => {
         toast.error('You must be logged in to send an invite.');
         return;
       }
-
-      setInviteModal({
-        ...inviteModal,
-        loading: true,
-        error: null,
-        success: false,
-      });
 
       const inviteData: FamilyInviteCreateDto = {
         inviteQuery: inviteModal.email,
@@ -112,137 +96,190 @@ export const FamilyMemberManagement = () => {
         toast.error(
           response.errors[0]?.errorMessage || 'Failed to send invite.'
         );
-        setInviteModal({
-          ...inviteModal,
-          loading: false,
-          error: 'Failed to send invite.',
-          success: false,
-        });
+        setInviteModal({ ...inviteModal, success: false, loading: false });
       } else {
         toast.success('Invite sent successfully!');
         setInviteModal({
           show: false,
           email: '',
-          loading: false,
-          error: null,
           success: true,
+          loading: false,
         });
       }
     }, [inviteModal, familyId, user]);
 
-  const [, handleRemoveMember] = useAsyncFn(
-    async (memberId: number) => {
-      const response = await FamilyMemberService.removeFamilyMember({
-        familyMemberId: memberId,
-      });
+  const handleBulkRemove = async () => {
+    if (checkedMembers.length === 0) {
+      toast.error('No members selected for removal.');
+      return;
+    }
 
-      if (response.hasErrors) {
-        toast.error('Failed to remove the member.');
-        return;
-      }
+    await Promise.all(
+      checkedMembers.map((memberId) =>
+        FamilyMemberService.removeFamilyMember({
+          familyMemberId: memberId,
+        })
+      )
+    );
 
-      setData((prevData) => ({
-        ...prevData,
-        members: prevData.members.filter((member) => member.id !== memberId),
-      }));
+    toast.success('Selected members removed successfully!');
+    runFetchFamilyDetails();
+    setCheckedMembers([]);
+  };
 
-      if (memberId === user?.id) {
-        toast.success('You have left the family.');
-      } else {
-        toast.success('Member removed successfully!');
-      }
-    },
-    [data, user]
-  );
+  const toggleMemberChecked = (id: number) => {
+    setCheckedMembers((prev) =>
+      prev.includes(id)
+        ? prev.filter((memberId) => memberId !== id)
+        : [...prev, id]
+    );
+  };
 
   return (
     <Container>
-      <Row>
+      <Row className="align-items-center mb-4 text-center">
         <Col>
-          <h2 className="text-highlight mb-4 text-center">Family Members</h2>
+          <h2 className="text-highlight">Family Members</h2>
+          {fetchFamilyDetails.value && (
+            <h3 className="text-muted">
+              {fetchFamilyDetails.value.familyName}
+            </h3>
+          )}
         </Col>
       </Row>
 
-      {data.loading ? (
+      {fetchFamilyDetails.loading ? (
         <Row>
           <Col className="text-center">
             <p>Loading family members...</p>
           </Col>
         </Row>
-      ) : data.error ? (
+      ) : fetchFamilyDetails.error ? (
         <Row>
-          <Col className="text-danger text-center">
-            <p>{data.error}</p>
+          <Col className="text-center">
+            <p className="text-danger">Error loading family details.</p>
           </Col>
         </Row>
-      ) : (
+      ) : fetchFamilyDetails.value ? (
         <>
-          <Row>
-            <Col className="text-center">
-              <h3>
-                {data.familyName ? data.familyName : 'Family Name not found'}
-              </h3>
+          <Row className="mt-3">
+            <Col style={{ textAlign: 'left', padding: '10px' }}>
+              <div className="actions-container">
+                <Button
+                  className="btn btn-secondary return-button"
+                  variant="secondary"
+                  onClick={() => (window.location.href = '/family-management')}
+                >
+                  <FaArrowLeft style={{ marginRight: '8px' }} /> Return to
+                  Family Management
+                </Button>
+              </div>
             </Col>
+            {fetchFamilyDetails.value?.createdByUserId === user?.id && (
+              <Col
+                style={{
+                  textAlign: 'right',
+                  padding: '10px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <div className="actions-container">
+                  <Button
+                    className="btn btn-danger bulk-delete-button"
+                    style={{
+                      marginRight: '0px',
+                      padding: '10p',
+                    }}
+                    variant="danger"
+                    onClick={handleBulkRemove}
+                    disabled={checkedMembers.length === 0}
+                  >
+                    Remove Checked
+                  </Button>
+                </div>
+              </Col>
+            )}
           </Row>
-          <Row className="mb-4">
+          <Row>
             <Col>
               <ListGroup>
-                {data.members.length > 0 ? (
-                  data.members.map((member) => (
-                    <ListGroup.Item
-                      key={member.id}
-                      className="d-flex justify-content-between align-items-center"
-                    >
-                      <span>
-                        {member.userFirstName} {member.userLastName}
-                      </span>
-
-                      {member.userId === user?.id ? (
-                        <Button
-                          style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            borderColor: 'red',
-                          }}
-                          onClick={() => {
-                            setLeaveModal({ show: true, memberId: member.id });
-                          }}
-                        >
-                          Leave
-                        </Button>
-                      ) : data.createdByUserId === user?.id ? (
-                        <Button
-                          variant="danger"
-                          onClick={() =>
-                            setRemoveModal({ show: true, memberId: member.id })
-                          }
-                        >
-                          <FaTrashAlt />
-                        </Button>
-                      ) : null}
-                    </ListGroup.Item>
-                  ))
-                ) : (
-                  <ListGroup.Item className="text-center">
-                    No members found.
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-
-              <Row className="mt-3">
-                <Col className="text-end">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      setInviteModal({ ...inviteModal, show: true })
-                    }
+                {fetchFamilyDetails.value.members.map((member) => (
+                  <ListGroup.Item
+                    key={member.id}
+                    className="d-flex justify-content-between align-items-center"
                   >
-                    Invite New Member
-                  </Button>
-                </Col>
-              </Row>
+                    <div>
+                      {member.userFirstName} {member.userLastName}
+                    </div>
+
+                    {fetchFamilyDetails.value?.createdByUserId === user?.id && (
+                      <div>
+                        <input
+                          type="checkbox"
+                          className="form-check-input ms-3"
+                          checked={checkedMembers.includes(member.id)}
+                          onChange={() => toggleMemberChecked(member.id)}
+                        />
+                      </div>
+                    )}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
             </Col>
           </Row>
+          <Row className="mt-3 justify-content-end">
+            <Col xs="auto">
+              <Button
+                variant="outline-danger"
+                onClick={() =>
+                  setLeaveModal({ show: true, memberId: user?.id || null })
+                }
+                className="me-3"
+              >
+                Leave
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => setInviteModal({ ...inviteModal, show: true })}
+              >
+                Invite New Member
+              </Button>
+            </Col>
+          </Row>
+
+          <Modal
+            show={leaveModal.show}
+            onHide={() => setLeaveModal({ show: false, memberId: null })}
+            centered
+          >
+            <Modal.Header>
+              <Modal.Title>Leave Family</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to leave this family? You will no longer
+              have access to its content.
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setLeaveModal({ show: false, memberId: null })}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  if (leaveModal.memberId) {
+                    toggleMemberChecked(leaveModal.memberId);
+                    setLeaveModal({ show: false, memberId: null });
+                  }
+                }}
+              >
+                Leave
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
           <Modal
             show={inviteModal.show}
@@ -279,71 +316,8 @@ export const FamilyMemberManagement = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-
-          <Modal
-            show={leaveModal.show}
-            onHide={() => setLeaveModal({ show: false, memberId: null })}
-            centered
-          >
-            <Modal.Header>
-              <Modal.Title>Leave Family</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Are you sure you want to leave this family? You will no longer
-              have access to its content.
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => setLeaveModal({ show: false, memberId: null })}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  if (leaveModal.memberId)
-                    handleRemoveMember(leaveModal.memberId);
-                  setLeaveModal({ show: false, memberId: null });
-                }}
-              >
-                Leave
-              </Button>
-            </Modal.Footer>
-          </Modal>
-
-          <Modal
-            show={removeModal.show}
-            onHide={() => setRemoveModal({ show: false, memberId: null })}
-            centered
-          >
-            <Modal.Header>
-              <Modal.Title>Remove Family Member</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Are you sure you want to remove this member from the family?
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => setRemoveModal({ show: false, memberId: null })}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  if (removeModal.memberId)
-                    handleRemoveMember(removeModal.memberId);
-                  setRemoveModal({ show: false, memberId: null });
-                }}
-              >
-                Remove
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </>
-      )}
+      ) : null}
     </Container>
   );
 };
