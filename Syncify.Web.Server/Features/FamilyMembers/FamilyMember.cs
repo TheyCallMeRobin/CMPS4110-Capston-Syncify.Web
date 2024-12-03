@@ -11,6 +11,8 @@ public class FamilyMember
     public int UserId { get; set; }
     public int FamilyId { get; set; }
 
+    public FamilyMemberRole Role { get; set; } = FamilyMemberRole.Member;
+    
     public User User { get; set; } = default!;
     public Family Family { get; set; } = default!;
 }

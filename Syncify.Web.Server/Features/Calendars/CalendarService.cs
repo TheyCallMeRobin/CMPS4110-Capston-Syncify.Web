@@ -81,11 +81,13 @@ public class CalendarService : ICalendarService
         if (calendar is null)
             return Error.AsResponse<CalendarGetDto>(ErrorMessages.NotFoundError, nameof(id));
         
-        if (await CalendarAlreadyExists(calendar.CreatedByUserId, dto.Name))
+        if (await CalendarAlreadyExists(calendar.CreatedByUserId, dto.Name, calendar.Id))
             return Error.AsResponse<CalendarGetDto>("A calendar with this name already exists for this user",
                 nameof(dto.Name));
 
         calendar.Name = dto.Name;
+        calendar.DisplayColor = dto.DisplayColor ?? "";
+        
         await _dataContext.SaveChangesAsync();
 
         return calendar.MapTo<CalendarGetDto>().AsResponse();
@@ -141,4 +143,10 @@ public class CalendarService : ICalendarService
         => _dataContext.Set<Calendar>()
             .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && 
                            x.CreatedByUserId == userId);
+    
+    
+    private Task<bool> CalendarAlreadyExists(int userId, string name, int calendarId)
+        => _dataContext.Set<Calendar>()
+            .AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && 
+                           x.CreatedByUserId == userId && x.Id != calendarId);
 }

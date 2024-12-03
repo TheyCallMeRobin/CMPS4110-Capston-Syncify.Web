@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Data;
+using Syncify.Web.Server.Exceptions;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyMembers;
 
@@ -13,8 +14,8 @@ public interface IFamilyService
     Task<Response<List<FamilyGetDto>>> GetFamiliesByUserId(int userId);
     Task<Response<List<OptionDto>>> GetFamilyOptionsForUser(int userId); 
     Task<Response<FamilyGetDto>> GetFamilyById(int id);
-    Task<Response<FamilyGetDto>> UpdateFamily(int id, FamilyUpdateDto dto);
-    Task<Response> DeleteFamily(int id);
+    Task<Response<FamilyGetDto>> UpdateFamily(int id, FamilyUpdateDto dto, int requestingUserId);
+    Task<Response> DeleteFamily(int id, int requestingUserId);
 
 }
 
@@ -43,7 +44,8 @@ public class FamilyService : IFamilyService
         var familyMember = new FamilyMember
         {
             UserId = dto.CreatedByUserId,
-            FamilyId = family.Id
+            FamilyId = family.Id,
+            Role = FamilyMemberRole.Owner
         };
 
         _dataContext.Set<FamilyMember>().Add(familyMember);
@@ -95,12 +97,22 @@ public class FamilyService : IFamilyService
         return family.MapTo<FamilyGetDto>().AsResponse();
     }
 
-    public async Task<Response<FamilyGetDto>> UpdateFamily(int id, FamilyUpdateDto dto)
+    public async Task<Response<FamilyGetDto>> UpdateFamily(int id, FamilyUpdateDto dto, int requestingUserId)
     {
-        var family = await _dataContext.Set<Family>().FirstOrDefaultAsync(x => x.Id == id);
+        var family = await _dataContext
+            .Set<Family>()
+            .Include(x => x.FamilyMembers.Where(fm => fm.UserId == requestingUserId))
+            .FirstOrDefaultAsync(x => x.Id == id);
+        
         if (family is null)
             return Error.AsResponse<FamilyGetDto>("Family not found.", nameof(family.Id));
 
+        var requestingUserFamilyMember = family.FamilyMembers.FirstOrDefault();
+        if (requestingUserFamilyMember is not { Role: FamilyMemberRole.Owner })
+        {
+            throw new NotAuthorizedException("Insufficient permissions to edit this family");
+        }
+        
         if (dto.Name.ToLower().Equals(family.Name.ToLower()))
             return family.MapTo<FamilyGetDto>().AsResponse();
 
@@ -120,12 +132,20 @@ public class FamilyService : IFamilyService
         return family.MapTo<FamilyGetDto>().AsResponse();
     }
 
-    public async Task<Response> DeleteFamily(int id)
+    public async Task<Response> DeleteFamily(int id, int requestingUserId)
     {
-        var family = await _dataContext.Set<Family>().FirstOrDefaultAsync(x => x.Id == id);
+        var family = await _dataContext
+            .Set<Family>()
+            .Include(x => x.FamilyMembers.Where(fm => fm.UserId == requestingUserId))
+            .FirstOrDefaultAsync(x => x.Id == id);
+        
         if (family is null)
             return Error.AsResponse("Family not found.", nameof(family.Id));
 
+        var member = family.FamilyMembers.FirstOrDefault();
+        if (member is not { Role: FamilyMemberRole.Owner })
+            throw new NotAuthorizedException("Insufficient permission to delete this family.");
+        
         _dataContext.Set<Family>().Remove(family);
         await _dataContext.SaveChangesAsync();
 

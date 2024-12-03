@@ -64,14 +64,14 @@ public class FamilyController : Controller
     [HttpPut("{id}")]
     public async Task<ActionResult<GetResponse>> UpdateFamily(int id, FamilyUpdateDto dto)
     {
-        var data = await _familyService.UpdateFamily(id, dto);
+        var data = await _familyService.UpdateFamily(id, dto, User.GetCurrentUserId());
         return Ok(data);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> DeleteFamily(int id)
     {
-        var data = await _familyService.DeleteFamily(id);
+        var data = await _familyService.DeleteFamily(id, User.GetCurrentUserId());
         return Ok(data);
     }
 }
