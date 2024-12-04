@@ -34,3 +34,15 @@
         color: #0b60b0 !important;
         border-color: #0b60b0 !important;
     }
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .logo-container img {
+        max-width: 200px;
+        height: auto;
+    }
+
