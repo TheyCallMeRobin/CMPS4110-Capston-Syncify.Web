@@ -316,6 +316,27 @@ export class CalendarWithEventsDto {
   }
 }
 
+export class CalendarWithFamilyGetDto {
+  /**  */
+  'name': string;
+
+  /**  */
+  'displayColor'?: string;
+
+  /**  */
+  'id': number;
+
+  /**  */
+  'createdByUserId': number;
+
+  /**  */
+  'currentUserRole': FamilyMemberRole;
+
+  constructor(data: CalendarWithFamilyGetDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class ChangeCalendarEventStatusDto {
   /**  */
   'isCompleted': boolean;
@@ -985,6 +1006,12 @@ export class UserGetDto {
 export enum CalendarEventType {
   'Event' = 'Event',
   'Task' = 'Task'
+}
+
+export enum FamilyMemberRole {
+  'Owner' = 'Owner',
+  'Admin' = 'Admin',
+  'Member' = 'Member'
 }
 
 export enum InviteStatus {
