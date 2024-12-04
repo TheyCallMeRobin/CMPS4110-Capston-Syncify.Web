@@ -10,7 +10,7 @@ import { CalendarPage } from './calendar/calendar-page.tsx';
 import { FamilyManagement } from './Routes/FamilyManagement/FamilyManagement.tsx';
 import {FamilyMemberManagement} from "./Routes/FamilyManagement/FamilyMemberManagement.tsx";
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
-import CreateRecipe from './Routes/Recipes/createrecipe';
+import {CreateRecipe} from './Routes/Recipes/createrecipe';
 import ViewRecipe from './Routes/Recipes/viewrecipe.tsx'
 import EditRecipes from './Routes/Recipes/editrecipe.tsx';
 

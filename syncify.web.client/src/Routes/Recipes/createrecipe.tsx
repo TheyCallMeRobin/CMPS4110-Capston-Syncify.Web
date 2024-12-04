@@ -3,7 +3,8 @@ import { RecipeIngredientService } from '../../api/generated/RecipeIngredientSer
 import React, { useState, useEffect } from 'react';
 import {
     RecipeCreateDto,
-    RecipeIngredientCreateDto
+    RecipeIngredientCreateDto,
+    RecipeIngredientGetDto
 } from '../../api/generated/index.defs';
 import './recipe.css';
 import { useAsyncFn } from 'react-use';
@@ -13,9 +14,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 
-interface IngredientWithId extends RecipeIngredientCreateDto {
-    id: number;
-}
+const UNITS: string[] = [
+    'Count', 'Teaspoon', 'Tablespoon', 'Cup', 'Pint', 'Quart', 'Gallon',
+    'Milliliter', 'Liter', 'Ounce', 'Pound', 'Gram', 'Kilogram', 'Milligram',
+    'Pinch', 'Dash', 'FluidOunce', 'Piece',
+];
 
 const CreateRecipe: React.FC = () => {
     const navigate = useNavigate();
@@ -37,7 +40,7 @@ const CreateRecipe: React.FC = () => {
         quantity: 0,
         unit: '',
     });
-    const [ingredients, setIngredients] = useState<IngredientWithId[]>([]);
+    const [ingredients, setIngredients] = useState<RecipeIngredientGetDto[]>([]);
     const [recipeCreated, setRecipeCreated] = useState(false);
     const [ingredientsAdded, setIngredientsAdded] = useState(false);
 
@@ -67,7 +70,7 @@ const CreateRecipe: React.FC = () => {
             setCreatedRecipeId(response.data.id);
             toast.success('Recipe created successfully!');
             setRecipeCreated(true);
-        } else if (response && response.errors) {
+        } else if (response.hasErrors) {
             const fieldErrors = response.errors.reduce(
                 (acc: { [key: string]: string }, error: any) => {
                     acc[error.propertyName.toLowerCase()] = error.errorMessage;
@@ -94,11 +97,11 @@ const CreateRecipe: React.FC = () => {
             setIngredientErrors({});
             setIngredients((prevIngredients) => [
                 ...prevIngredients,
-                { id, ...restData } as IngredientWithId,
+                { id, ...restData } as RecipeIngredientGetDto,
             ]);
             setNewIngredient({ name: '', quantity: 0, unit: '' });
             toast.success('Ingredient added successfully!');
-        } else if (response && response.errors) {
+        } else if (response.hasErrors) {
             const fieldErrors = response.errors.reduce(
                 (acc: { [key: string]: string }, error: any) => {
                     acc[error.propertyName.toLowerCase()] = error.errorMessage;
@@ -145,10 +148,6 @@ const CreateRecipe: React.FC = () => {
             setIngredientToDeleteId(null);
         }
     };
-
-    const [units] = useState<string[]>([
-        'Count', 'Teaspoon', 'Tablespoon', 'Cup', 'Pint', 'Quart', 'Gallon', 'Milliliter', 'Liter', 'Ounce', 'Pound', 'Gram', 'Kilogram', 'Milligram', 'Pinch', 'Dash', 'FluidOunce', 'Piece',
-    ]);
 
     return (
         <div className="container mt-5">
@@ -285,7 +284,7 @@ const CreateRecipe: React.FC = () => {
                     <div>
                         <h3 className="mb-4">Add Ingredients to Recipe</h3>
                         <ul className="list-group mb-3">
-                            {ingredients.map((ingredient, index) => (
+                            {ingredients.map((ingredient) => (
                                 <li key={ingredient.id} className="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{ingredient.name} - {ingredient.quantity} {ingredient.unit}</span>
                                     <button className="btn btn-danger btn-sm" onClick={() => handleInitiateDeleteIngredient(ingredient.id)}>
@@ -340,7 +339,7 @@ const CreateRecipe: React.FC = () => {
                                 className={`form-select ${ingredientErrors.unit ? 'is-invalid' : ''}`}
                             >
                                 <option value="">Select unit</option>
-                                {units.map((unit) => (
+                                {UNITS.map((unit) => (
                                     <option key={unit} value={unit}>
                                         {unit}
                                     </option>
@@ -385,4 +384,4 @@ const CreateRecipe: React.FC = () => {
     );
 };
 
-export default CreateRecipe;
+export {CreateRecipe};
