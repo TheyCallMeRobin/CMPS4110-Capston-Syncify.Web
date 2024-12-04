@@ -1,6 +1,6 @@
 import React from 'react';
 import { UpcomingEventsCard } from './upcoming-events-card.tsx';
-import { TodaysTodos } from './todays-todos.tsx';
+import { TodaysTodos } from './todos/todays-todos.tsx';
 import { RecipeOfTheDay } from './recipe-of-the-day.tsx';
 import { FamilyMembers } from './family-members.tsx';
 import { QuickActions } from './quick-actions.tsx';

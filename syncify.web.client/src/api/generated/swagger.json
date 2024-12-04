@@ -3874,6 +3874,7 @@
       },
       "CalendarWithFamilyGetDto": {
         "required": [
+          "associatedFamilies",
           "createdByUserId",
           "currentUserRole",
           "id",
@@ -3898,6 +3899,12 @@
           },
           "currentUserRole": {
             "$ref": "#/components/schemas/FamilyMemberRole"
+          },
+          "associatedFamilies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "additionalProperties": false

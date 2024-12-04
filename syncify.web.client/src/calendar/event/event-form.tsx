@@ -163,6 +163,17 @@ export const EventForm = <
     setDeleteModal(true);
   };
 
+  const recurrenceRule = watch('recurrenceRule');
+
+  const shouldShowEndsOn = useMemo(() => {
+    const isEvent = eventType === CalendarEventType.Event || !eventType;
+
+    const isRecurrenceRuleNotNever =
+      !recurrenceRule || !recurrenceRule.toUpperCase().includes('FREQ');
+
+    return isEvent && isRecurrenceRuleNotNever;
+  }, [eventType, recurrenceRule]);
+
   return (
     <>
       <Form onSubmit={handleSubmit(_onSubmit)} noValidate>
@@ -292,7 +303,7 @@ export const EventForm = <
                 </div>
               </div>
             </div>
-            {(eventType === CalendarEventType.Event || !eventType) && (
+            {shouldShowEndsOn && (
               <div className="col-md-6">
                 <Form.Label column={false}>Ends On</Form.Label>
                 <div className="d-flex gap-2">
@@ -357,6 +368,7 @@ export const EventForm = <
               <RecurrenceEditorComponent
                 change={handleRRuleChange}
                 cssClass={'recurrence-editor'}
+                endTypes={['never', 'until']}
               />
             </div>
           </div>

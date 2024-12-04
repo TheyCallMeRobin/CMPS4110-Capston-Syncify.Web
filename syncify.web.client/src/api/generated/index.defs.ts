@@ -332,6 +332,9 @@ export class CalendarWithFamilyGetDto {
   /**  */
   'currentUserRole': FamilyMemberRole;
 
+  /**  */
+  'associatedFamilies': string[];
+
   constructor(data: CalendarWithFamilyGetDto = {}) {
     Object.assign(this, data);
   }

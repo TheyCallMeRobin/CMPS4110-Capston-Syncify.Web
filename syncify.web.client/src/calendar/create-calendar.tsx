@@ -11,6 +11,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColorPicker, IColor, useColor } from 'react-color-palette';
 
+//TODO: Change from modal to edit row - Anna said this is a good idea and I agree
+
 const schema = z.object({
   name: z.string(),
   displayColor: z.string().optional().nullable(),

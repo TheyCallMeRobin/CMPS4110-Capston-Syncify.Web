@@ -3,7 +3,7 @@ import { useToggle } from 'react-use';
 import { Offcanvas } from 'react-bootstrap';
 import React from 'react';
 import { useCalendarFilterStore } from './calendar-filter-store.ts';
-import { CalendarInfo } from './calendar-info.tsx';
+import { CalendarInfo } from './info/calendar-info.tsx';
 import { LoadingContainer } from '../Components/loading-container.tsx';
 import { notify } from '../hooks/use-subscription.ts';
 
