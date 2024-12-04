@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { RecipeIngredientGetDto } from '../../api/generated/index.defs';
 import {
-    FaTrashAlt,
+    FaTrash,
     FaExclamationCircle,
     FaEdit,
     FaCheck,
@@ -258,7 +258,7 @@ const EditIngredient: React.FC<EditIngredientProps> = ({
                                         onClick={() => setDeleteModal({ show: true, ingredientId: ingredient.id })}
                                         className="icon-button"
                                     >
-                                        <FaTrashAlt className="icon delete-icon" /> Delete
+                                        <FaTrash className="icon delete-icon" /> Delete
                                     </button>
                                 </div>
                             </div>
