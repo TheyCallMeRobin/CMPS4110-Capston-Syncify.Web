@@ -9,6 +9,8 @@ import { useUser } from '../../auth/auth-context';
 import { useAsync } from 'react-use';
 import { FaTrashAlt, FaEllipsisV, FaPen, FaEye, FaPlusSquare } from 'react-icons/fa';
 import { Dropdown, Modal, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ShoppingLists: React.FC = () => {
     const [items, setItems] = useState<ShoppingListGetDto[]>([]);
@@ -75,6 +77,14 @@ const ShoppingLists: React.FC = () => {
     };
 
     const handleSaveItem = async (id: number) => {
+        if (!editedName.trim()) {
+            toast.error("Shopping List Name Is Required!", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            return;
+        }
+
         const item = items.find((i) => i.id === id);
         if (!item) return;
 

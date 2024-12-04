@@ -11,6 +11,7 @@ import { AuthenticationService } from '../../api/generated/AuthenticationService
 import { notify } from '../../hooks/use-subscription.ts';
 import { useUser } from '../../auth/auth-context.tsx';
 import { ROUTES } from '../../routes.tsx';
+import logo from '../../assets/SyncifyDuo.png';
 
 const defaultLoginData: LoginDto = {
   username: '',
@@ -64,7 +65,10 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div className="login-form bg-white p-5 rounded shadow">
+        <div className="login-form bg-white p-5 rounded shadow">   
+        <div className="logo-container mb-4">
+          <img src={logo} alt="Logo" className="img-fluid"/>
+        </div>
         <h2 className="text-center text-highlight mb-4">
           Login to Your Account
         </h2>
@@ -118,7 +122,7 @@ export const LoginPage: React.FC = () => {
             </button>
           </div>
           <p className="text-center mt-3">
-            Don't have an account? <Link to="/register">Register</Link>
+             Don't have a <img src={logo} alt="logo" style={{maxWidth: '50px'}}/> account? <Link to="/register">Register</Link>
           </p>
         </form>
       </div>

@@ -10,6 +10,9 @@ import { CalendarPage } from './calendar/calendar-page.tsx';
 import { FamilyManagement } from './Routes/FamilyManagement/FamilyManagement.tsx';
 import { FamilyMemberManagement } from './Routes/FamilyManagement/FamilyMemberManagement.tsx';
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
+import {CreateRecipe} from './Routes/Recipes/createrecipe';
+import ViewRecipe from './Routes/Recipes/viewrecipe.tsx'
+import EditRecipes from './Routes/Recipes/editrecipe.tsx';
 
 export const ROUTES = {
   LoginPage: {
@@ -24,6 +27,22 @@ export const ROUTES = {
     path: '/family-management',
     element: <FamilyManagement />,
   },
+  Recipes: {
+    path: '/recipes',
+    element: <Recipes />,
+  },
+  CreateRecipe: {
+    path: '/create-recipe',
+    element: <CreateRecipe />,
+  },
+  EditRecipe: {
+    path: '/edit-recipe/:recipeId',
+    element: <EditRecipes/>,
+  },
+  ViewRecipe: {
+    path: 'view-recipe/:recipeId',
+    element: <ViewRecipe/>,
+  },
   FamilyMemberManagement: {
     path: 'family-member-management/:familyId',
     element: <FamilyMemberManagement />,
@@ -35,10 +54,6 @@ export const ROUTES = {
   RegisterPage: {
     path: '/register',
     element: <RegisterPage />,
-  },
-  Recipes: {
-    path: '/recipes',
-    element: <Recipes />,
   },
   Reminders: {
     path: '/reminders',

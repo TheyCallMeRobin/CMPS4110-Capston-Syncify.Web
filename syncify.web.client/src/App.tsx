@@ -7,25 +7,23 @@ import { AuthContext, useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  FaAlignJustify,
-  FaBook,
-  FaCalendarAlt,
-  FaEnvelope,
-  FaHome,
-  FaShoppingCart,
-  FaTimes,
-  FaUser,
-  FaUsers,
+	FaAlignJustify,
+	FaBook,
+	FaCalendarAlt, FaEnvelope,
+	FaHome,
+	FaShoppingCart, FaTimes,
+	FaUser,
+	FaUsers,
 } from 'react-icons/fa';
 import { useAsyncFn, useLocalStorage } from 'react-use';
 import { AuthenticationService } from './api/generated/AuthenticationService.ts';
 import { FamilyInviteService } from './api/generated/FamilyInviteService.ts';
 import {
-  ChangeInviteStatusDto,
   FamilyInviteGetDto,
   InviteStatus,
+  ChangeInviteStatusDto,
 } from './api/generated/index.defs';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCalendarFilterStore } from './calendar/calendar-filter-store.ts';
 
@@ -99,7 +97,19 @@ export const App: React.FC = () => {
     inviteId: number,
     action: 'accept' | 'decline'
   ) => {
+    const invite = invites.find((i) => i.id === inviteId);
+
+    if (
+      !invite ||
+      invite.status === InviteStatus.Accepted ||
+      invite.status === InviteStatus.Declined
+    ) {
+      toast.error('This invite has already been processed.');
+      return;
+    }
+
     setLoadingAction(inviteId);
+
     const status =
       action === 'accept' ? InviteStatus.Accepted : InviteStatus.Declined;
     const changeInviteStatusDto: ChangeInviteStatusDto = {
@@ -110,10 +120,15 @@ export const App: React.FC = () => {
     await FamilyInviteService.changeInviteStatus({
       body: changeInviteStatusDto,
     });
+
+    setInvites((prevInvites) =>
+      prevInvites.filter((invite) => invite.id !== inviteId)
+    );
+
     toast.success(
       `Invite successfully ${action === 'accept' ? 'accepted' : 'declined'}`
     );
-    await fetchInvites();
+
     setLoadingAction(null);
   };
 
@@ -144,7 +159,7 @@ export const App: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to={ROUTES.Calendar.path}>
+              <Link className="nav-link" to="/calendars">
                 <FaCalendarAlt style={{ marginRight: '5px' }} />{' '}
                 {!isSidebarCollapsed && ' Calendar'}
               </Link>
