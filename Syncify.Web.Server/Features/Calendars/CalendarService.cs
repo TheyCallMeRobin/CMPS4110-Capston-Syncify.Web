@@ -14,7 +14,7 @@ public interface ICalendarService
     Task<Response<List<CalendarWithEventsDto>>> GetCalendarsByUserId(int userId);
     Task<Response<CalendarGetDto>> UpdateCalendar(int id, CalendarUpdateDto dto);
     Task<Response<List<CalendarGetDto>>> GetByUserId(int userId);
-    Task<Response<List<CalendarGetDto>>> GetByUserWithFamilies(int userId);
+    Task<Response<List<CalendarWithFamilyGetDto>>> GetByUserWithFamilies(int userId);
     Task<Response<List<OptionDto>>> GetCalendarOptions(int userId);
     Task<Response> DeleteCalendar(int id);
 }
@@ -103,15 +103,30 @@ public class CalendarService : ICalendarService
         return results.AsResponse();
     }
 
-    public async Task<Response<List<CalendarGetDto>>> GetByUserWithFamilies(int userId)
+    public async Task<Response<List<CalendarWithFamilyGetDto>>> GetByUserWithFamilies(int userId)
     {
         var data = await _dataContext
-            .Set<Calendar>()
-            .Where(x => x.CreatedByUserId == userId ||
-                        x.FamilyCalendars.Any(fc => fc.Family.FamilyMembers.Any(fm => fm.UserId == userId)))
-            .ProjectTo<CalendarGetDto>()
-            .ToListAsync();
-
+        .Set<Calendar>()
+        .Where(x => x.CreatedByUserId == userId ||
+                    x.FamilyCalendars.Any(fc => fc.Family.FamilyMembers.Any(fm => fm.UserId == userId)))
+        .Select(x => new CalendarWithFamilyGetDto
+        {
+            Id = x.Id,
+            Name = x.Name,
+            CreatedByUserId = x.CreatedByUserId,
+            DisplayColor = x.DisplayColor,
+            CurrentUserRole = x.FamilyCalendars
+                .SelectMany(fc => fc.Family.FamilyMembers)
+                .Where(fm => fm.UserId == userId)
+                .Select(fm => fm.Role)
+                .Distinct()
+                .FirstOrDefault() 
+                    
+        })
+        .AsSplitQuery()
+        .TagWith("Get By Users With Family Calendar Included")
+        .ToListAsync();
+        
         return data.AsResponse();
     }
 
