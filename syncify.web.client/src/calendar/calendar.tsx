@@ -12,8 +12,8 @@
   Week,
   WorkWeek,
 } from '@syncfusion/ej2-react-schedule';
-import React, { useMemo, useRef, useState } from 'react';
-import { useAsync, useAsyncRetry, useEffectOnce } from 'react-use';
+import React, { useMemo, useRef } from 'react';
+import { useAsync, useAsyncRetry } from 'react-use';
 import { useUser } from '../auth/auth-context.tsx';
 import { CalendarsService } from '../api/generated/CalendarsService.ts';
 import { toast } from 'react-toastify';
@@ -27,18 +27,15 @@ import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
 import { useCalendarFilterStore } from './calendar-filter-store.ts';
 import { useSubscription } from '../hooks/use-subscription.ts';
 import { CalendarEventWindow } from './event/event-window.tsx';
-import { QuickInfoFooter } from './quick-info.tsx';
+import { QuickInfoFooter, QuickInfoHeader } from './quick-info.tsx';
+import { useShallow } from 'zustand/react/shallow';
 
 const services = [Day, Week, WorkWeek, Month, Agenda];
 
 export type SchedulerRef = React.MutableRefObject<ScheduleComponent | null>;
 
-//TODO: Prevent default "Update on or update all" modal from appearing
-
 export const Calendar: React.FC = () => {
   const user = useUser();
-
-  const [allCalendars, setAllCalendars] = useState<CalendarGetDto[]>();
 
   const fetchCalendars = useAsync(async () => {
     const response = await CalendarsService.getByUserWithFamilies({
@@ -55,42 +52,18 @@ export const Calendar: React.FC = () => {
       allCalendars: response.data as CalendarGetDto[],
     }));
 
-    if (!useCalendarFilterStore.getState().filter.calendars) {
-      useCalendarFilterStore.setState((state) => ({
-        ...state,
-        filter: {
-          ...state.filter,
-          calendars: response.data as CalendarGetDto[],
-          calendarIds: (response.data as CalendarGetDto[]).map(
-            (calendar) => calendar.id
-          ),
-        },
-      }));
-    }
-
-    setAllCalendars(response.data as CalendarGetDto[]);
     return response.data;
   }, [user?.id]);
 
-  useEffectOnce(() => {
-    if (!fetchCalendars.loading && fetchCalendars.value) {
-      useCalendarFilterStore.setState({
-        filter: {
-          calendars: fetchCalendars.value,
-        },
-      });
-    }
-  });
-
   useSubscription('calendar-refresh', () => fetchCalendarEvents.retry());
 
-  const fetchCalendarEvents = useAsyncRetry(async () => {
-    const store = useCalendarFilterStore.getState();
-    const ids =
-      store.filter.calendarIds ?? allCalendars?.map((calendar) => calendar.id);
+  const calendarIds = useCalendarFilterStore(
+    useShallow((state) => state.filter.calendarIds)
+  );
 
+  const fetchCalendarEvents = useAsyncRetry(async () => {
     const response = await CalendarEventService.getCalendarEventsFromCalendars({
-      calendarsIds: ids,
+      calendarsIds: calendarIds,
     });
 
     if (response.hasErrors) {
@@ -98,7 +71,7 @@ export const Calendar: React.FC = () => {
       return [];
     }
     return response.data as CalendarEventGetDto[];
-  }, [allCalendars]);
+  }, [calendarIds]);
 
   const eventSettings: EventSettingsModel = useMemo(
     () => ({
@@ -122,6 +95,7 @@ export const Calendar: React.FC = () => {
   const isLoading = fetchCalendars.loading || fetchCalendarEvents.loading;
 
   const quickInfoTemplates: QuickInfoTemplatesModel = {
+    header: QuickInfoHeader,
     footer: QuickInfoFooter,
   };
 

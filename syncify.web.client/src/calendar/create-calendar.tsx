@@ -37,11 +37,11 @@ export const CreateCalendar: React.FC = () => {
   });
 
   const defaultValues: CalendarCreateDto = useMemo(
-      () => ({
-        name: '',
-        displayColor: undefined,
-      }),
-      []
+    () => ({
+      name: '',
+      displayColor: undefined,
+    }),
+    []
   );
 
   const {
@@ -55,8 +55,8 @@ export const CreateCalendar: React.FC = () => {
   });
 
   const randomColor = useMemo(
-      () => '#' + (((1 << 24) * Math.random()) | 0).toString(16).padStart(6, '0'),
-      []
+    () => '#' + (((1 << 24) * Math.random()) | 0).toString(16).padStart(6, '0'),
+    []
   );
 
   const [color, setColor] = useColor(randomColor);
@@ -67,75 +67,78 @@ export const CreateCalendar: React.FC = () => {
   };
 
   return (
-      <>
-        <button className={'btn btn-primary'} onClick={() => toggle(true)}>
-          <div className={'hstack gap-1'}>
-            <div>
-              <FaPlus />
-            </div>
-            <div>Create Calendar</div>
+    <>
+      <button
+        className={'btn btn-link m-0 p-0 link-underline-opacity-0'}
+        onClick={() => toggle(true)}
+      >
+        <div className={'hstack gap-2'}>
+          <div>
+            <FaPlus />
           </div>
-        </button>
-        <Modal show={on} onHide={handleClose}>
-          <Modal.Header>
-            <h5>Create Calendar</h5>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={handleSubmit(submit)}>
-              <div className={'grid'}>
-                <div className={'row mb-2'}>
-                  <div className={'col-md-6'}>
-                    <Form.Group>
-                      <Form.Label column={false} className={'form-required'}>
-                        Calendar Name
-                      </Form.Label>
-                      <Form.Control
-                          type={'text'}
-                          isValid={Boolean(errors.name)}
-                          {...register('name')}
+          <div>Create Calendar</div>
+        </div>
+      </button>
+      <Modal show={on} onHide={handleClose}>
+        <Modal.Header>
+          <h5>Create Calendar</h5>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit(submit)}>
+            <div className={'grid'}>
+              <div className={'row mb-2'}>
+                <div className={'col-md-6'}>
+                  <Form.Group>
+                    <Form.Label column={false} className={'form-required'}>
+                      Calendar Name
+                    </Form.Label>
+                    <Form.Control
+                      type={'text'}
+                      isValid={Boolean(errors.name)}
+                      {...register('name')}
+                    />
+                  </Form.Group>
+                </div>
+              </div>
+              <div className={'row mb-4'}>
+                <div className={'col-md-6'}>
+                  <Form.Group>
+                    <Form.Label column={false}>Display Color</Form.Label>
+                    <div style={{ minWidth: '280px' }}>
+                      <ColorPicker
+                        onChange={handleColorChange}
+                        color={color}
+                        hideInput={['rgb', 'hsv']}
+                        hideAlpha
                       />
-                    </Form.Group>
-                  </div>
+                    </div>
+                  </Form.Group>
                 </div>
-                <div className={'row mb-4'}>
-                  <div className={'col-md-6'}>
-                    <Form.Group>
-                      <Form.Label column={false}>Display Color</Form.Label>
-                      <div style={{ minWidth: '280px' }}>
-                        <ColorPicker
-                            onChange={handleColorChange}
-                            color={color}
-                            hideInput={['rgb', 'hsv']}
-                            hideAlpha
-                        />
-                      </div>
-                    </Form.Group>
-                  </div>
-                </div>
-                <div className={'row'}>
-                  <div className={'col-md-12'}>
-                    <div className={'hstack gap-3'}>
-                      <div>
-                        <button
-                            className={'btn btn-secondary'}
-                            type={'button'}
-                            onClick={handleClose}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                      <div className={'ms-auto'}>
-                        <button className={'btn btn-primary'} type={'submit'}>
-                          Submit
-                        </button>
-                      </div>
+              </div>
+              <div className={'row'}>
+                <div className={'col-md-12'}>
+                  <div className={'hstack gap-3'}>
+                    <div>
+                      <button
+                        className={'btn btn-secondary'}
+                        type={'button'}
+                        onClick={handleClose}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    <div className={'ms-auto'}>
+                      <button className={'btn btn-primary'} type={'submit'}>
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </Form>
-          </Modal.Body>
-        </Modal>
-      </>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };

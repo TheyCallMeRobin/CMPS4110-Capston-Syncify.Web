@@ -1,4 +1,4 @@
-﻿import React, { ReactElement, useMemo } from 'react';
+﻿import React, { ReactElement, useCallback, useMemo, useState } from 'react';
 import {
   CalendarEventCreateDto,
   CalendarEventType,
@@ -26,16 +26,10 @@ import { EventFormProps, FormValues } from './types.ts';
 import { schema } from './index.ts';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-
-const today = new Date();
-const oneHourFromNow = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDay(),
-  today.getHours() + 1,
-  today.getMinutes(),
-  today.getSeconds()
-);
+import { CalendarEventService } from '../../api/generated/CalendarEventService.ts';
+import { toast } from 'react-toastify';
+import { notify } from '../../hooks/use-subscription.ts';
+import { DeleteConfirmationModal } from '../../Components/delete-confirmation-modal.tsx';
 
 export const EventForm = <
   T extends CalendarEventCreateDto | CalendarEventUpdateDto
@@ -77,10 +71,21 @@ export const EventForm = <
     () => ({
       title: initialValues?.title,
       description: initialValues?.description,
-      startsOnDate: initialValues?.startsOnDate ?? today,
-      startsOnTime: initialValues?.startsOnTime ?? today,
-      endsOnDate: initialValues?.endsOnDate ?? today,
-      endsOnTime: initialValues?.endsOnTime ?? oneHourFromNow,
+      startsOnDate:
+        initialValues?.startsOnDate ?? initialValues?.startsOn ?? new Date(),
+      startsOnTime: initialValues?.startsOnTime ?? new Date(),
+      endsOnDate:
+        initialValues?.endsOnDate ?? initialValues?.endsOn ?? new Date(),
+      endsOnTime:
+        initialValues?.endsOnTime ??
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDay(),
+          new Date().getHours() + 1,
+          new Date().getMinutes(),
+          new Date().getSeconds()
+        ),
       calendarEventType:
         initialValues?.calendarEventType ?? CalendarEventType.Event,
       recurrenceRule: initialValues?.recurrenceRule ?? '',
@@ -90,9 +95,11 @@ export const EventForm = <
       defaultCalendarId,
       initialValues?.calendarEventType,
       initialValues?.description,
+      initialValues?.endsOn,
       initialValues?.endsOnDate,
       initialValues?.endsOnTime,
       initialValues?.recurrenceRule,
+      initialValues?.startsOn,
       initialValues?.startsOnDate,
       initialValues?.startsOnTime,
       initialValues?.title,
@@ -127,11 +134,34 @@ export const EventForm = <
     [defaultCalendarId, defaultValues.calendarId, onSubmit]
   );
 
-  const _onClose = () => {
+  const _onClose = useCallback(() => {
     onClose();
-  };
+  }, [onClose]);
 
   const eventType = watch('calendarEventType');
+
+  const [deleteModalOpen, setDeleteModal] = useState(false);
+
+  const [, deleteCalendarEvent] = useAsyncFn(async () => {
+    const response = await CalendarEventService.deleteCalendarEvent({
+      id: initialValues?.id ?? 0,
+    });
+
+    if (response.hasErrors) {
+      response.errors.map((error) => toast.error(error.errorMessage));
+      return;
+    }
+
+    toast.success('Event deleted');
+    setDeleteModal(false);
+    _onClose();
+
+    notify('calendar-refresh', undefined);
+  }, [_onClose, initialValues?.id]);
+
+  const openDeleteConfirmation = () => {
+    setDeleteModal(true);
+  };
 
   return (
     <>
@@ -333,14 +363,26 @@ export const EventForm = <
           <div className="row mt-1">
             <div className="col-md-12">
               <div className="d-flex flex-row justify-content-between">
-                <button
-                  type="button"
-                  onClick={_onClose}
-                  className="btn btn-secondary"
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
+                <div className={'d-flex flex-row gap-2'}>
+                  <button
+                    type="button"
+                    onClick={_onClose}
+                    className="btn btn-secondary"
+                    disabled={loading}
+                  >
+                    Cancel
+                  </button>
+                  {initialValues?.id && (
+                    <button
+                      type={'button'}
+                      className={'btn btn-danger'}
+                      onClick={openDeleteConfirmation}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+
                 <button
                   type="submit"
                   className="btn btn-primary"
@@ -353,6 +395,13 @@ export const EventForm = <
           </div>
         </div>
       </Form>
+
+      <DeleteConfirmationModal
+        headerText={'Delete Event/Task'}
+        visible={deleteModalOpen}
+        onDelete={deleteCalendarEvent}
+        onCancel={() => setDeleteModal(false)}
+      />
     </>
   );
 };
