@@ -23,6 +23,10 @@ public class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMe
     {
         builder.ToTable("FamilyMembers");
 
+        builder
+            .Property(x => x.Role)
+            .HasDefaultValue(FamilyMemberRole.Member);
+        
         builder.HasOne(x => x.Family)
             .WithMany(x => x.FamilyMembers)
             .HasForeignKey(x => x.FamilyId)
