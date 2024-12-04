@@ -22,6 +22,7 @@ public record CalendarGetDto : CalendarDto
 public record CalendarWithFamilyGetDto : CalendarGetDto
 {
     public FamilyMemberRole? CurrentUserRole { get; set; }
+    public List<string> AssociatedFamilies { get; set; } = [];
 };
 public record CalendarCreateDto([property: JsonIgnore] int CreatedByUserId) : CalendarDto;
 public record CalendarUpdateDto : CalendarDto;

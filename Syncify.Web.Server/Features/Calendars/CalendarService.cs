@@ -120,10 +120,14 @@ public class CalendarService : ICalendarService
                 .Where(fm => fm.UserId == userId)
                 .Select(fm => fm.Role)
                 .Distinct()
-                .FirstOrDefault() 
+                .FirstOrDefault(),
+            AssociatedFamilies = x.FamilyCalendars
+                .Select(fc => fc.Family.Name)
+                .Distinct()
+                .ToList()
                     
         })
-        .AsSplitQuery()
+        .AsNoTracking()
         .TagWith("Get By Users With Family Calendar Included")
         .ToListAsync();
         
