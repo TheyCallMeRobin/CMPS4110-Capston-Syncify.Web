@@ -144,7 +144,7 @@ export const App: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/calendars">
+              <Link className="nav-link" to={ROUTES.Calendar.path}>
                 <FaCalendarAlt style={{ marginRight: '5px' }} />{' '}
                 {!isSidebarCollapsed && ' Calendar'}
               </Link>

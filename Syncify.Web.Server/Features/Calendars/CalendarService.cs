@@ -72,6 +72,8 @@ public class CalendarService : ICalendarService
             .ProjectTo<CalendarGetDto>()
             .ToListAsync();
 
+        _memoryCache.Set($"{CalendarsKey}", data);
+        
         return data.AsResponse();
     }
 
@@ -166,7 +168,7 @@ public class CalendarService : ICalendarService
 
     public async Task<Response<List<OptionDto>>> GetCalendarOptions(int userId)
     {
-        if (_memoryCache.TryGetValue<List<OptionDto>>(OptionsKey, out var cachedOptions))
+        if (_memoryCache.TryGetValue<List<OptionDto>>($"{OptionsKey}-{userId}", out var cachedOptions))
         {
             return cachedOptions!.AsResponse();
         }
