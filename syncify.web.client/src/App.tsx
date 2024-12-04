@@ -17,7 +17,7 @@ import {
   FaUser,
   FaUsers,
 } from 'react-icons/fa';
-import { useAsyncFn } from 'react-use';
+import { useAsyncFn, useLocalStorage } from 'react-use';
 import { AuthenticationService } from './api/generated/AuthenticationService.ts';
 import { FamilyInviteService } from './api/generated/FamilyInviteService.ts';
 import {
@@ -27,6 +27,7 @@ import {
 } from './api/generated/index.defs';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCalendarFilterStore } from './calendar/calendar-filter-store.ts';
 
 export const App: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -80,9 +81,15 @@ export const App: React.FC = () => {
     setLoadingInvites(false);
   }, [user?.id]);
 
+  const addToFilter = useCalendarFilterStore(
+    (state) => state.addCalendarToFilter
+  );
+  const [calendarIds] = useLocalStorage<number[]>('calendar-ids');
+
   useEffect(() => {
     fetchInvites();
-  }, [fetchInvites, user]);
+    calendarIds?.forEach((id) => addToFilter(id));
+  }, [addToFilter, calendarIds, fetchInvites, user]);
 
   const handleInboxClick = () => {
     setIsInviteMenuOpen(!isInviteMenuOpen);

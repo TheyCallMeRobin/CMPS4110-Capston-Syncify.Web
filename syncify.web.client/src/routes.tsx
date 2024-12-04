@@ -8,7 +8,7 @@ import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
 import { App } from './App.tsx';
 import { CalendarPage } from './calendar/calendar-page.tsx';
 import { FamilyManagement } from './Routes/FamilyManagement/FamilyManagement.tsx';
-import {FamilyMemberManagement} from "./Routes/FamilyManagement/FamilyMemberManagement.tsx";
+import { FamilyMemberManagement } from './Routes/FamilyManagement/FamilyMemberManagement.tsx';
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
 
 export const ROUTES = {
@@ -17,7 +17,7 @@ export const ROUTES = {
     element: <LoginPage />,
   },
   Calendar: {
-    path: '/calendars',
+    path: '/calendar',
     element: <CalendarPage />,
   },
   FamilyManagement: {
@@ -26,11 +26,7 @@ export const ROUTES = {
   },
   FamilyMemberManagement: {
     path: 'family-member-management/:familyId',
-    element: <FamilyMemberManagement/>,
-  },
-  CalendarPage: {
-    path: '/calendars',
-    element: <CalendarPage />,
+    element: <FamilyMemberManagement />,
   },
   Dashboard: {
     path: '/',

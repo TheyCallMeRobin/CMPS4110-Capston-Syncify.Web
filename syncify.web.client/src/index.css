@@ -47,6 +47,10 @@ button.btn-primary:hover {
     border-color: #004080;
 }
 
+button.btn-secondary {
+    font-weight: bold;
+}
+
 a.btn.btn-primary {
     min-width: 7vw;
 }
@@ -123,7 +127,6 @@ tr.strikethrough td:before {
 
 .recurrence-editor .e-control.e-textbox {
     padding: 4px !important;
-    background: blue !important;
     height: 30px !important;
     font-size: 0.875rem !important;
 }
@@ -148,4 +151,13 @@ label.e-float-text.e-label-top {
     text-align: start !important;
     text-size-adjust: 100% !important;
     font-family: "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", -apple-system, "BlinkMacSystemFont" !important;
+}
+
+.form-check-input {
+    border: 0.1px solid grey !important;
+}
+
+.form-check-input.form-check-input-large {
+    height: 1.4rem !important;
+    width: 1.4rem !important;
 }
