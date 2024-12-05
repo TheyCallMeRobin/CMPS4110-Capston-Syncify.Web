@@ -115,7 +115,7 @@ const Recipes = () => {
 
             <div className="recipecontainer">
                 {recipes.map((recipe) => (
-                    <div className="recipe-card" key={recipe.id}>
+                    <div className="recipe-card" key={recipe.id} onClick={() => navigate(`/view-recipe/${recipe.id}`)} style={{ cursor: 'pointer' }}>
                         <img src={image} alt="Recipe Image" className="recipe-image" />
                         <div className="recipe-card-content">
                             <h4>{recipe.name}</h4>
@@ -130,7 +130,7 @@ const Recipes = () => {
                             <small>Cook Time: {Math.round((recipe.cookTimeInSeconds || 0) / 60)} minutes</small>
                             <small>Servings: {recipe.servings || 'N/A'}</small>
                         </div>
-                        <div className="recipe-card-menu">
+                        <div className="recipe-card-menu" onClick={(e) => e.stopPropagation()} style={{ cursor: 'default' }}>
                             <Dropdown>
                                 <Dropdown.Toggle as="div" className="recipe-card-menu-icon">
                                     <FaEllipsisV />
