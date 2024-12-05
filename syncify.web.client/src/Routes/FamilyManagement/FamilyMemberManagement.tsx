@@ -27,6 +27,7 @@ export const FamilyMemberManagement = () => {
   const { familyId } = useParams<{ familyId: string }>();
   const user = useUser();
   const navigate = useNavigate();
+  const [bulkRemoveModal, setBulkRemoveModal] = useState(false);
 
   const [fetchFamilyDetails, runFetchFamilyDetails] = useAsyncFn(async () => {
     const familyResponse = await FamilyService.getFamilyById({
@@ -113,22 +114,20 @@ export const FamilyMemberManagement = () => {
     }, [inviteModal, familyId, user]);
 
   const handleBulkRemove = async () => {
-    if (checkedMembers.length === 0) {
-      toast.error('No members selected for removal.');
-      return;
-    }
+    setBulkRemoveModal(true);
+  };
 
+  const confirmBulkRemove = async () => {
+    setLeaveLoading(true);
     await Promise.all(
       checkedMembers.map((memberId) =>
-        FamilyMemberService.removeFamilyMember({
-          familyMemberId: memberId,
-        })
+        FamilyMemberService.removeFamilyMember({ familyMemberId: memberId })
       )
     );
-
     toast.success('Selected members removed successfully!');
-    runFetchFamilyDetails();
+    setLeaveLoading(false);
     setCheckedMembers([]);
+    setBulkRemoveModal(false);
   };
 
   const toggleMemberChecked = (id: number) => {
@@ -137,6 +136,24 @@ export const FamilyMemberManagement = () => {
         ? prev.filter((memberId) => memberId !== id)
         : [...prev, id]
     );
+  };
+
+  const handleBulkRemoveAndRefetch = async () => {
+    setBulkRemoveModal(false);
+
+    await Promise.all(
+      checkedMembers.map((memberId) =>
+        FamilyMemberService.removeFamilyMember({ familyMemberId: memberId })
+      )
+    );
+
+    await runFetchFamilyDetails();
+    setCheckedMembers([]);
+
+    toast.success('Selected members removed successfully!', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
   };
 
   return (
@@ -251,6 +268,32 @@ export const FamilyMemberManagement = () => {
               </Button>
             </Col>
           </Row>
+          <Modal
+            show={bulkRemoveModal}
+            onHide={() => setBulkRemoveModal(false)}
+            centered
+          >
+            <Modal.Header closeButton={false}>
+              <Modal.Title>Confirm Bulk Removal</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                Are you sure you want to remove the selected members? This
+                action cannot be undone.
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setBulkRemoveModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={handleBulkRemoveAndRefetch}>
+                Confirm
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
           <Modal
             show={leaveModal.show}
