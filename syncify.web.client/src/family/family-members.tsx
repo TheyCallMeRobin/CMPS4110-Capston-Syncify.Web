@@ -17,9 +17,13 @@ import { DeleteConfirmationModal } from '../Components/delete-confirmation-modal
 
 type FamilyMembersProps = {
   familyId: number;
+  memberRole: FamilyMemberRole;
 };
 
-export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
+export const FamilyMembers: React.FC<FamilyMembersProps> = ({
+  familyId,
+  memberRole,
+}) => {
   const fetchFamilyMembers = useAsyncRetry(async () => {
     const response = await FamilyMemberService.getFamilyMembers({ familyId });
 
@@ -95,20 +99,22 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
               </div>
               <div>Members</div>
             </div>
-            <div className={'ms-auto'}>
-              <button
-                className={
-                  'btn btn-primary-transparent d-flex flex-row gap-2 align-content-center'
-                }
-                style={{ color: 'white' }}
-                onClick={openInviteModal}
-              >
-                <div>
-                  <FaPlus />
-                </div>
-                Create Invite
-              </button>
-            </div>
+            {memberRole !== FamilyMemberRole.Member && (
+              <div className={'ms-auto'}>
+                <button
+                  className={
+                    'btn btn-primary-transparent d-flex flex-row gap-2 align-content-center'
+                  }
+                  style={{ color: 'white' }}
+                  onClick={openInviteModal}
+                >
+                  <div>
+                    <FaPlus />
+                  </div>
+                  Create Invite
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <div className={'card-body'}>
@@ -131,36 +137,37 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
                       <>{familyMember.role}</>
                     </td>
                     <td>
-                      {familyMember.role !== FamilyMemberRole.Owner && (
-                        <Dropdown>
-                          <Dropdown.Toggle variant="link">
-                            <FaEllipsis />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => openEditModal(familyMember)}
-                            >
-                              <span className="hstack gap-3 ms-auto m-1">
-                                <FaPencil />
-                                Edit role
-                              </span>
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() =>
-                                openDeleteConfirmationModal(familyMember)
-                              }
-                            >
-                              <span
-                                className="hstack gap-3 ms-auto m-1"
-                                style={{ color: 'red' }}
+                      {familyMember.role !== FamilyMemberRole.Owner &&
+                        memberRole !== FamilyMemberRole.Member && (
+                          <Dropdown>
+                            <Dropdown.Toggle variant="link">
+                              <FaEllipsis />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              <Dropdown.Item
+                                onClick={() => openEditModal(familyMember)}
                               >
-                                <FaTrash />
-                                Remove from family
-                              </span>
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      )}
+                                <span className="hstack gap-3 ms-auto m-1">
+                                  <FaPencil />
+                                  Edit role
+                                </span>
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={() =>
+                                  openDeleteConfirmationModal(familyMember)
+                                }
+                              >
+                                <span
+                                  className="hstack gap-3 ms-auto m-1"
+                                  style={{ color: 'red' }}
+                                >
+                                  <FaTrash />
+                                  Remove from family
+                                </span>
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        )}
                     </td>
                   </tr>
                 );

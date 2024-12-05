@@ -161,7 +161,7 @@ export const App: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/calendars">
+              <Link className="nav-link" to={ROUTES.Calendar.path}>
                 <FaCalendarAlt style={{ marginRight: '5px' }} />{' '}
                 {!isSidebarCollapsed && ' Calendar'}
               </Link>
@@ -194,6 +194,16 @@ export const App: React.FC = () => {
           <nav className="header-navbar navbar navbar-expand-lg navbar-dark bg-success border-bottom border-dark">
             <div className="container-fluid justify-content-between">
               <ul className="navbar-nav ms-auto d-flex align-items-center icons-container gap-2">
+                <div className={'d-flex'}>
+                  <div
+                    className={'float-start align-content-center'}
+                    style={{ color: 'white' }}
+                  >
+                    <p style={{ fontSize: '12px' }} className={'mt-3'}>
+                      Member ID: {user?.memberIdentifier}
+                    </p>
+                  </div>
+                </div>
                 <li className="nav-item position-relative">
                   <button
                     className="nav-link btn text-light"

@@ -64,7 +64,7 @@ export const RoleModal: React.FC<RoleModalProps> = ({
       <Modal.Body>
         <Form onSubmit={handleSubmit(changeMemberRole)}>
           <Form.Group>
-            <Form.Label>Role</Form.Label>
+            <Form.Label className="form-required">Role</Form.Label>
             <Form.Select {...register('role')}>
               {familyMember.role === FamilyMemberRole.Owner && (
                 <option value={FamilyMemberRole.Owner}>
