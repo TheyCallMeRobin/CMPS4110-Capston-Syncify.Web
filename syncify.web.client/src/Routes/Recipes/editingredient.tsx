@@ -269,12 +269,14 @@ const EditIngredient: React.FC<EditIngredientProps> = ({
             <div className="ingredient-input-container">
                 <input
                     type="text"
+
                     placeholder="Ingredient Name"
                     value={newIngredient.name}
                     onChange={(e) =>
                         setNewIngredient({ ...newIngredient, name: e.target.value })
                     }
-                    className="ingredient-input"
+                    className={`form-control mb-2 ${ingredientErrors.name ? 'is-invalid' : ''
+                        }`}
                 />
                 {ingredientErrors?.name && (
                     <p className="error-text">
@@ -294,7 +296,8 @@ const EditIngredient: React.FC<EditIngredientProps> = ({
                             quantity: Number(e.target.value),
                         })
                     }
-                    className="ingredient-input"
+                    className={`form-control mb-2 ${ingredientErrors.quantity ? 'is-invalid' : ''
+                        }`}
                     min="0"
                 />
                 {ingredientErrors?.quantity && (
