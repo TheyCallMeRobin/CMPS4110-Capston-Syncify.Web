@@ -32,7 +32,7 @@ public class FamilyShoppingListEntityConfiguration : IEntityTypeConfiguration<Fa
 
         builder
             .HasOne(x => x.ShoppingList)
-            .WithMany()
+            .WithMany(x => x.FamilyShoppingLists)
             .HasForeignKey(x => x.ShoppingListId)
             .OnDelete(DeleteBehavior.Restrict);
 

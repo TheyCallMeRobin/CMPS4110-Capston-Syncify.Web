@@ -53,7 +53,7 @@ export class FamilyInviteService {
       familyId: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<FamilyInviteGetDto>> {
+  ): Promise<Response<List<FamilyInviteGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/family-invites/family/{familyId}';
       url = url.replace('{familyId}', params['familyId'] + '');

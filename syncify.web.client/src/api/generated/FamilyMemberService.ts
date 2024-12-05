@@ -3,6 +3,7 @@ import {
   FamilyMemberRole,
   EmptyResponse,
   Error,
+  ChangeMemberRoleDto,
   IList,
   List,
   IListResult,
@@ -58,6 +59,28 @@ export class FamilyMemberService {
       url = url.replace('{familyMemberId}', params['familyMemberId'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static changeMemberRole(
+    params: {
+      /** requestBody */
+      body?: ChangeMemberRoleDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<FamilyMemberGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/family-members';
+
+      const configs: IRequestConfig = getConfigs('put', 'application/json', url, options);
+
+      let data = params.body;
+
+      configs.data = data;
 
       axios(configs, resolve, reject);
     });

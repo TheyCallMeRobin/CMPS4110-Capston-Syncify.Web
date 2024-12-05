@@ -1,4 +1,4 @@
-﻿import mitt from 'mitt';
+import mitt from 'mitt';
 import { useEffect } from 'react';
 
 export type SubscriptionEvents = keyof SubscriptionEventMap;
@@ -9,6 +9,8 @@ type SubscriptionEventMap = {
   'calendar-refresh': undefined;
   'auth-trigger': undefined;
   'calendar-filter-refresh': undefined;
+  'family-members-refresh': undefined;
+  'family-refresh': undefined
 };
 
 export function useSubscription<T extends SubscriptionEvents>(

@@ -11,6 +11,7 @@ public interface IFamilyMemberService
 {
     Task<Response<List<FamilyMemberGetDto>>> GetFamilyMembers(int familyId);
     Task<Response> RemoveFamilyMember(int familyMemberId, int requestingUserId);
+    Task<Response<FamilyMemberGetDto>> ChangeMemberRole(ChangeMemberRoleDto dto);
 }
 
 public class FamilyMemberService : IFamilyMemberService
@@ -51,16 +52,24 @@ public class FamilyMemberService : IFamilyMemberService
         return Response.Success();
     }
 
+    public async Task<Response<FamilyMemberGetDto>> ChangeMemberRole(ChangeMemberRoleDto dto)
+    {
+        var familyMember = await _dataContext.Set<FamilyMember>().FirstOrDefaultAsync(x => x.Id == dto.familyMemberId);
+        if (familyMember is null)
+            return Error.AsResponse<FamilyMemberGetDto>("Family member not found", nameof(dto.familyMemberId));
+
+        familyMember.Role = dto.Role;
+        await _dataContext.SaveChangesAsync();
+
+        return familyMember.MapTo<FamilyMemberGetDto>().AsResponse();
+    }
+
     private void VerifyUserCanDelete(FamilyMember familyMember, FamilyMember? requestingUserFamilyMember)
     {
-        if (requestingUserFamilyMember is not { Role: FamilyMemberRole.Admin } or {Role: FamilyMemberRole.Owner })
+        if (requestingUserFamilyMember?.Role != FamilyMemberRole.Owner && requestingUserFamilyMember?.Role != FamilyMemberRole.Admin)
         {
             throw new NotAuthorizedException("Insufficient permissions to remove a family member.");
         }
-
-        if (familyMember.Role is FamilyMemberRole.Owner or FamilyMemberRole.Admin)
-        {
-            throw new NotAuthorizedException("Insufficient permissions to remove this family member.");
-        }
+        
     }
 }

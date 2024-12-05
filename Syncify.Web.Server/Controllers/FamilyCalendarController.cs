@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyCalendars;
 
@@ -42,6 +43,14 @@ public class FamilyCalendarController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet("options/{userId}")]
+    public async Task<ActionResult<Response<List<OptionDto>>>> GetOptions(int userId)
+    {
+        var data = await _familyCalendarService.GetOptions(userId);
+        return Ok(data);
+    }
+    
+    
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> RemoveCalendarFromFamily(int id)
     {

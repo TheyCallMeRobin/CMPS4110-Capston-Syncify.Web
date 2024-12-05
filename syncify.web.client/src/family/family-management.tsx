@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { useAsync } from 'react-use';
+import React, { useEffect, useState } from 'react';
+import { useAsync, useAsyncRetry } from 'react-use';
 import { useUser } from '../auth/auth-context.tsx';
 import { FamilyService } from '../api/generated/FamilyService.ts';
 import { toast } from 'react-toastify';
 import { OptionDto } from '../api/generated/index.defs.ts';
 import { LoadingContainer } from '../Components/loading-container.tsx';
-import { FaPlus } from 'react-icons/fa';
 import { FamilyMembers } from './family-members.tsx';
+import { PendingInvites } from './pending-invites.tsx';
+import { FamilyShoppingLists } from './family-shopping-lists.tsx';
+import { useSubscription } from '../hooks/use-subscription.ts';
+import { Dropdown } from 'react-bootstrap';
+import { CreateFamilyModal } from './create-family-modal.tsx';
+import { FamilyCalendars } from './family-calendars.tsx';
 
 export const FamilyManagement: React.FC = () => {
   const user = useUser();
@@ -31,9 +36,7 @@ export const FamilyManagement: React.FC = () => {
     return data;
   }, [user]);
 
-  const handleSetSelectedFamilyId = (id) => setSelectedFamilyId(() => id);
-
-  const fetchSelectedFamily = useAsync(async () => {
+  const fetchSelectedFamily = useAsyncRetry(async () => {
     if (!selectedFamilyId) return;
 
     const response = await FamilyService.getFamilyById({
@@ -46,6 +49,14 @@ export const FamilyManagement: React.FC = () => {
     return response.data;
   }, [selectedFamilyId]);
 
+  useSubscription('family-refresh', fetchSelectedFamily.retry);
+
+  useEffect(() => {
+    if (!fetchSelectedFamily.loading) {
+      fetchSelectedFamily.retry();
+    }
+  }, []);
+
   return (
     <LoadingContainer
       loading={fetchFamilyOptions.loading || fetchSelectedFamily.loading}
@@ -55,18 +66,44 @@ export const FamilyManagement: React.FC = () => {
         !fetchSelectedFamily.loading &&
         (fetchFamilyOptions?.value?.length ?? 0 > 0) ? (
           <>
-            <div className={'col-12'}>
-              <h2 className="text-center text-highlight mb-1">
-                {fetchSelectedFamily.value?.name}
-              </h2>
+            <div className={'col-12 text-center'}>
+              <Dropdown>
+                <Dropdown.Toggle
+                  variant={'outline-light'}
+                  className={'text-center'}
+                >
+                  <h2 className="text-center text-highlight mb-1">
+                    {fetchSelectedFamily.value?.name}
+                  </h2>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {fetchFamilyOptions.value?.map((family) => (
+                    <Dropdown.Item
+                      key={family.value}
+                      onClick={() => setSelectedFamilyId(family.value)}
+                    >
+                      {family.label}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
             <div className={'col-12 text-center'}>
-              <CreateFamily />
+              <CreateFamilyModal />
             </div>
             {fetchSelectedFamily.value && (
               <div className={'row'}>
                 <div className={'col-lg-4 col-md-6'}>
                   <FamilyMembers familyId={selectedFamilyId ?? 0} />
+                </div>
+                <div className={'col-lg-4 col-md-6'}>
+                  <PendingInvites familyId={selectedFamilyId ?? 0} />
+                </div>
+                <div className={'col-lg-4 col-md-6'}>
+                  <FamilyShoppingLists familyId={selectedFamilyId ?? 0} />
+                </div>
+                <div className={'col-lg-4 col-md-6'}>
+                  <FamilyCalendars familyId={selectedFamilyId ?? 0} />
                 </div>
               </div>
             )}
@@ -76,21 +113,10 @@ export const FamilyManagement: React.FC = () => {
             <h2 className="text-center text-highlight mb-4">
               You have not created any families.
             </h2>
-            <CreateFamily />
+            <CreateFamilyModal />
           </>
         )}
       </>
     </LoadingContainer>
-  );
-};
-
-const CreateFamily = () => {
-  return (
-    <>
-      <button className={'btn btn-link'}>
-        <FaPlus className={'mx-1'} />
-        Create a family
-      </button>
-    </>
   );
 };

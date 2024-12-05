@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Features.ShoppingLists;
 
 namespace Syncify.Web.Server.Controllers;
@@ -80,6 +81,13 @@ public class ShoppingListsController : ControllerBase
         return Ok(updateResult.Data);
     }
 
+    [HttpGet("options/{userId}")]
+    public async Task<ActionResult<Response<List<OptionDto>>>> GetOptions(int userId)
+    {
+        var data = await _shoppingListService.GetOptions(userId);
+        return Ok(data);
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShoppingList(int id)
     {

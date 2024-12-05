@@ -2,25 +2,25 @@
   FamilyMemberGetDto,
   FamilyMemberRole,
 } from '../api/generated/index.defs.ts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cardStyle } from '../main-page/MainPage.tsx';
 import { FaEllipsis, FaPencil, FaPeopleGroup, FaTrash } from 'react-icons/fa6';
-import { useUser } from '../auth/auth-context.tsx';
-import { useAsync } from 'react-use';
+import { useAsyncFn, useAsyncRetry } from 'react-use';
 import { FamilyMemberService } from '../api/generated/FamilyMemberService.ts';
 import { toast } from 'react-toastify';
 import { Dropdown } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
 import { InviteModal } from './invite-modal.tsx';
+import { RoleModal } from './role-modal.tsx';
+import { notify, useSubscription } from '../hooks/use-subscription.ts';
+import { DeleteConfirmationModal } from '../Components/delete-confirmation-modal.tsx';
 
 type FamilyMembersProps = {
   familyId: number;
 };
 
 export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
-  const user = useUser();
-
-  const fetchFamilyMembers = useAsync(async () => {
+  const fetchFamilyMembers = useAsyncRetry(async () => {
     const response = await FamilyMemberService.getFamilyMembers({ familyId });
 
     if (response.hasErrors) {
@@ -29,12 +29,60 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
     }
 
     return response.data as FamilyMemberGetDto[];
-  });
+  }, [familyId]);
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const openInviteModal = () => setIsInviteModalOpen(() => true);
   const closeInviteModal = () => setIsInviteModalOpen(() => false);
+
+  const [selectedFamilyMember, setSelectedFamilyMember] =
+    useState<FamilyMemberGetDto>();
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  useSubscription('family-members-refresh', fetchFamilyMembers.retry);
+
+  useEffect(() => {
+    if (!fetchFamilyMembers.loading) {
+      fetchFamilyMembers.retry();
+    }
+  }, []);
+
+  const openEditModal = (selectedMember: FamilyMemberGetDto) => {
+    setSelectedFamilyMember(() => selectedMember);
+    setEditModalOpen(() => true);
+  };
+
+  const closeEditModal = () => {
+    setSelectedFamilyMember(() => undefined);
+    setEditModalOpen(false);
+  };
+
+  const [, removeMember] = useAsyncFn(async (member: FamilyMemberGetDto) => {
+    const response = await FamilyMemberService.removeFamilyMember({
+      familyMemberId: member?.id ?? 0,
+    });
+    if (response.hasErrors) {
+      response.errors.forEach((error) => toast.error(error.errorMessage));
+      return;
+    }
+
+    toast.success('Family member has been removed.');
+    notify('family-members-refresh', undefined);
+    closeDeleteConfirmationModal();
+  });
+
+  const [deleteConfirmationModal, setDeleteConfirmationModal] = useState(false);
+
+  const openDeleteConfirmationModal = (familyMember: FamilyMemberGetDto) => {
+    setSelectedFamilyMember(familyMember);
+    setDeleteConfirmationModal(true);
+  };
+
+  const closeDeleteConfirmationModal = () => {
+    setSelectedFamilyMember(() => undefined);
+    setDeleteConfirmationModal(() => false);
+  };
 
   return (
     <>
@@ -80,7 +128,7 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
                       className={'align-content-center'}
                     >{`${familyMember.userFirstName} ${familyMember.userLastName}`}</td>
                     <td className={'align-content-center'}>
-                      {familyMember.role}
+                      <>{familyMember.role}</>
                     </td>
                     <td>
                       {familyMember.role !== FamilyMemberRole.Owner && (
@@ -89,13 +137,19 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
                             <FaEllipsis />
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => openEditModal(familyMember)}
+                            >
                               <span className="hstack gap-3 ms-auto m-1">
                                 <FaPencil />
                                 Edit role
                               </span>
                             </Dropdown.Item>
-                            <Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                openDeleteConfirmationModal(familyMember)
+                              }
+                            >
                               <span
                                 className="hstack gap-3 ms-auto m-1"
                                 style={{ color: 'red' }}
@@ -120,6 +174,24 @@ export const FamilyMembers: React.FC<FamilyMembersProps> = ({ familyId }) => {
         open={isInviteModalOpen}
         onClose={closeInviteModal}
       />
+      {selectedFamilyMember && (
+        <RoleModal
+          familyMember={selectedFamilyMember}
+          onClose={closeEditModal}
+          open={isEditModalOpen}
+        />
+      )}
+      {selectedFamilyMember && (
+        <DeleteConfirmationModal
+          visible={selectedFamilyMember && deleteConfirmationModal}
+          onDelete={() => removeMember(selectedFamilyMember)}
+          onCancel={closeDeleteConfirmationModal}
+          headerText={'Remove Member from Family'}
+          modalText={
+            'Are you sure you want to remove this member from the family?'
+          }
+        />
+      )}
     </>
   );
 };

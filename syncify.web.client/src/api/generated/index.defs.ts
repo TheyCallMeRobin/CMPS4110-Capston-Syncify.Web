@@ -361,6 +361,18 @@ export class ChangeInviteStatusDto {
   }
 }
 
+export class ChangeMemberRoleDto {
+  /**  */
+  'familyMemberId': number;
+
+  /**  */
+  'role': FamilyMemberRole;
+
+  constructor(data: ChangeMemberRoleDto = {}) {
+    Object.assign(this, data);
+  }
+}
+
 export class CreateUserDto {
   /**  */
   'userName': string;
@@ -595,6 +607,9 @@ export class FamilyShoppingListGetDto {
 
   /**  */
   'shoppingListId': number;
+
+  /**  */
+  'id': number;
 
   /**  */
   'createdByUserId': number;

@@ -1416,6 +1416,47 @@
         }
       }
     },
+    "/api/family-calendars/options/{userId}": {
+      "get": {
+        "tags": [
+          "FamilyCalendar"
+        ],
+        "operationId": "GetOptions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/family-invites/user/{userId}": {
       "get": {
         "tags": [
@@ -1480,17 +1521,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<FamilyInviteGetDto>"
+                  "$ref": "#/components/schemas/Response<List<FamilyInviteGetDto>>"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<FamilyInviteGetDto>"
+                  "$ref": "#/components/schemas/Response<List<FamilyInviteGetDto>>"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response<FamilyInviteGetDto>"
+                  "$ref": "#/components/schemas/Response<List<FamilyInviteGetDto>>"
                 }
               }
             }
@@ -1669,6 +1710,55 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/family-members": {
+      "put": {
+        "tags": [
+          "FamilyMember"
+        ],
+        "operationId": "ChangeMemberRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeMemberRoleDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeMemberRoleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeMemberRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
                 }
               }
             }
@@ -3460,6 +3550,47 @@
         }
       }
     },
+    "/api/shopping-lists/options/{userId}": {
+      "get": {
+        "tags": [
+          "ShoppingLists"
+        ],
+        "operationId": "GetOptions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Units/list": {
       "get": {
         "tags": [
@@ -3938,6 +4069,23 @@
         },
         "additionalProperties": false
       },
+      "ChangeMemberRoleDto": {
+        "required": [
+          "familyMemberId",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "familyMemberId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "role": {
+            "$ref": "#/components/schemas/FamilyMemberRole"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateUserDto": {
         "required": [
           "email",
@@ -4293,6 +4441,7 @@
         "required": [
           "createdByUserId",
           "familyId",
+          "id",
           "shoppingList",
           "shoppingListId"
         ],
@@ -4303,6 +4452,10 @@
             "format": "int32"
           },
           "shoppingListId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
             "type": "integer",
             "format": "int32"
           },
@@ -4832,6 +4985,30 @@
         },
         "additionalProperties": false
       },
+      "Response<FamilyMemberGetDto>": {
+        "required": [
+          "data",
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "$ref": "#/components/schemas/FamilyMemberGetDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "Response<FamilyRecipeGetDto>": {
         "required": [
           "data",
@@ -5036,6 +5213,33 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FamilyGetDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Response<List<FamilyInviteGetDto>>": {
+        "required": [
+          "errors",
+          "hasErrors"
+        ],
+        "type": "object",
+        "properties": {
+          "hasErrors": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyInviteGetDto"
             },
             "nullable": true
           }
