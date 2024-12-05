@@ -14,7 +14,18 @@ export const QuickActions: React.FC = () => {
             toast.error("User not logged in!", { position: "top-right", autoClose: 3000 });
             return;
         }
+        /*
+        If we want the shopping lists to be based off hours minutes seconds in addition to date 
+     const now = new Date();
+     const formattedDate = ${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.toLocaleTimeString()};
+     const uniqueName = New Shopping List - ${formattedDate};
 
+      const newItemObj = {
+      name: uniqueName,
+      description: '',
+      userId: user.id,
+     };
+        */
         const now = new Date();
         const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
         const uniqueName = `New Shopping List - ${formattedDate}`;
