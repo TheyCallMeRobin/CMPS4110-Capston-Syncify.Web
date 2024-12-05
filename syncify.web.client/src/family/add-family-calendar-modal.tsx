@@ -56,6 +56,9 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
 
   const { register, handleSubmit } = useForm<FamilyCalendarCreateSchema>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      familyId,
+    },
   });
 
   const fetchOptions = useAsync(async () => {
@@ -90,7 +93,7 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
               <Form onSubmit={handleSubmit(createFamily)}>
                 <Form.Group>
                   <Form.Label>Name</Form.Label>
-                  <Form.Select>
+                  <Form.Select {...register('familyId')}>
                     {fetchOptions.value?.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         opt.label
