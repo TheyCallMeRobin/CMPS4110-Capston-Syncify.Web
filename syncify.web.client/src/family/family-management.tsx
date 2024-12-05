@@ -12,6 +12,8 @@ import { useSubscription } from '../hooks/use-subscription.ts';
 import { Dropdown } from 'react-bootstrap';
 import { CreateFamilyModal } from './create-family-modal.tsx';
 import { FamilyCalendars } from './family-calendars.tsx';
+import { FamilyRecipes } from './family-recipes.tsx';
+import { FamilyMemberService } from '../api/generated/FamilyMemberService.ts';
 
 export const FamilyManagement: React.FC = () => {
   const user = useUser();
@@ -57,14 +59,32 @@ export const FamilyManagement: React.FC = () => {
     }
   }, []);
 
+  const fetchCurrentFamilyMember = useAsync(async () => {
+    if (!fetchSelectedFamily.value || !user?.id) return;
+
+    const response = await FamilyMemberService.getFamilyMember({
+      familyId: fetchSelectedFamily.value.id,
+      userId: user?.id ?? 0,
+    });
+    if (response.hasErrors) {
+      response.errors.forEach((error) => toast.error(error.errorMessage));
+      return;
+    }
+    return response.data;
+  }, [fetchSelectedFamily.value, user?.id]);
+
   return (
     <LoadingContainer
-      loading={fetchFamilyOptions.loading || fetchSelectedFamily.loading}
+      loading={
+        fetchFamilyOptions.loading ||
+        fetchSelectedFamily.loading ||
+        fetchCurrentFamilyMember.loading
+      }
     >
       <>
         {!fetchFamilyOptions.loading &&
         !fetchSelectedFamily.loading &&
-        (fetchFamilyOptions?.value?.length ?? 0 > 0) ? (
+        (fetchFamilyOptions.value?.length ?? 0 > 0) ? (
           <>
             <div className={'col-12 text-center'}>
               <Dropdown>
@@ -91,19 +111,37 @@ export const FamilyManagement: React.FC = () => {
             <div className={'col-12 text-center'}>
               <CreateFamilyModal />
             </div>
-            {fetchSelectedFamily.value && (
+            {fetchSelectedFamily.value && fetchCurrentFamilyMember.value && (
               <div className={'row'}>
                 <div className={'col-lg-4 col-md-6'}>
-                  <FamilyMembers familyId={selectedFamilyId ?? 0} />
+                  <FamilyMembers
+                    familyId={selectedFamilyId ?? 0}
+                    memberRole={fetchCurrentFamilyMember.value.role}
+                  />
                 </div>
                 <div className={'col-lg-4 col-md-6'}>
-                  <PendingInvites familyId={selectedFamilyId ?? 0} />
+                  <PendingInvites
+                    familyId={selectedFamilyId ?? 0}
+                    memberRole={fetchCurrentFamilyMember.value.role}
+                  />
                 </div>
                 <div className={'col-lg-4 col-md-6'}>
-                  <FamilyShoppingLists familyId={selectedFamilyId ?? 0} />
+                  <FamilyShoppingLists
+                    familyId={selectedFamilyId ?? 0}
+                    memberRole={fetchCurrentFamilyMember.value.role}
+                  />
                 </div>
                 <div className={'col-lg-4 col-md-6'}>
-                  <FamilyCalendars familyId={selectedFamilyId ?? 0} />
+                  <FamilyCalendars
+                    familyId={selectedFamilyId ?? 0}
+                    memberRole={fetchCurrentFamilyMember.value.role}
+                  />
+                </div>
+                <div className={'col-lg-4 col-md-6'}>
+                  <FamilyRecipes
+                    familyId={selectedFamilyId ?? 0}
+                    memberRole={fetchCurrentFamilyMember.value.role}
+                  />
                 </div>
               </div>
             )}

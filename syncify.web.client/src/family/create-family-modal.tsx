@@ -66,7 +66,7 @@ export const CreateFamilyModal: React.FC = () => {
           <Modal.Body>
             <Form onSubmit={handleSubmit(createFamily)}>
               <Form.Group>
-                <Form.Label>Name</Form.Label>
+                <Form.Label className="form-required">Name</Form.Label>
                 <Form.Control
                   size={'lg'}
                   type={'text'}

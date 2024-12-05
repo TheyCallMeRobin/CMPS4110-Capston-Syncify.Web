@@ -444,6 +444,9 @@ export class FamilyCalendarGetDto {
   'familyId': number;
 
   /**  */
+  'id': number;
+
+  /**  */
   'calendarName': string;
 
   constructor(data: FamilyCalendarGetDto = {}) {
@@ -577,6 +580,9 @@ export class FamilyRecipeGetDto {
 
   /**  */
   'recipeId': number;
+
+  /**  */
+  'id': number;
 
   /**  */
   'createdByUserId': number;

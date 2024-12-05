@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 import { useAsyncFn, useAsyncRetry } from 'react-use';
 import { FamilyShoppingListService } from '../api/generated/FamilyShoppingListService.ts';
 import { toast } from 'react-toastify';
-import { FamilyShoppingListGetDto } from '../api/generated/index.defs.ts';
+import {
+  FamilyMemberRole,
+  FamilyShoppingListGetDto,
+} from '../api/generated/index.defs.ts';
 import { AddShoppingListModal } from './add-shopping-list-modal.tsx';
 import { DeleteConfirmationModal } from '../Components/delete-confirmation-modal.tsx';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +16,7 @@ import { notify } from '../hooks/use-subscription.ts';
 
 type FamilyShoppingListsProps = {
   familyId: number;
+  memberRole: FamilyMemberRole;
 };
 
 export const FamilyShoppingLists: React.FC<FamilyShoppingListsProps> = ({

@@ -1,35 +1,35 @@
-﻿import { useAsync, useAsyncFn } from 'react-use';
+﻿import { useUser } from '../auth/auth-context.tsx';
+import { useAsync, useAsyncFn } from 'react-use';
 import { toast } from 'react-toastify';
 import { notify } from '../hooks/use-subscription.ts';
-import { z } from 'zod';
-import { FamilyCalendarCreateDto } from '../api/generated/index.defs.ts';
-import { FamilyCalendarService } from '../api/generated/FamilyCalendarService.ts';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FaPlus } from 'react-icons/fa';
 import { Form, Modal } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useUser } from '../auth/auth-context.tsx';
+import { z } from 'zod';
+import { FamilyRecipeCreateDto } from '../api/generated/index.defs.ts';
+import { FamilyRecipeService } from '../api/generated/FamilyRecipeService.ts';
 
-type AddFamilyCalendarModalProps = {
+type AddFamilyRecipeModalProps = {
   familyId: number;
 };
 
 const schema = z.object({
-  calendarId: z.number(),
+  recipeId: z.number(),
   familyId: z.number(),
-}) satisfies z.Schema<FamilyCalendarCreateDto>;
+}) satisfies z.Schema<FamilyRecipeCreateDto>;
 
-type FamilyCalendarCreateSchema = z.TypeOf<typeof schema>;
+type FamilyRecipeCreateSchema = z.TypeOf<typeof schema>;
 
-export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
+export const AddFamilyRecipeModal: React.FC<AddFamilyRecipeModalProps> = ({
   familyId,
 }) => {
   const user = useUser();
 
-  const [, createFamilyCalendar] = useAsyncFn(
-    async (values: FamilyCalendarCreateSchema) => {
-      const response = await FamilyCalendarService.addCalendarToFamily({
+  const [, createFamilyRecipe] = useAsyncFn(
+    async (values: FamilyRecipeCreateSchema) => {
+      const response = await FamilyRecipeService.createFamilyRecipe({
         body: { ...values },
       });
 
@@ -38,7 +38,7 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
         return;
       }
 
-      toast.success('Family created.');
+      toast.success('Recipe added to Family.');
       closeModal();
       notify('family-refresh', undefined);
     }
@@ -51,24 +51,31 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
   };
 
   const openModal = () => {
+    setValue('familyId', familyId);
     setModalOpen(true);
   };
+
+  const defaultValues: DefaultValues<FamilyRecipeCreateSchema> = useMemo(
+    () => ({
+      familyId: familyId,
+    }),
+    [familyId]
+  );
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FamilyCalendarCreateSchema>({
+    setValue,
+  } = useForm<FamilyRecipeCreateSchema>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      familyId,
-    },
+    defaultValues,
     shouldUnregister: true,
     shouldFocusError: true,
   });
 
   const fetchOptions = useAsync(async () => {
-    const response = await FamilyCalendarService.getOptions({
+    const response = await FamilyRecipeService.getOptions({
       userId: user?.id ?? 0,
     });
 
@@ -87,20 +94,20 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
         <div>
           <FaPlus />
         </div>
-        Add Calendar
+        Add Recipe
       </button>
       {isModalOpen && (
         <Modal show={isModalOpen}>
           <Modal.Header>
-            <Modal.Title>Add a Calendar to Family</Modal.Title>
+            <Modal.Title>Add a Recipe to Family</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {!fetchOptions.loading && (fetchOptions.value?.length ?? 0) > 0 ? (
-              <Form onSubmit={handleSubmit(createFamilyCalendar)}>
+              <Form onSubmit={handleSubmit(createFamilyRecipe)}>
                 <Form.Group>
                   <Form.Label className="form-required">Name</Form.Label>
                   <Form.Select
-                    {...register('calendarId', { valueAsNumber: true })}
+                    {...register('recipeId', { valueAsNumber: true })}
                   >
                     {fetchOptions.value?.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -108,8 +115,8 @@ export const AddFamilyCalendarModal: React.FC<AddFamilyCalendarModalProps> = ({
                       </option>
                     ))}
                   </Form.Select>
-                  {errors.calendarId && (
-                    <p style={{ color: 'red' }}>{errors.calendarId?.message}</p>
+                  {errors.familyId && (
+                    <p style={{ color: 'red' }}>{errors.familyId?.message}</p>
                   )}
                 </Form.Group>
                 <div className={'mt-3 clearfix'}>

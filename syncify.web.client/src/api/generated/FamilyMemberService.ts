@@ -47,6 +47,28 @@ export class FamilyMemberService {
   /**
    *
    */
+  static getFamilyMember(
+    params: {
+      /**  */
+      userId: number;
+      /**  */
+      familyId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<FamilyMemberGetDto>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/family-members/{familyId}/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+      url = url.replace('{familyId}', params['familyId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
   static removeFamilyMember(
     params: {
       /**  */

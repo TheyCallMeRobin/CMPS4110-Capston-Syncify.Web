@@ -1676,6 +1676,56 @@
         }
       }
     },
+    "/api/family-members/{familyId}/{userId}": {
+      "get": {
+        "tags": [
+          "FamilyMember"
+        ],
+        "operationId": "GetFamilyMember",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "familyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<FamilyMemberGetDto>"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/family-members/{familyMemberId}": {
       "delete": {
         "tags": [
@@ -1929,6 +1979,47 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/family-recipes/options/{userId}": {
+      "get": {
+        "tags": [
+          "FamilyRecipe"
+        ],
+        "operationId": "GetOptions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response<List<OptionDto>>"
                 }
               }
             }
@@ -4183,7 +4274,8 @@
         "required": [
           "calendarId",
           "calendarName",
-          "familyId"
+          "familyId",
+          "id"
         ],
         "type": "object",
         "properties": {
@@ -4192,6 +4284,10 @@
             "format": "int32"
           },
           "familyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
             "type": "integer",
             "format": "int32"
           },
@@ -4396,6 +4492,7 @@
         "required": [
           "createdByUserId",
           "familyId",
+          "id",
           "recipe",
           "recipeId"
         ],
@@ -4406,6 +4503,10 @@
             "format": "int32"
           },
           "recipeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
             "type": "integer",
             "format": "int32"
           },

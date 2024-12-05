@@ -6,6 +6,7 @@ import { FamilyInviteService } from '../api/generated/FamilyInviteService.ts';
 import { toast } from 'react-toastify';
 import {
   FamilyInviteGetDto,
+  FamilyMemberRole,
   InviteStatus,
 } from '../api/generated/index.defs.ts';
 import { FaX } from 'react-icons/fa6';
@@ -14,9 +15,13 @@ import { notify } from '../hooks/use-subscription.ts';
 
 type PendingInvitesProps = {
   familyId: number;
+  memberRole: FamilyMemberRole;
 };
 
-export const PendingInvites: React.FC<PendingInvitesProps> = ({ familyId }) => {
+export const PendingInvites: React.FC<PendingInvitesProps> = ({
+  familyId,
+  memberRole,
+}) => {
   const fetchInvites = useAsync(async () => {
     const response = await FamilyInviteService.getInvitesByFamilyId({
       familyId,
@@ -46,7 +51,7 @@ export const PendingInvites: React.FC<PendingInvitesProps> = ({ familyId }) => {
 
     toast.success('Invite canceled.');
     setConfirmModal(false);
-    notify('family-refresh', undefined)
+    notify('family-refresh', undefined);
   });
 
   const closeModal = () => {
@@ -85,10 +90,12 @@ export const PendingInvites: React.FC<PendingInvitesProps> = ({ familyId }) => {
                 <tr key={invite.id}>
                   <td>{invite.userFullName}</td>
                   <td>
-                    <FaX
-                      style={{ color: 'red', cursor: 'pointer' }}
-                      onClick={() => openModal(invite)}
-                    />
+                    {memberRole !== FamilyMemberRole.Member && (
+                      <FaX
+                        style={{ color: 'red', cursor: 'pointer' }}
+                        onClick={() => openModal(invite)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
