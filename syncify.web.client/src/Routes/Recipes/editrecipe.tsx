@@ -5,11 +5,10 @@ import { RecipeIngredientService } from '../../api/generated/RecipeIngredientSer
 import { RecipeGetDto, RecipeIngredientGetDto, RecipeUpdateDto } from '../../api/generated/index.defs';
 import EditIngredient from './editingredient';
 import { useAsyncFn } from 'react-use';
-import { FaArrowLeft, FaExclamationCircle, FaCheckCircle, FaTrash, FaTimesCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaExclamationCircle, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
 
 const EditRecipes: React.FC = () => {
     const { recipeId } = useParams<{ recipeId: string }>();
@@ -17,9 +16,6 @@ const EditRecipes: React.FC = () => {
     const [editRecipe, setEditRecipe] = useState<RecipeGetDto | null>(null);
     const [ingredients, setIngredients] = useState<RecipeIngredientGetDto[]>([]);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [ingredientErrors, setIngredientErrors] = useState<{ [key: string]: string }>({});
-    const [showIngredientDeleteModal, setShowIngredientDeleteModal] = useState(false);
-    const [ingredientToDeleteId, setIngredientToDeleteId] = useState<number | null>(null);
 
     const [state, fetchIngredients] = useAsyncFn(async () => {
         if (recipeId) {
@@ -57,10 +53,9 @@ const EditRecipes: React.FC = () => {
         if (response?.data) {
             setErrors({});
             toast.success('Recipe updated successfully!');
-            console.log('Recipe updated successfully!', response.data);
-            navigate('/recipes');  // Updated line
+            navigate('/recipes');
+
         } else if (response?.errors) {
-            console.error('Error while updating recipe:', response.errors);
             const fieldErrors = response.errors.reduce<{ [key: string]: string }>((acc, error) => {
                 acc[error.propertyName.toLowerCase()] = error.errorMessage;
                 return acc;
@@ -78,24 +73,11 @@ const EditRecipes: React.FC = () => {
         });
 
         if (response?.data) {
-            setIngredientErrors({});
             setIngredients((prev) => [...prev, response.data as RecipeIngredientGetDto]);
             return { data: response.data };
-        } else if (response?.errors) {
-            const fieldErrors = response.errors.reduce<{ errorMessage?: string; propertyName?: string }[]>((acc, error) => {
-                acc.push({
-                    errorMessage: error.errorMessage,
-                    propertyName: error.propertyName,
-                });
-                return acc;
-            }, []);
-            setIngredientErrors(Object.fromEntries(fieldErrors.map(error => [error.propertyName?.toLowerCase() || "", error.errorMessage || ""])));
-            return { errors: fieldErrors };
         }
 
-        return {
-            errors: [{ errorMessage: 'Unknown error occurred', propertyName: '' }],
-        };
+        return { errors: response.errors || [{ errorMessage: 'Unknown error occurred', propertyName: '' }] };
     }, [editRecipe]);
 
     const handleUpdateIngredient = async (ingredientId: number, updatedIngredient: RecipeIngredientGetDto) => {
@@ -107,20 +89,15 @@ const EditRecipes: React.FC = () => {
         if (response?.data) {
             setIngredients((prevIngredients) =>
                 prevIngredients
-                    .map((ingredient) => ingredient.id === ingredientId ? response.data : ingredient)
+                    .map((ingredient) =>
+                        ingredient.id === ingredientId ? response.data : ingredient
+                    )
                     .filter((ingredient): ingredient is RecipeIngredientGetDto => ingredient !== null)
             );
             return { data: response.data };
-        } else if (response?.errors) {
-            const fieldErrors = response.errors.reduce((acc: { [key: string]: string }, error: any) => {
-                acc[error.propertyName?.toLowerCase() || ""] = error.errorMessage || "";
-                return acc;
-            }, {});
-            setIngredientErrors(fieldErrors);
-            return { errors: response.errors };
         }
 
-        return { errors: [{ errorMessage: 'Unknown error occurred', propertyName: '' }] };
+        return { errors: response.errors || [{ errorMessage: 'Unknown error occurred', propertyName: '' }] };
     };
 
     const [deleteIngredientState, handleDeleteIngredient] = useAsyncFn(async (ingredientId: number) => {
@@ -155,12 +132,6 @@ const EditRecipes: React.FC = () => {
             };
         });
     };
-
-    const handleInitiateDeleteIngredient = async (ingredientId: number): Promise<{ data?: any; errors?: { errorMessage?: string | undefined; }[] | undefined; }> => {
-        setIngredientToDeleteId(ingredientId);
-        setShowIngredientDeleteModal(true);
-        return { data: null }; // Return an object with the correct shape
-    }
 
     if (!editRecipe) return <div>Loading...</div>;
 
@@ -275,7 +246,7 @@ const EditRecipes: React.FC = () => {
                     <EditIngredient
                         ingredients={Array.isArray(ingredients) ? ingredients : []}
                         onAdd={handleAddIngredient}
-                        onDelete={handleInitiateDeleteIngredient}
+                        onDelete={handleDeleteIngredient}
                         recipeId={editRecipe.id}
                         onUpdate={handleUpdateIngredient}
                     />
@@ -289,27 +260,6 @@ const EditRecipes: React.FC = () => {
                     </button>
                 </div>
             </div>
-            <Modal show={showIngredientDeleteModal} onHide={() => setShowIngredientDeleteModal(false)} centered>
-                <Modal.Header>
-                    <Modal.Title>Delete Ingredient</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Are you sure you want to delete this ingredient? This action cannot be undone.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowIngredientDeleteModal(false)}>
-                        <FaTimesCircle style={{ marginRight: '5px' }} /> Cancel
-                    </Button>
-                    <Button variant="danger" onClick={async () => {
-                        if (ingredientToDeleteId !== null) {
-                            await handleDeleteIngredient(ingredientToDeleteId);
-                            setShowIngredientDeleteModal(false); // Close modal after deletion
-                        }
-                    }}>
-                        <FaTrash style={{ marginRight: '5px' }} /> Delete
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </div>
     );
 };
