@@ -202,6 +202,9 @@ public class DataSeeder
         _dataContext.Set<Calendar>().AddRange(johnsCalendar, janesCalendar);
         await _dataContext.SaveChangesAsync();
 
+
+        var dates = Enumerable.Range(1, 5).Select(_ => GetRandomDate()).ToArray();
+        
        var johnsEvents = new List<CalendarEventCreateDto>
         {
             new()
@@ -209,7 +212,8 @@ public class DataSeeder
                 CalendarId = johnsCalendar.Id,
                 Title = "Go to Timmy's Basketball game",
                 CreatedByUserId = john.Id,
-                StartsOn = GetRandomDate(),
+                StartsOnDate = dates[0],
+                StartsOnTime = dates[0].AddHours(1),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -217,7 +221,7 @@ public class DataSeeder
                 CalendarId = johnsCalendar.Id,
                 Title = "Do the dishes",
                 CreatedByUserId = john.Id,
-                StartsOn = GetRandomDate(),
+                StartsOnDate = dates[1],
                 CalendarEventType = CalendarEventType.Task
             },
             new()
@@ -236,7 +240,7 @@ public class DataSeeder
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Go grocery shopping.",
-                StartsOn = GetRandomDate(),
+                StartsOnDate = dates[2],
                 CalendarEventType = CalendarEventType.Task
             },
             new()
@@ -244,7 +248,10 @@ public class DataSeeder
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Dentist Appointment",
-                StartsOn = GetRandomDate(),
+                StartsOnDate = dates[3],
+                StartsOnTime = dates[3].AddHours(1),
+                EndsOnDate = dates[3],
+                EndsOnTime = dates[3].AddHours(2),
                 CalendarEventType = CalendarEventType.Event
             },
             new()
@@ -252,7 +259,8 @@ public class DataSeeder
                 CalendarId = janesCalendar.Id,
                 CreatedByUserId = jane.Id,
                 Title = "Take Albert to Soccer practice",
-                StartsOn = GetRandomDate(),
+                StartsOnDate = dates[4],
+                StartsOnTime = dates[4].AddHours(1),
                 CalendarEventType = CalendarEventType.Task
             }
         }.ProjectTo<CalendarEvent>();

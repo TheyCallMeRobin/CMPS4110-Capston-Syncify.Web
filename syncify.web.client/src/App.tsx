@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './api/generated/config';
 import './App.css';
 import './syncfusion-styles.css';
@@ -10,23 +10,24 @@ import {
   FaAlignJustify,
   FaBook,
   FaCalendarAlt,
+  FaEnvelope,
   FaHome,
   FaShoppingCart,
+  FaTimes,
   FaUser,
   FaUsers,
-  FaEnvelope,
-  FaTimes,
 } from 'react-icons/fa';
-import { useAsyncFn } from 'react-use';
+import { useAsyncFn, useLocalStorage } from 'react-use';
 import { AuthenticationService } from './api/generated/AuthenticationService.ts';
 import { FamilyInviteService } from './api/generated/FamilyInviteService.ts';
 import {
+  ChangeInviteStatusDto,
   FamilyInviteGetDto,
   InviteStatus,
-  ChangeInviteStatusDto,
 } from './api/generated/index.defs';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCalendarFilterStore } from './calendar/calendar-filter-store.ts';
 
 export const App: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -34,10 +35,10 @@ export const App: React.FC = () => {
   const [loadingInvites, setLoadingInvites] = useState<boolean>(false);
   const [loadingAction, setLoadingAction] = useState<number | null>(null);
   const [isInviteMenuOpen, setIsInviteMenuOpen] = useState<boolean>(false);
-  const user = useUser();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const user = useUser();
   const authContext = useContext(AuthContext);
 
   const toggleSidebar = () => {
@@ -52,15 +53,15 @@ export const App: React.FC = () => {
     }, [authContext, navigate]);
 
   useEffect(() => {
-    if (!user) {
+    if (!authContext.user && authContext.loading) {
       navigate(ROUTES.LoginPage.path);
     }
-  }, [navigate, user]);
+  }, [authContext.loading, authContext.user, navigate]);
 
   const noNavBarPages = [ROUTES.LoginPage.path, ROUTES.RegisterPage.path];
   const shouldHideNavBar = noNavBarPages.includes(location.pathname);
 
-  const fetchInvites = async () => {
+  const fetchInvites = useCallback(async () => {
     setLoadingInvites(true);
     if (user?.id) {
       const inviteResponse = await FamilyInviteService.getInvitesByUserId({
@@ -78,11 +79,17 @@ export const App: React.FC = () => {
       setInvites(invitesData);
     }
     setLoadingInvites(false);
-  };
+  }, [user?.id]);
+
+  const addToFilter = useCalendarFilterStore(
+    (state) => state.addCalendarToFilter
+  );
+  const [calendarIds] = useLocalStorage<number[]>('calendar-ids');
 
   useEffect(() => {
     fetchInvites();
-  }, [user]);
+    calendarIds?.forEach((id) => addToFilter(id));
+  }, [addToFilter, calendarIds, fetchInvites, user]);
 
   const handleInboxClick = () => {
     setIsInviteMenuOpen(!isInviteMenuOpen);
@@ -300,7 +307,6 @@ export const App: React.FC = () => {
           )}
 
           {loadingInvites && <p>Loading invites...</p>}
-
           <Outlet />
         </main>
       </div>

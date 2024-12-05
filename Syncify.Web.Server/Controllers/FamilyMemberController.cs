@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyMembers;
 
 namespace Syncify.Web.Server.Controllers;
@@ -26,7 +27,7 @@ public class FamilyMemberController : ControllerBase
     [HttpDelete("{familyMemberId}")]
     public async Task<ActionResult<Response>> RemoveFamilyMember([FromRoute] int familyMemberId)
     {
-        var data = await _familyMemberService.RemoveFamilyMember(familyMemberId);
+        var data = await _familyMemberService.RemoveFamilyMember(familyMemberId, User.GetCurrentUserId());
         return Ok(data);
     }
 }

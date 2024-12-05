@@ -4,12 +4,12 @@ import { FamilyMemberService } from '../../api/generated/FamilyMemberService';
 import { FamilyService } from '../../api/generated/FamilyService';
 import {
   Button,
-  Modal,
-  Form,
-  Container,
-  Row,
   Col,
+  Container,
+  Form,
   ListGroup,
+  Modal,
+  Row,
 } from 'react-bootstrap';
 import { FamilyInviteService } from '../../api/generated/FamilyInviteService';
 import { FamilyInviteCreateDto } from '../../api/generated/index.defs';
@@ -17,7 +17,7 @@ import { useUser } from '../../auth/auth-context';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAsync, useAsyncFn } from 'react-use';
+import { useAsyncFn } from 'react-use';
 import { FaArrowLeft } from 'react-icons/fa';
 
 export const FamilyMemberManagement = () => {
@@ -292,7 +292,7 @@ export const FamilyMemberManagement = () => {
             <Modal.Body>
               <Form>
                 <Form.Group controlId="inviteEmail">
-                  <Form.Label>Email Address</Form.Label>
+                  <Form.Label>Email Address or Phone Number</Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="Enter email"

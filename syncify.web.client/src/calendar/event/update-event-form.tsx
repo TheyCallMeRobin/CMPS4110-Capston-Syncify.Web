@@ -8,7 +8,6 @@ import { useAsyncFn, useToggle } from 'react-use';
 import { CalendarEventService } from '../../api/generated/CalendarEventService.ts';
 import { toast } from 'react-toastify';
 import { notify } from '../../hooks/use-subscription.ts';
-import { LoadingContainer } from '../../Components/loading-container.tsx';
 import { EventForm } from './event-form.tsx';
 import { SeriesUpdateConfirmation } from './series-update.tsx';
 
@@ -120,7 +119,7 @@ export const UpdateEventForm: React.FC<UpdateEventFormProps> = ({
   );
 
   return (
-    <LoadingContainer loading={false}>
+    <>
       <EventForm
         key={'stable-key'}
         onSubmit={onSubmit}
@@ -132,6 +131,6 @@ export const UpdateEventForm: React.FC<UpdateEventFormProps> = ({
         onSelectSingle={setSingleSelect}
         open={open}
       />
-    </LoadingContainer>
+    </>
   );
 };

@@ -467,6 +467,11 @@ namespace Syncify.Web.Server.Migrations
                     b.Property<int>("FamilyId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Role")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2);
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
