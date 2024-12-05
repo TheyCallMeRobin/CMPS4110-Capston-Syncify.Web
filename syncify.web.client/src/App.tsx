@@ -245,7 +245,7 @@ export const App: React.FC = () => {
           className={''}
           style={{ marginLeft: isSidebarCollapsed ? '80px' : '180px' }}
         >
-          {isInviteMenuOpen && invites.length > 0 && (
+          {isInviteMenuOpen && (
             <div
               className="invites-dropdown position-absolute bg-white border border-secondary rounded-2 p-2"
               style={{ right: '0', top: '50px', zIndex: '100', width: '300px' }}
@@ -259,43 +259,51 @@ export const App: React.FC = () => {
                   <FaTimes />
                 </button>
               </div>
-              <ul className="list-group">
-                {invites.map((invite) => (
-                  <li key={invite.id} className="list-group-item">
-                    <div>
-                      <strong>{invite.sentByUserFullName}</strong> invited you
-                      to join the family: {invite.familyName}
-                    </div>
-                    <div>Status: {invite.status}</div>
-                    {invite.expiresOn && (
+              {invites.length > 0 ? (
+                <ul className="list-group">
+                  {invites.map((invite) => (
+                    <li key={invite.id} className="list-group-item">
                       <div>
-                        Expires on:{' '}
-                        {new Date(invite.expiresOn).toLocaleDateString()}
+                        <strong>{invite.sentByUserFullName}</strong> invited you
+                        to join the family: {invite.familyName}
                       </div>
-                    )}
-                    <div className="d-flex justify-content-between mt-3">
-                      <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => handleInviteAction(invite.id, 'accept')}
-                        disabled={loadingAction === invite.id}
-                      >
-                        {loadingAction === invite.id
-                          ? 'Accepting...'
-                          : 'Accept'}
-                      </button>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleInviteAction(invite.id, 'decline')}
-                        disabled={loadingAction === invite.id}
-                      >
-                        {loadingAction === invite.id
-                          ? 'Declining...'
-                          : 'Decline'}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                      <div>Status: {invite.status}</div>
+                      {invite.expiresOn && (
+                        <div>
+                          Expires on:{' '}
+                          {new Date(invite.expiresOn).toLocaleDateString()}
+                        </div>
+                      )}
+                      <div className="d-flex justify-content-between mt-3">
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() =>
+                            handleInviteAction(invite.id, 'accept')
+                          }
+                          disabled={loadingAction === invite.id}
+                        >
+                          {loadingAction === invite.id
+                            ? 'Accepting...'
+                            : 'Accept'}
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() =>
+                            handleInviteAction(invite.id, 'decline')
+                          }
+                          disabled={loadingAction === invite.id}
+                        >
+                          {loadingAction === invite.id
+                            ? 'Declining...'
+                            : 'Decline'}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-center text-muted">No invites available</p>
+              )}
             </div>
           )}
 
