@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.Calendars;
@@ -10,6 +11,7 @@ public interface IFamilyCalendarService
 {
     Task<Response<FamilyCalendarGetDto>> GetFamilyCalendarById(int id);
     Task<Response<List<FamilyCalendarGetDto>>> GetFamilyCalendarsByFamilyId(int familyId);
+    Task<Response<List<OptionDto>>> GetOptions(int userId);
     Task<Response<FamilyCalendarGetDto>> AddCalendarToFamily(FamilyCalendarCreateDto dto);
     Task<Response> RemoveCalendarFromFamily(int familyCalendarId);
 }
@@ -41,6 +43,17 @@ public class FamilyCalendarService : IFamilyCalendarService
             .ToListAsync();
 
         return calendars.AsResponse();
+    }
+
+    public async Task<Response<List<OptionDto>>> GetOptions(int userId)
+    {
+        var data = await _dataContext
+            .Set<FamilyCalendar>()
+            .Where(x => x.Calendar.CreatedByUserId == userId && !x.Calendar.FamilyCalendars.Any())
+            .Select(x => new OptionDto(x.Calendar.Name, x.CalendarId))
+            .ToListAsync();
+
+        return data.AsResponse();
     }
 
     public async Task<Response<FamilyCalendarGetDto>> AddCalendarToFamily(FamilyCalendarCreateDto dto)

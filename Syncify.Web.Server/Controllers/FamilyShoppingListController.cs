@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyShoppingLists;
 
 namespace Syncify.Web.Server.Controllers;
@@ -20,7 +21,10 @@ public class FamilyShoppingListController : ControllerBase
     public async Task<ActionResult<Response<FamilyShoppingListGetDto>>> CreateFamilyShoppingList(
         [FromBody] FamilyShoppingListCreateDto dto)
     {
-        var data = await _familyShoppingListService.CreateFamilyShoppingList(dto);
+        var data = await _familyShoppingListService.CreateFamilyShoppingList(dto with
+        {
+            CreatedByUserId = User.GetCurrentUserId()
+        });
         return Ok(data);
     }
 

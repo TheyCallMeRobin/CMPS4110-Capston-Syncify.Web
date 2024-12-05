@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Syncify.Common.DataClasses;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 using Syncify.Web.Server.Features.FamilyShoppingLists;
@@ -8,6 +9,7 @@ namespace Syncify.Web.Server.Features.ShoppingLists;
 public interface IShoppingListService
 {
     Task<Response<List<ShoppingListGetDto>>> GetShoppingLists();
+    Task<Response<List<OptionDto>>> GetOptions(int userId);
     Task<Response<ShoppingListGetDto>> GetShoppingListById(int id);
     Task<Response<List<ShoppingListGetDto>>> GetShoppingListsByUserId(int userId);
     Task<Response<ShoppingListGetDto>> CreateShoppingList(ShoppingListCreateDto createDto);
@@ -30,6 +32,17 @@ public class ShoppingListService : IShoppingListService
         var data = await _dataContext
             .Set<ShoppingList>()
             .Select(x => x.MapTo<ShoppingListGetDto>())
+            .ToListAsync();
+
+        return data.AsResponse();
+    }
+
+    public async Task<Response<List<OptionDto>>> GetOptions(int userId)
+    {
+        var data = await _dataContext
+            .Set<ShoppingList>()
+            .Where(x => x.UserId == userId && !x.FamilyShoppingLists.Any() && !string.IsNullOrWhiteSpace(x.Name))
+            .Select(x => new OptionDto(x.Name, x.Id))
             .ToListAsync();
 
         return data.AsResponse();

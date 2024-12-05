@@ -3,6 +3,7 @@ import {
   FamilyCalendarGetDto,
   EmptyResponse,
   Error,
+  OptionDto,
   IList,
   List,
   IListResult,
@@ -99,6 +100,25 @@ export class FamilyCalendarService {
       url = url.replace('{id}', params['id'] + '');
 
       const configs: IRequestConfig = getConfigs('delete', 'application/json', url, options);
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getOptions(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<OptionDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/family-calendars/options/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });

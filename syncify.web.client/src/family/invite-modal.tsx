@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
 import { FamilyInviteService } from '../api/generated/FamilyInviteService.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-toastify';
 
 type InviteModal = {
   open: boolean;
@@ -45,11 +46,17 @@ export const InviteModal: React.FC<InviteModal> = ({
       const response = await FamilyInviteService.createInvite({
         body: { ...values },
       });
+      if (response.hasErrors) {
+        response.errors.forEach((error) => toast.error(error.errorMessage));
+        return;
+      }
+
+      toast.success('Invite created.');
     }
   );
 
   return (
-    <Modal show={open} className={'clearfix'}>
+    <Modal show={open}>
       <Modal.Header>
         <h5>Create Family Invite</h5>
       </Modal.Header>
@@ -63,6 +70,7 @@ export const InviteModal: React.FC<InviteModal> = ({
                     Email Address or Phone Number
                   </Form.Label>
                   <Form.Control
+                    size={'lg'}
                     type={'text'}
                     {...register('inviteQuery')}
                     placeholder={'Enter an email address or a phone number'}
@@ -72,20 +80,26 @@ export const InviteModal: React.FC<InviteModal> = ({
               </div>
             </div>
             <div className={'row'}>
-              <div className={'clearfix'}>
-                <button
-                  type={'button'}
-                  className={'btn btn-secondary float-left'}
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  type={'submit'}
-                  className={'btn btn-primary float-right'}
-                >
-                  Submit
-                </button>
+              <div className={'col-md-12'}>
+                <div className={'clearfix'}>
+                  <div className={'float-start'}>
+                    <button
+                      type={'button'}
+                      className={'btn btn-secondary float-start'}
+                      onClick={onClose}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  <div className={'float-end'}>
+                    <button
+                      type={'submit'}
+                      className={'btn btn-primary float-end'}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </Form>

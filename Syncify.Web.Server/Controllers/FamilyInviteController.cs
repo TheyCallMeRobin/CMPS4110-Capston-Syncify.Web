@@ -25,7 +25,7 @@ public class FamilyInviteController : ControllerBase
     }
     
     [HttpGet("family/{familyId}")]
-    public async Task<ActionResult<Response<FamilyInviteGetDto>>> GetInvitesByFamilyId([FromRoute] int familyId)
+    public async Task<ActionResult<Response<List<FamilyInviteGetDto>>>> GetInvitesByFamilyId([FromRoute] int familyId)
     {
         var data = await _familyInviteService.GetInvitesByFamilyId(familyId);
         return Ok(data);

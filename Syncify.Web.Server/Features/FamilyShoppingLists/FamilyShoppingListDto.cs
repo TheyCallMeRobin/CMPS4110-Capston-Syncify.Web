@@ -10,7 +10,7 @@ public record FamilyShoppingListDto
     public int ShoppingListId { get; set; }
 }
 
-public record FamilyShoppingListGetDto(int CreatedByUserId, ShoppingListGetDto ShoppingList) : FamilyShoppingListDto;
+public record FamilyShoppingListGetDto(int Id, int CreatedByUserId, ShoppingListGetDto ShoppingList) : FamilyShoppingListDto;
 public record FamilyShoppingListCreateDto([property: JsonIgnore] int CreatedByUserId) : FamilyShoppingListDto;
 
 public class FamilyShoppingListMappingProfile : Profile

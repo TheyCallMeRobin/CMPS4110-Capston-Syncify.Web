@@ -4,6 +4,7 @@ import {
   ShoppingListCreateDto,
   ShoppingListUpdateDto,
   ShoppingListRecipeCreateDto,
+  OptionDto,
   IList,
   List,
   IListResult,
@@ -164,6 +165,25 @@ export class ShoppingListsService {
       let data = params.body;
 
       configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  static getOptions(
+    params: {
+      /**  */
+      userId: number;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<Response<List<OptionDto>>> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/shopping-lists/options/{userId}';
+      url = url.replace('{userId}', params['userId'] + '');
+
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       axios(configs, resolve, reject);
     });

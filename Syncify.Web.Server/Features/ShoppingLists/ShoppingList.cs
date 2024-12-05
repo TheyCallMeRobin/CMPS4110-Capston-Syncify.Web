@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Syncify.Web.Server.Features.Authorization;
+using Syncify.Web.Server.Features.FamilyShoppingLists;
 using Syncify.Web.Server.Features.ShoppingListItems;
 
 namespace Syncify.Web.Server.Features.ShoppingLists;
@@ -13,6 +14,7 @@ public class ShoppingList
     public int UserId { get; set; }
     public User User { get; set; } = default!;
     public List<ShoppingListItem> ShoppingListItems { get; set; } = [];
+    public List<FamilyShoppingList> FamilyShoppingLists { get; set; } = [];
 }
 
 public class ShoppingListEntityConfiguration : IEntityTypeConfiguration<ShoppingList>
@@ -27,5 +29,6 @@ public class ShoppingListEntityConfiguration : IEntityTypeConfiguration<Shopping
         builder.HasOne(x => x.User)
             .WithMany(x => x.ShoppingLists)
             .HasForeignKey(x => x.UserId);
+
     }
 }

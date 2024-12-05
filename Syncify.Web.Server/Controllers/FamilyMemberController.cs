@@ -30,4 +30,11 @@ public class FamilyMemberController : ControllerBase
         var data = await _familyMemberService.RemoveFamilyMember(familyMemberId, User.GetCurrentUserId());
         return Ok(data);
     }
+
+    [HttpPut]
+    public async Task<ActionResult<Response<FamilyMemberGetDto>>> ChangeMemberRole(ChangeMemberRoleDto dto)
+    {
+        var data = await _familyMemberService.ChangeMemberRole(dto);
+        return Ok(dto);
+    }
 }

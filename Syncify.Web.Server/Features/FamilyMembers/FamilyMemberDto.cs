@@ -16,6 +16,8 @@ public record FamilyMemberGetDto : FamilyMemberDto
     public FamilyMemberRole Role { get; set; }
 }
 
+public record ChangeMemberRoleDto(int familyMemberId, FamilyMemberRole Role);
+
 public class FamilyMemberMappingProfile : Profile
 {
     public FamilyMemberMappingProfile()

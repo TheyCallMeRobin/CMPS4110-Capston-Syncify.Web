@@ -110,7 +110,7 @@ public class FamilyInviteService : IFamilyInviteService
     {
         var invites = await _dataContext
             .Set<FamilyInvite>()
-            .Where(x => x.FamilyId == familyId)
+            .Where(x => x.FamilyId == familyId && x.Status == InviteStatus.Pending)
             .ProjectTo<FamilyInviteGetDto>()
             .ToListAsync();
 
