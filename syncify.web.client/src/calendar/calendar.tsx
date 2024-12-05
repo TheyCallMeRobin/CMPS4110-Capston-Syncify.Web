@@ -12,8 +12,8 @@
   Week,
   WorkWeek,
 } from '@syncfusion/ej2-react-schedule';
-import React, { useMemo, useRef, useState } from 'react';
-import { useAsync, useAsyncRetry, useEffectOnce } from 'react-use';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useAsyncRetry } from 'react-use';
 import { useUser } from '../auth/auth-context.tsx';
 import { CalendarsService } from '../api/generated/CalendarsService.ts';
 import { toast } from 'react-toastify';
@@ -27,20 +27,17 @@ import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
 import { useCalendarFilterStore } from './calendar-filter-store.ts';
 import { useSubscription } from '../hooks/use-subscription.ts';
 import { CalendarEventWindow } from './event/event-window.tsx';
+import { useShallow } from 'zustand/react/shallow';
 import { QuickInfoFooter } from './quick-info.tsx';
 
 const services = [Day, Week, WorkWeek, Month, Agenda];
 
 export type SchedulerRef = React.MutableRefObject<ScheduleComponent | null>;
 
-//TODO: Prevent default "Update on or update all" modal from appearing
-
 export const Calendar: React.FC = () => {
   const user = useUser();
 
-  const [allCalendars, setAllCalendars] = useState<CalendarGetDto[]>();
-
-  const fetchCalendars = useAsync(async () => {
+  const fetchCalendars = useAsyncRetry(async () => {
     const response = await CalendarsService.getByUserWithFamilies({
       userId: user?.id ?? 0,
     });
@@ -55,42 +52,16 @@ export const Calendar: React.FC = () => {
       allCalendars: response.data as CalendarGetDto[],
     }));
 
-    if (!useCalendarFilterStore.getState().filter.calendars) {
-      useCalendarFilterStore.setState((state) => ({
-        ...state,
-        filter: {
-          ...state.filter,
-          calendars: response.data as CalendarGetDto[],
-          calendarIds: (response.data as CalendarGetDto[]).map(
-            (calendar) => calendar.id
-          ),
-        },
-      }));
-    }
-
-    setAllCalendars(response.data as CalendarGetDto[]);
     return response.data;
   }, [user?.id]);
 
-  useEffectOnce(() => {
-    if (!fetchCalendars.loading && fetchCalendars.value) {
-      useCalendarFilterStore.setState({
-        filter: {
-          calendars: fetchCalendars.value,
-        },
-      });
-    }
-  });
-
-  useSubscription('calendar-refresh', () => fetchCalendarEvents.retry());
+  const calendarIds = useCalendarFilterStore(
+    useShallow((state) => state.filter.calendarIds)
+  );
 
   const fetchCalendarEvents = useAsyncRetry(async () => {
-    const store = useCalendarFilterStore.getState();
-    const ids =
-      store.filter.calendarIds ?? allCalendars?.map((calendar) => calendar.id);
-
     const response = await CalendarEventService.getCalendarEventsFromCalendars({
-      calendarsIds: ids,
+      calendarsIds: calendarIds,
     });
 
     if (response.hasErrors) {
@@ -98,7 +69,7 @@ export const Calendar: React.FC = () => {
       return [];
     }
     return response.data as CalendarEventGetDto[];
-  }, [allCalendars]);
+  }, [calendarIds]);
 
   const eventSettings: EventSettingsModel = useMemo(
     () => ({
@@ -122,6 +93,7 @@ export const Calendar: React.FC = () => {
   const isLoading = fetchCalendars.loading || fetchCalendarEvents.loading;
 
   const quickInfoTemplates: QuickInfoTemplatesModel = {
+    header: undefined,
     footer: QuickInfoFooter,
   };
 
@@ -132,21 +104,55 @@ export const Calendar: React.FC = () => {
       ) as HTMLElement;
       if (dialog) {
         dialog.style.width = '800px';
-        dialog.style.height = '610px';
+        dialog.style.height = '55%';
       }
     }
   };
 
   const onEventRendered = (args: {
-    data: { calendarDisplayColor: any };
-    element: { style: { backgroundColor: string } };
+    data: { calendarDisplayColor: string };
+    element: { style: { backgroundColor: string; color: string } };
   }) => {
-    if (args.data.calendarDisplayColor) {
-      args.element.style.backgroundColor = args.data.calendarDisplayColor;
+    const bgColor = args.data.calendarDisplayColor || '#2196F3';
+    args.element.style.backgroundColor = bgColor;
+
+    const getRGBComponents = (color: string) => {
+      if (color.startsWith('#')) {
+        color = color.slice(1);
+      }
+
+      if (color.length === 3) {
+        color = color
+          .split('')
+          .map((char) => char + char)
+          .join('');
+      }
+
+      const r = parseInt(color.substring(0, 2), 16);
+      const g = parseInt(color.substring(2, 4), 16);
+      const b = parseInt(color.substring(4, 6), 16);
+
+      return { r, g, b };
+    };
+
+    const { r, g, b } = getRGBComponents(bgColor);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    if (luminance > 0.5) {
+      args.element.style.color = '#000000';
     } else {
-      args.element.style.backgroundColor = '#2196F3';
+      args.element.style.color = '#FFFFFF';
     }
   };
+
+  useSubscription('calendar-refresh', () => {
+    fetchCalendars.retry();
+    fetchCalendarEvents.retry();
+  });
+
+  useEffect(() => {
+    fetchCalendars.retry();
+  }, [fetchCalendars.loading]);
 
   return (
     <LoadingContainer loading={isLoading}>
@@ -158,13 +164,13 @@ export const Calendar: React.FC = () => {
         editorTemplate={(props: CalendarEventGetDto) =>
           CalendarEventWindow({ event: props, windowRef: scheduleObj })
         }
-        enableAdaptiveUI
+        enableAdaptiveUI={false}
         enableRecurrenceValidation
         editorFooterTemplate={() => undefined}
         quickInfoTemplates={quickInfoTemplates}
         ref={scheduleObj}
         width={'auto'}
-        height={'auto'}
+        height={'80vh'}
         popupOpen={onPopupOpen}
       >
         <CalendarViews />

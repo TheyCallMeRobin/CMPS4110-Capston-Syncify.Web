@@ -1,13 +1,14 @@
-﻿import { useUser } from '../auth/auth-context.tsx';
+﻿import { useUser } from '../../auth/auth-context.tsx';
 import { useAsync, useAsyncFn } from 'react-use';
 import { toast } from 'react-toastify';
 import React, { CSSProperties } from 'react';
-import { LoadingContainer } from '../Components/loading-container.tsx';
-import { CalendarEventService } from '../api/generated/CalendarEventService.ts';
-import { CalendarEventGetDto } from '../api/generated/index.defs.ts';
-import { cardStyle } from './MainPage.tsx';
+import { LoadingContainer } from '../../Components/loading-container.tsx';
+import { CalendarEventService } from '../../api/generated/CalendarEventService.ts';
+import { CalendarEventGetDto } from '../../api/generated/index.defs.ts';
+import { cardStyle } from '../MainPage.tsx';
 import { FaClipboardList } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../routes.tsx';
 
 export const TodaysTodos: React.FC = () => {
   const user = useUser();
@@ -54,22 +55,26 @@ export const TodaysTodos: React.FC = () => {
           <tbody>
             {fetchTodaysTodos.value?.map((event) => {
               return (
-                <tr
-                  key={event.id}
-                  className={event.isCompleted ? 'strikethrough' : ''}
-                >
+                <tr key={event.id}>
                   <td>
                     <input
                       type="checkbox"
                       className={'form-check-'}
                       style={checkboxStyle}
+                      checked={event.isCompleted}
                       onChange={async () => {
                         await updateStatus(event);
                         event.isCompleted = !event.isCompleted;
                       }}
                     />
                   </td>
-                  <td>{event.title}</td>
+                  <td
+                    className={
+                      event.isCompleted ? 'text-decoration-line-through' : ''
+                    }
+                  >
+                    {event.title}
+                  </td>
                 </tr>
               );
             })}
@@ -95,7 +100,7 @@ export const TodaysTodos: React.FC = () => {
                 <TodosDisplay />
               </div>
               <div>
-                <Link to="/calendars" className={'btn btn-primary'}>
+                <Link to={ROUTES.Calendar.path} className={'btn btn-primary'}>
                   View All To-Dos
                 </Link>
               </div>

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Syncify.Common.Constants;
 using Syncify.Web.Server.Data;
 using Syncify.Web.Server.Extensions;
 
@@ -9,7 +8,7 @@ namespace Syncify.Web.Server.Features.CalendarEvents;
 public interface ICalendarEventService
 {
     Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsAsync(int calendarId);
-    Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(IEnumerable<int> calendarsIds);
+    Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(List<int> calendarsIds);
     Task<Response<CalendarEventGetDto>> GetCalendarEventByIdAsync(int id);
     Task<Response<List<CalendarEventGetDto>>> GetUpcomingEventsByUserId(int userId);
     Task<Response<List<CalendarEventGetDto>>> GetTodaysTodosByUserId(int userId);
@@ -43,7 +42,7 @@ public class CalendarEventService : ICalendarEventService
         return data.AsResponse();
     }
 
-    public async Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(IEnumerable<int> calendarsIds)
+    public async Task<Response<List<CalendarEventGetDto>>> GetCalendarEventsFromCalendars(List<int> calendarsIds)
     {
         var data = await _dataContext
             .Set<CalendarEvent>()
@@ -67,7 +66,8 @@ public class CalendarEventService : ICalendarEventService
         var data = await _dataContext
             .Set<CalendarEvent>()
             .Include(x => x.Calendar)
-            .Where(x => x.Calendar.CreatedByUserId == userId)
+            .Where(x => x.Calendar.CreatedByUserId == userId || 
+                        x.Calendar.FamilyCalendars.Any(fc => fc.Family.FamilyMembers.Any(fm => fm.UserId == userId)))
             .Take(3)
             .OrderByDescending(x => x.StartsOn)
             .ProjectTo<CalendarEventGetDto>()
@@ -104,6 +104,8 @@ public class CalendarEventService : ICalendarEventService
             calendarEvent.IsAllDay = true;
         }
         
+        MapStartsOnEndsOn(calendarEvent, dto);
+        
         _dataContext.Set<CalendarEvent>().Add(calendarEvent);
         await _dataContext.SaveChangesAsync();
 
@@ -118,6 +120,8 @@ public class CalendarEventService : ICalendarEventService
 
         _mapper.Map(dto, calendarEvent);
 
+        MapStartsOnEndsOn(calendarEvent, dto);
+        
         if (dto.CalendarEventType == CalendarEventType.Task)
         {
             calendarEvent.IsAllDay = true;
@@ -177,6 +181,8 @@ public class CalendarEventService : ICalendarEventService
         
         var calendarEvent = MappingExtensions.MapTo<CalendarEvent>(dto);
         
+        MapStartsOnEndsOn(calendarEvent, dto);
+        
         calendarEvent.RecurrenceId = parentEvent.Id;
         calendarEvent.CreatedByUserId = dto.UpdatedByUserId.GetValueOrDefault();
         calendarEvent.CalendarId = dto.CalendarId;
@@ -187,5 +193,32 @@ public class CalendarEventService : ICalendarEventService
         await transaction.CommitAsync(cancellationToken);
         
         return MappingExtensions.MapTo<CalendarEventGetDto>(calendarEvent).AsResponse();
+    }
+
+    private static void MapStartsOnEndsOn(CalendarEvent calendarEvent, CalendarEventDto dto)
+    {
+        var timezoneOffset = dto.StartsOnDate.Offset;
+        
+        var startsOnDate = dto.StartsOnDate.ToDateOnly();
+        var startsOnTime = dto.StartsOnTime.ToTimeOnly();
+
+        calendarEvent.StartsOn = new DateTimeOffset(startsOnDate, startsOnTime, timezoneOffset);
+
+        if (dto.EndsOnDate.HasValue)
+        {
+            var endsOnDate = dto.EndsOnDate.GetValueOrDefault().ToDateOnly();
+            var endsOnTime = dto.EndsOnTime?.ToTimeOnly();
+
+            if (dto.EndsOnTime.HasValue)
+            {
+                calendarEvent.EndsOn = new DateTimeOffset(endsOnDate, endsOnTime.GetValueOrDefault(), timezoneOffset);
+            }
+            else
+            {
+                var endOfDay = TimeOnly.FromTimeSpan(new TimeSpan(0, 11, 59, 59));
+                calendarEvent.EndsOn = new DateTimeOffset(endsOnDate, endOfDay, timezoneOffset);
+            }
+        }
+        
     }
 }

@@ -11,6 +11,8 @@ public class FamilyMember
     public int UserId { get; set; }
     public int FamilyId { get; set; }
 
+    public FamilyMemberRole Role { get; set; } = FamilyMemberRole.Member;
+    
     public User User { get; set; } = default!;
     public Family Family { get; set; } = default!;
 }
@@ -21,6 +23,10 @@ public class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMe
     {
         builder.ToTable("FamilyMembers");
 
+        builder
+            .Property(x => x.Role)
+            .HasDefaultValue(FamilyMemberRole.Member);
+        
         builder.HasOne(x => x.Family)
             .WithMany(x => x.FamilyMembers)
             .HasForeignKey(x => x.FamilyId)

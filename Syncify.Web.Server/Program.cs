@@ -65,6 +65,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddSingleton<MapperProvider>();
 
+builder.Services.AddMemoryCache();
+
 ServiceConfigurations.ConfigureServices(builder.Services);
 FluentValidationConfiguration.ConfigureServices(builder.Services);
 SwaggerConfiguration.Configure(builder.Services);

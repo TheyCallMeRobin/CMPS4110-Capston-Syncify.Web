@@ -7,6 +7,8 @@ import {
   CalendarWithEventsDto,
   CalendarEventGetDto,
   CalendarEventType,
+  CalendarWithFamilyGetDto,
+  FamilyMemberRole,
   OptionDto,
   IList,
   List,
@@ -173,7 +175,7 @@ export class CalendarsService {
       userId: number;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<Response<List<CalendarGetDto>>> {
+  ): Promise<Response<List<CalendarWithFamilyGetDto>>> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/calendars/with-families/{userId}';
       url = url.replace('{userId}', params['userId'] + '');

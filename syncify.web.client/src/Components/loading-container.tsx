@@ -10,7 +10,7 @@ export const LoadingContainer: React.FC<LoadingContainerProps> = ({
   children,
 }) => {
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', minHeight: '100px' }}>
       {loading ? (
         <div style={overlayStlye}>
           <div className={'spinner-border text-primary'}>
@@ -25,7 +25,7 @@ export const LoadingContainer: React.FC<LoadingContainerProps> = ({
 };
 
 const overlayStlye: CSSProperties = {
-  position: 'absolute',
+  position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',

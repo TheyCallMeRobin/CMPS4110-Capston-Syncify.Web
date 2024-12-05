@@ -1,4 +1,11 @@
-﻿import { createContext, FC, ReactNode, useContext, useState } from 'react';
+﻿import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { UserGetDto } from '../api/generated/index.defs.ts';
 import { useAsyncFn } from 'react-use';
 import { AuthenticationService } from '../api/generated/AuthenticationService.ts';
@@ -42,10 +49,16 @@ export const AuthProvider: FC<{ children?: ReactNode }> = ({ children }) => {
       loading: false,
     };
 
-    setAuthState(() => state);
+    setAuthState((prevState) => {
+      return { ...prevState, ...state };
+    });
   }, []);
 
   useSubscription('auth-trigger', fetchUser);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <>

@@ -23,7 +23,7 @@ const Recipes = () => {
     const [recipeOfTheDayIngredients, setRecipeOfTheDayIngredients] = useState<RecipeIngredientGetDto[]>([]);
     const [deleteModal, setDeleteModal] = useState({ show: false, recipeId: null as number | null });
     const user = useUser();
-    const navigate = useNavigate(); // Use useNavigate for navigation
+    const navigate = useNavigate();
 
     const [fetchRecipesState, fetchRecipes] = useAsyncFn(async () => {
         if (!user?.id) return;
@@ -89,7 +89,6 @@ const Recipes = () => {
         <div className="page-content">
             <ToastContainer />
             <h2 className="text-center text-highlight mb-4">My Recipes</h2>
-
             <div className="recipe-of-the-day-container">
                 <div className="recipe-of-the-day-wrapper">
                     <h3 className="recipe-of-the-day-title text-center">Recipe of the Day</h3>
@@ -157,7 +156,6 @@ const Recipes = () => {
                         </div>
                     </div>
                 ))}
-                {/* Navigation to Create Recipe Page */}
                 <div className="recipe-add" onClick={() => navigate('/create-recipe')}>
                     <FaPlusSquare className="add-icon" />
                 </div>

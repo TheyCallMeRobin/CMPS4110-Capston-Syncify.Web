@@ -8,6 +8,7 @@ const emitter = mitt();
 type SubscriptionEventMap = {
   'calendar-refresh': undefined;
   'auth-trigger': undefined;
+  'calendar-filter-refresh': undefined;
 };
 
 export function useSubscription<T extends SubscriptionEvents>(

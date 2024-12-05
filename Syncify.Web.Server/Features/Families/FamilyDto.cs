@@ -1,6 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using AutoMapper;
 using FluentValidation;
+using Syncify.Web.Server.Features.FamilyMembers;
+using Syncify.Web.Server.Features.FamilyRecipes;
+using Syncify.Web.Server.Features.FamilyShoppingLists;
 
 namespace Syncify.Web.Server.Features.Families;
 
@@ -9,7 +12,10 @@ public record FamilyDto
     public string Name { get; set; } = string.Empty;
 }
 
-public record FamilyGetDto(int Id, string Identifier, int CreatedByUserId) : FamilyDto;
+public record FamilyGetDto(int Id, string Identifier, int CreatedByUserId, 
+    List<FamilyMemberGetDto> FamilyMembers, 
+    List<FamilyRecipeGetDto> FamilyRecipes, 
+    List<FamilyShoppingListGetDto> FamilyShoppingLists) : FamilyDto;
 
 public record FamilyCreateDto([property: JsonIgnore] int CreatedByUserId) : FamilyDto;
 
