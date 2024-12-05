@@ -7,23 +7,25 @@ import { AuthContext, useUser } from './auth/auth-context.tsx';
 import { ROUTES } from './routes.tsx';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-	FaAlignJustify,
-	FaBook,
-	FaCalendarAlt, FaEnvelope,
-	FaHome,
-	FaShoppingCart, FaTimes,
-	FaUser,
-	FaUsers,
+  FaAlignJustify,
+  FaBook,
+  FaCalendarAlt,
+  FaEnvelope,
+  FaHome,
+  FaShoppingCart,
+  FaTimes,
+  FaUser,
+  FaUsers,
 } from 'react-icons/fa';
 import { useAsyncFn, useLocalStorage } from 'react-use';
 import { AuthenticationService } from './api/generated/AuthenticationService.ts';
 import { FamilyInviteService } from './api/generated/FamilyInviteService.ts';
 import {
+  ChangeInviteStatusDto,
   FamilyInviteGetDto,
   InviteStatus,
-  ChangeInviteStatusDto,
 } from './api/generated/index.defs';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCalendarFilterStore } from './calendar/calendar-filter-store.ts';
 
@@ -305,7 +307,6 @@ export const App: React.FC = () => {
           )}
 
           {loadingInvites && <p>Loading invites...</p>}
-
           <Outlet />
         </main>
       </div>

@@ -1,6 +1,8 @@
 import {
   FamilyShoppingListCreateDto,
   FamilyShoppingListGetDto,
+  ShoppingListGetDto,
+  ShoppingListItemGetDto,
   EmptyResponse,
   Error,
   IList,

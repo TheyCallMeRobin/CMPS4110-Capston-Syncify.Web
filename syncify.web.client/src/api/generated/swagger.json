@@ -4068,6 +4068,9 @@
       "FamilyGetDto": {
         "required": [
           "createdByUserId",
+          "familyMembers",
+          "familyRecipes",
+          "familyShoppingLists",
           "id",
           "identifier",
           "name"
@@ -4087,6 +4090,24 @@
           "createdByUserId": {
             "type": "integer",
             "format": "int32"
+          },
+          "familyMembers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyMemberGetDto"
+            }
+          },
+          "familyRecipes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyRecipeGetDto"
+            }
+          },
+          "familyShoppingLists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyShoppingListGetDto"
+            }
           }
         },
         "additionalProperties": false
@@ -4166,6 +4187,7 @@
         "required": [
           "familyId",
           "id",
+          "role",
           "userFirstName",
           "userId",
           "userLastName"
@@ -4189,6 +4211,9 @@
           },
           "userLastName": {
             "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/FamilyMemberRole"
           }
         },
         "additionalProperties": false
@@ -4223,6 +4248,7 @@
         "required": [
           "createdByUserId",
           "familyId",
+          "recipe",
           "recipeId"
         ],
         "type": "object",
@@ -4238,6 +4264,9 @@
           "createdByUserId": {
             "type": "integer",
             "format": "int32"
+          },
+          "recipe": {
+            "$ref": "#/components/schemas/RecipeGetDto"
           }
         },
         "additionalProperties": false
@@ -4264,6 +4293,7 @@
         "required": [
           "createdByUserId",
           "familyId",
+          "shoppingList",
           "shoppingListId"
         ],
         "type": "object",
@@ -4279,6 +4309,9 @@
           "createdByUserId": {
             "type": "integer",
             "format": "int32"
+          },
+          "shoppingList": {
+            "$ref": "#/components/schemas/ShoppingListGetDto"
           }
         },
         "additionalProperties": false

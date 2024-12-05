@@ -461,6 +461,15 @@ export class FamilyGetDto {
   /**  */
   'createdByUserId': number;
 
+  /**  */
+  'familyMembers': FamilyMemberGetDto[];
+
+  /**  */
+  'familyRecipes': FamilyRecipeGetDto[];
+
+  /**  */
+  'familyShoppingLists': FamilyShoppingListGetDto[];
+
   constructor(data: FamilyGetDto = {}) {
     Object.assign(this, data);
   }
@@ -530,6 +539,9 @@ export class FamilyMemberGetDto {
   /**  */
   'userLastName': string;
 
+  /**  */
+  'role': FamilyMemberRole;
+
   constructor(data: FamilyMemberGetDto = {}) {
     Object.assign(this, data);
   }
@@ -557,6 +569,9 @@ export class FamilyRecipeGetDto {
   /**  */
   'createdByUserId': number;
 
+  /**  */
+  'recipe': RecipeGetDto;
+
   constructor(data: FamilyRecipeGetDto = {}) {
     Object.assign(this, data);
   }
@@ -583,6 +598,9 @@ export class FamilyShoppingListGetDto {
 
   /**  */
   'createdByUserId': number;
+
+  /**  */
+  'shoppingList': ShoppingListGetDto;
 
   constructor(data: FamilyShoppingListGetDto = {}) {
     Object.assign(this, data);

@@ -1,5 +1,6 @@
 import {
   FamilyMemberGetDto,
+  FamilyMemberRole,
   EmptyResponse,
   Error,
   IList,

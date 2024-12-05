@@ -90,7 +90,12 @@ public class FamilyService : IFamilyService
 
     public async Task<Response<FamilyGetDto>> GetFamilyById(int id)
     {
-        var family = await _dataContext.Set<Family>().FirstOrDefaultAsync(x => x.Id == id);
+        var family = await _dataContext
+            .Set<Family>()
+            .Include(x => x.FamilyMembers).ThenInclude(x => x.User)
+            .Include(x => x.FamilyShoppingLists).ThenInclude(x => x.ShoppingList)
+            .Include(x => x.FamilyRecipes).ThenInclude(x => x.Recipe)
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (family is null)
             return Error.AsResponse<FamilyGetDto>("Family not found.", nameof(family.Id));
 
