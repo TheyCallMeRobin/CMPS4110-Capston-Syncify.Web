@@ -58,7 +58,7 @@ public class CalendarsController : ControllerBase
     }
 
     [HttpGet("with-families/{userId}")]
-    public async Task<ActionResult<Response<List<CalendarGetDto>>>> GetByUserWithFamilies(int userId)
+    public async Task<ActionResult<Response<List<CalendarWithFamilyGetDto>>>> GetByUserWithFamilies(int userId)
     {
         var data = await _calendarService.GetByUserWithFamilies(userId);
         return Ok(data);
@@ -68,7 +68,7 @@ public class CalendarsController : ControllerBase
     public async Task<ActionResult<Response<CalendarGetDto>>> Update([FromRoute] int id, 
         [FromBody] CalendarUpdateDto dto)
     {
-        var results = await _calendarService.UpdateCalendar(id, dto);
+        var results = await _calendarService.UpdateCalendar(id, dto, User.GetCurrentUserId());
         return Ok(results);
     }
 
@@ -82,7 +82,7 @@ public class CalendarsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> Delete([FromRoute] int id)
     {
-        var result = await _calendarService.DeleteCalendar(id);
+        var result = await _calendarService.DeleteCalendar(id, User.GetCurrentUserId());
         return Ok(result);
     }
 }

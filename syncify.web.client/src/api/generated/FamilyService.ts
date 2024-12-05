@@ -1,6 +1,13 @@
 import {
   FamilyCreateDto,
   FamilyGetDto,
+  FamilyMemberGetDto,
+  FamilyMemberRole,
+  FamilyRecipeGetDto,
+  RecipeGetDto,
+  FamilyShoppingListGetDto,
+  ShoppingListGetDto,
+  ShoppingListItemGetDto,
   FamilyUpdateDto,
   EmptyResponse,
   Error,

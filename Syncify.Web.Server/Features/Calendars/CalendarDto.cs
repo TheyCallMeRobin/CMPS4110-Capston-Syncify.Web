@@ -2,6 +2,7 @@
 using FluentValidation;
 using System.Text.Json.Serialization;
 using Syncify.Web.Server.Features.CalendarEvents;
+using Syncify.Web.Server.Features.FamilyMembers;
 using Syncify.Web.Server.Helpers;
 
 namespace Syncify.Web.Server.Features.Calendars;
@@ -12,7 +13,17 @@ public record CalendarDto
     public string? DisplayColor { get; set; } = ColorHelpers.GenerateRandomColor();
 }
 
-public record CalendarGetDto(int Id, int CreatedByUserId) : CalendarDto;
+public record CalendarGetDto : CalendarDto
+{
+    public int Id { get; set; }
+    public int CreatedByUserId { get; set; }
+} 
+
+public record CalendarWithFamilyGetDto : CalendarGetDto
+{
+    public FamilyMemberRole? CurrentUserRole { get; set; }
+    public List<string> AssociatedFamilies { get; set; } = [];
+};
 public record CalendarCreateDto([property: JsonIgnore] int CreatedByUserId) : CalendarDto;
 public record CalendarUpdateDto : CalendarDto;
 

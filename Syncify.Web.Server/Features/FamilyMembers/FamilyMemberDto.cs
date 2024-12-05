@@ -13,6 +13,7 @@ public record FamilyMemberGetDto : FamilyMemberDto
     public int Id { get; set; }
     public string UserFirstName { get; set; } = string.Empty;
     public string UserLastName { get; set; } = string.Empty;
+    public FamilyMemberRole Role { get; set; }
 }
 
 public class FamilyMemberMappingProfile : Profile

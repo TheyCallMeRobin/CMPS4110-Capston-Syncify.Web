@@ -1,6 +1,7 @@
 import {
   FamilyRecipeCreateDto,
   FamilyRecipeGetDto,
+  RecipeGetDto,
   EmptyResponse,
   Error,
   IList,

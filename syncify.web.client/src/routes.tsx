@@ -7,11 +7,11 @@ import { LoginPage } from './Routes/LoginPage/LoginPage.tsx';
 import ShoppingLists from './Routes/ShoppingLists/shopping-lists.tsx';
 import { App } from './App.tsx';
 import { CalendarPage } from './calendar/calendar-page.tsx';
-import { FamilyManagement } from './Routes/FamilyManagement/FamilyManagement.tsx';
-import {FamilyMemberManagement} from "./Routes/FamilyManagement/FamilyMemberManagement.tsx";
+import { FamilyManagement } from './family/family-management.tsx';
+import { FamilyMemberManagement } from './Routes/FamilyManagement/FamilyMemberManagement.tsx';
 import ShoppingListItems from './Routes/ShoppingListItems/shopping-list-items.tsx';
-import {CreateRecipe} from './Routes/Recipes/createrecipe';
-import ViewRecipe from './Routes/Recipes/viewrecipe.tsx'
+import { CreateRecipe } from './Routes/Recipes/createrecipe';
+import ViewRecipe from './Routes/Recipes/viewrecipe.tsx';
 import EditRecipes from './Routes/Recipes/editrecipe.tsx';
 
 export const ROUTES = {
@@ -20,7 +20,7 @@ export const ROUTES = {
     element: <LoginPage />,
   },
   Calendar: {
-    path: '/calendars',
+    path: '/calendar',
     element: <CalendarPage />,
   },
   FamilyManagement: {
@@ -37,19 +37,15 @@ export const ROUTES = {
   },
   EditRecipe: {
     path: '/edit-recipe/:recipeId',
-    element: <EditRecipes/>,
+    element: <EditRecipes />,
   },
   ViewRecipe: {
     path: 'view-recipe/:recipeId',
-    element: <ViewRecipe/>,
+    element: <ViewRecipe />,
   },
   FamilyMemberManagement: {
     path: 'family-member-management/:familyId',
-    element: <FamilyMemberManagement/>,
-  },
-  CalendarPage: {
-    path: '/calendars',
-    element: <CalendarPage />,
+    element: <FamilyMemberManagement />,
   },
   Dashboard: {
     path: '/',
