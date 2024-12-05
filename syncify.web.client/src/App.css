@@ -7,7 +7,9 @@
 
 .sidebar-navbar.collapsed {
     width: 50px;
+
 }
+
 
 .notification-dot {
     position: absolute;
@@ -34,6 +36,7 @@
 
 .sidebar-navbar.collapsed .nav-link {
     justify-content: center;
+    text-align: center;
     padding: 10px 0;
 }
 
