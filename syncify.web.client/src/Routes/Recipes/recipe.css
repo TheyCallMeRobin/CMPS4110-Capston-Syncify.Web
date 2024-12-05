@@ -225,10 +225,6 @@
         z-index: 11;
     }
 
-    .recipe-card-menu:hover .dropdown-menu {
-        display: block;
-    }
-
 .dropdown-item {
     display: flex;
     align-items: center;
