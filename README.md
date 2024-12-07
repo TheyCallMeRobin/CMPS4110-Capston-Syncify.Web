@@ -20,3 +20,10 @@ Reminder Implementation (To-Dos and Events)
 Recipe Book with detailed recipes and photo implementation
 Shopping List implementation
 
+Syncify Development Team:
+
+Robin White - Team Leader and Full Stack Developer
+Samuel Echols - Full Stack Developer
+Zachary Duncan - Front End Developer
+Edward Christian - Front End Developer
+Sara Bancevic - Back End Developer
